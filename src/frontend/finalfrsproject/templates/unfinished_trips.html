@@ -1,0 +1,338 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user_vehicle_section trip-report-page">
+    {% include "components/unfinished_trips_table_styles.html" %}
+    <div class="unfinished-trips-details trip-report-details">
+        <div class="trip-report-details-title">Unfinished Trips</div>
+        <form id="trip_id_selection_form" method="POST" action="{{ url_for('get_unfinished_trips') }}" class="login">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="trip-report-toolbar">
+                <input type="text" class="form-control" id="search" name="search"
+                    placeholder="Search all columns...">
+                <button type="button" id="clear-filters-btn" class="trip-report-tool-btn">
+                    Clear Filters
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped dataTables-example dataTable" id="trip-table">
+                    <thead>
+                        <tr>
+                            <th>SNo</th>
+                            <th>Person Name</th>
+                            <th>Vehicle Number</th>
+                            <th>Traveler Type</th>
+                            <th>ID</th>
+                            <th>Permit</th>
+                            <th>Entry Time</th>
+                            <th>Exit Time</th>
+                            <th>Expected Stay</th>
+                            <th>Overstay</th>
+                            <th>Purpose</th>
+                            <th>Going To</th>
+                            <th>Total Persons</th>
+                            <th>Phone</th>
+                            <th>Counter</th>
+                            <th>End trip</th>
+                        </tr>
+                        <tr class="column-filters">
+                            <th></th>
+                            <th><input class="form-control column-filter" data-col="1" placeholder="Name"></th>
+                            <th><input class="form-control column-filter" data-col="2" placeholder="Vehicle No"></th>
+                            <th>
+                                <select class="form-control column-filter" data-col="3">
+                                    <option value="">Type</option>
+                                    <option value="DRIVER">DRIVER</option>
+                                    <option value="EMPLOYEE">EMPLOYEE</option>
+                                    <option value="VISITOR">VISITOR</option>
+                                    <option value="PASSENGER">PASSENGER</option>
+                                </select>
+                            </th>
+                            <th><input class="form-control column-filter" data-col="4" placeholder="ID No"></th>
+                            <th>
+                                <select class="form-control column-filter" data-col="5">
+                                    <option value="">Permit</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select class="form-control column-filter date-preset-filter" id="entry-time-filter" data-col="6">
+                                    <option value="">Entry</option>
+                                    <option value="today">Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="last_7_days">Last 7 Days</option>
+                                    <option value="last_30_days">Last 30 Days</option>
+                                    <option value="this_month">This Month</option>
+                                    <option value="last_month">Last Month</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select class="form-control column-filter date-preset-filter" id="exit-time-filter" data-col="7">
+                                    <option value="">Exit</option>
+                                    <option value="today">Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="last_7_days">Last 7 Days</option>
+                                    <option value="last_30_days">Last 30 Days</option>
+                                    <option value="this_month">This Month</option>
+                                    <option value="last_month">Last Month</option>
+                                    <option value="not_closed">Not Closed</option>
+                                </select>
+                            </th>
+                            <th><input class="form-control column-filter" data-col="8" placeholder="Stay"></th>
+                            <th><input class="form-control column-filter" data-col="9" placeholder="Overstay"></th>
+                            <th><input class="form-control column-filter" data-col="10" placeholder="Purpose"></th>
+                            <th><input class="form-control column-filter" data-col="11" placeholder="Going To"></th>
+                            <th><input class="form-control column-filter" data-col="12" placeholder="Persons"></th>
+                            <th><input class="form-control column-filter" data-col="13" placeholder="Phone"></th>
+                            <th><input class="form-control column-filter" data-col="14" placeholder="Counter"></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="spinner" class="spinner-overlay" style="display:none;">
+                <div class="spinner"></div>
+            </div>
+        </form>
+    </div>
+</section>
+<!-- The Modal -->
+<div id="myModal" class="modal image-preview-modal">
+    <!-- The Close Button -->
+    <span id="unfinishedTripsImageModalClose" class="close">&times;</span>
+
+    <!-- Modal Content (The Image) -->
+    <img class="modal-content image-preview-modal-content" id="unfinishedTripsImageModalImg">
+
+    <!-- Modal Caption (Image Text) -->
+    <div id="unfinishedTripsImageModalCaption" class="image-preview-modal-caption"></div>
+</div>
+
+<style>
+    .ui-datepicker {
+        background: #111;
+        border: 1px solid #00ffe4;
+        color: #fff;
+        font-size: 13px;
+        z-index: 9999 !important;
+    }
+    .ui-datepicker .ui-datepicker-header {
+        background: #000;
+        color: #00ffe4;
+        border-bottom: 1px solid #00ffe4;
+    }
+    .ui-datepicker .ui-datepicker-title select,
+    .ui-datepicker .ui-datepicker-title {
+        color: #00ffe4;
+    }
+    .ui-datepicker table {
+        color: #fff;
+    }
+    .ui-datepicker td a {
+        background: #1a1a1a !important;
+        color: #fff !important;
+        border: none !important;
+    }
+    .ui-datepicker td a:hover {
+        background: #00ffe4 !important;
+        color: #000 !important;
+    }
+    .ui-datepicker .ui-datepicker-today a {
+        border: 1px solid #00ffe4 !important;
+    }
+</style>
+
+<script>
+    var unfinishedTripsImageModal = document.getElementById("myModal");
+    var unfinishedTripsImageModalImg = document.getElementById("unfinishedTripsImageModalImg");
+    var unfinishedTripsImageModalCaption = document.getElementById("unfinishedTripsImageModalCaption");
+    var unfinishedTripsImageModalClose = document.getElementById("unfinishedTripsImageModalClose");
+
+    function sendTripID(event, trip_id) {
+        event.preventDefault();
+        document.getElementById('spinner').style.display = "flex";
+        var form_element = document.getElementById('trip_id_selection_form');
+        var hidden_trip_id = document.createElement('input');
+        hidden_trip_id.type = 'hidden';
+        hidden_trip_id.name = 'trip_id';
+        hidden_trip_id.value = trip_id;
+        form_element.appendChild(hidden_trip_id);
+        form_element.submit();
+    }
+
+    function show_modal(vehicle_plate_number, vehicle_image) {
+        unfinishedTripsImageModalImg.src = vehicle_image;
+        unfinishedTripsImageModalCaption.innerHTML = vehicle_plate_number;
+        unfinishedTripsImageModal.style.display = "block";
+    }
+
+    unfinishedTripsImageModalClose.onclick = function () {
+        unfinishedTripsImageModal.style.display = "none";
+    };
+
+    window.addEventListener('click', function (event) {
+        if (event.target === unfinishedTripsImageModal) {
+            unfinishedTripsImageModal.style.display = "none";
+        }
+    });
+
+    $(document).ready(function () {
+        function fmtDaysHours(totalMinutes) {
+            if (totalMinutes === null || totalMinutes === undefined || isNaN(totalMinutes)) return "Not Available";
+            totalMinutes = parseInt(totalMinutes, 10);
+            var days = Math.floor(totalMinutes / 1440);
+            var hours = Math.floor((totalMinutes % 1440) / 60);
+            return days + " days " + hours + " hours";
+        }
+
+        var table = $('#trip-table').DataTable({
+            serverSide: true,
+            processing: true,
+            language: {
+                processing: '<div class="dt-loading-shell" role="status" aria-live="polite"><div class="dt-loading-ring" aria-hidden="true"></div><span class="dt-loading-label">Loading trips…</span></div>'
+            },
+            searching: true,
+            paging: true,
+            pageLength: 50,
+            lengthChange: true,
+            info: true,
+            ordering: true,
+            order: [[6, 'desc']],
+            orderCellsTop: true,
+            autoWidth: false,
+            dom: 'lrtip',
+            ajax: {
+                url: "{{ url_for('get_unfinished_trips_table') }}",
+                type: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('input[name="csrf_token"]').val()
+                },
+                data: function (d) {
+                    d.entry_time_preset = $('#entry-time-filter').val() || '';
+                    d.exit_time_preset = $('#exit-time-filter').val() || '';
+                }
+            },
+            columns: [
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: "person_name",
+                    render: function (data, type, row) {
+                        if (!data || data === "None") return "Not Available";
+                        var thumb = (row.person_image_location && row.person_image_location !== "None")
+                            ? `<img class="report-link-thumb" src="${row.person_image_location}" alt="Person thumbnail">`
+                            : "";
+                        return `<a class="report-link-with-thumb" href="javascript:show_modal('${data}','${row.person_image_location || ''}')">${thumb}<span>${data}</span></a>`;
+                    }
+                },
+                {
+                    data: "vehicle_number_plate",
+                    render: function (data, type, row) {
+                        if (!data || data === "None") return "Not Available";
+                        var thumb = (row.vehicle_image_location && row.vehicle_image_location !== "None")
+                            ? `<img class="report-link-thumb" src="${row.vehicle_image_location}" alt="Vehicle thumbnail">`
+                            : "";
+                        return `<a class="report-link-with-thumb" href="javascript:show_modal('${data}','${row.vehicle_image_location || ''}')">${thumb}<span>${data}</span></a>`;
+                    }
+                },
+                { data: "traveler_type", defaultContent: "Not Available" },
+                {
+                    data: "primary_id_number",
+                    render: function (data, type, row) {
+                        if (!data || data === "None") return "Not Available";
+                        return `<a href="javascript:show_modal('${data}','${row.primary_id_image || ''}')">${data}</a>`;
+                    }
+                },
+                {
+                    data: "trip_permit_image_location",
+                    render: function (data) {
+                        return (data && data !== "None")
+                            ? `<a href="javascript:show_modal('Permit','${data}')">Permit</a>`
+                            : "Not Available";
+                    }
+                },
+                { data: "entry_time", defaultContent: "Not Available" },
+                {
+                    data: "exit_time",
+                    render: function (data) {
+                        if (!data || data === "None") return "Not Available";
+                        if (data === "Not Closed") return `<span style="background-color:red;display:block;">${data}</span>`;
+                        return data;
+                    }
+                },
+                {
+                    data: "visit_duration",
+                    render: function (data) {
+                        return fmtDaysHours(data);
+                    }
+                },
+                {
+                    data: "overstay_minutes",
+                    render: function (data) {
+                        if (data === null || data === undefined) return "Not Available";
+                        var txt = fmtDaysHours(data);
+                        return parseInt(data, 10) > 0
+                            ? `<span style="background-color:red;display:block;">${txt}</span>`
+                            : txt;
+                    }
+                },
+                { data: "purpose", defaultContent: "Not Available" },
+                { data: "going_to", defaultContent: "Not Available" },
+                {
+                    data: "total_passengers",
+                    render: function (data) {
+                        return (data === null || data === undefined) ? "Not Available" : data;
+                    }
+                },
+                { data: "mobile_number", defaultContent: "Not Available" },
+                { data: "user_name", defaultContent: "Not Available" },
+                {
+                    data: "id",
+                    orderable: false,
+                    searchable: false,
+                    render: function (data) {
+                        if (!data) return "Not Available";
+                        return `<button type="button" class="btn btn-primary" style="height:30px;font-size:14px;" onclick="sendTripID(event, '${data}')">Close</button>`;
+                    }
+                }
+            ]
+        });
+
+        // per-column filters (works for both <input> and <select>)
+        $('.column-filter').on('keyup change', function () {
+            if ($(this).hasClass('date-preset-filter')) {
+                table.ajax.reload();
+                return;
+            }
+            var colIdx = $(this).data('col');
+            table.column(colIdx).search(this.value, false, false, false).draw();
+        });
+
+        // global search box
+        var filterTimer;
+        $('#search').on('keyup', function () {
+            clearTimeout(filterTimer);
+            filterTimer = setTimeout(function () {
+                table.search($('#search').val()).draw();
+            }, 300);
+        });
+
+        // clear all filters
+        $('#clear-filters-btn').on('click', function () {
+            $('#search').val('');
+            $('.column-filter').val('');
+            table.search('').columns().search('').draw();
+        });
+    });
+</script>
+
+
+{% endblock content %}

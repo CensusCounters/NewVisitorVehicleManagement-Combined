@@ -1,0 +1,683 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user user_register_section">
+	<div class="container-fluid">
+		<form id="form" action="{{ url_for('trip_registration') }}" method="post" enctype="multipart/form-data" class="login">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+			<input type="hidden" id="is_passenger_entry" name="is_passenger_entry">
+			{% if details.person_image %}
+			<input type="hidden" id="person_image" name="person_image" value="{{ details.person_image }}">
+			{% endif %}
+			<div class="row" id="img-vg-content">
+			  <!-- Left Column: Images -->
+				<div class="col-md-4">
+					{% if details.person_image %}
+					<div class="user_left_portion preview-panel add-trip-preview-panel" id="capturedImageRow"
+						style="background: linear-gradient(to right, #900C3F 0%, #C70039 41%, #581845 100%); padding: 20px;">
+						<h1 class="preview-panel-title">{{ details.person_name }}</h1>
+						<div class="preview-image-frame preview-image-frame--compact preview-image-frame--clickable add-trip-preview-frame">
+							<img src="{{ details.person_image }}" name="capturedImage" id="capturedImage"
+								class="is-clickable"
+								onclick="javascript:show_modal('{{ details.person_name }}','{{ details.person_image }}')">
+						</div>
+					</div>
+					{% endif %}
+
+					{% if details.vehicle_image %}
+					<div class="user_left_portion preview-panel add-trip-preview-panel" id="vehicleImage"
+						style="background: linear-gradient(to right, #900C3F 0%, #C70039 41%, #581845 100%); padding: 20px; margin-top: 28px;">
+						<h1 class="preview-panel-title">{{ details.vehicle_plate_number }}</h1>
+						<div class="preview-image-frame preview-image-frame--compact preview-image-frame--clickable add-trip-preview-frame">
+							<img src="{{ details.vehicle_image }}" name="vehicle_image" id="vehicle_image"
+								class="is-clickable" onerror="this.onerror=null;this.src='{{ asset_url('images/placeholder.png') }}';"
+								onclick="javascript:show_modal('{{ details.vehicle_plate_number }}','{{ details.vehicle_image }}')">
+						</div>
+					</div>
+					{% endif %}
+				</div>
+				<div class="col-md-8">
+					<div class="user-form">
+						<div class="col-xs-2">
+							<label class="label">Visitor Type</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<select name="traveler_type" id="traveler_type" class="form-control" onchange="check_traveler_type(this)" disabled>
+								<option value="">Traveler Type</option>
+								{% for value in details.visitor_categories %}
+									<option value="{{ value }}" {% if details.traveler_type == value %} selected {% endif %}>
+										{{ value.replace('_', ' ') }}
+									</option>
+								{% endfor %}
+							</select>
+						</div>
+						<input type="hidden" name="traveler_type" value="{{ details.traveler_type or '' }}">
+						<div class="col-xs-2">
+							<label class="label">Entry Time</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="entry_time" name="entry_time" type="datetime-local" class="form-control required"
+								   value="{{ details.entry_time }}" max="{{ now }}">
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Name</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="name" name="name" type="text" maxlength="30" class="form-control" value="{{ details.person_name or '' }}" readonly>
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Aadhar Number</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="primary_id_number" name="primary_id_number" type="text" maxlength="30" class="form-control"
+								value=  "{{ details.primary_id_number or '' }}"  readonly>
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Coming From</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="coming_from" name="coming_from" type="text" maxlength="30" class="form-control"
+								   value="{{ details.address or '' }}">
+						</div>
+						<div id="going_to_wrapper" name="going_to_wrapper">
+							<div class="col-xs-2">
+								<label class="label">Going To</label>
+							</div>
+							<div class="form-group col-xs-10">
+								<input id="going_to" name="going_to" type="text" maxlength="30" class="form-control" value="">
+							</div>
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Purpose</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="visiting_person_name" name="visiting_person_name" type="text" maxlength="30" class="form-control required"
+						value="{{ details.visiting_person_name or '' }}">
+						</div>
+						<div id="vehicle_selection_link_div" name="vehicle_selection_link_div">
+							<div class="form-group col-xs-12" style="display:block;">
+								<a id="vehicle_selection_link" name="vehicle_selection_link" href="#"> Click here to select from the vehicle list</a>
+							</div>
+							<div class="col-xs-2">
+								<label class="label">Vehicle Number</label>
+							</div>
+							<div class="form-group col-xs-10" id="vehicle_number_div" name="vehicle_number_div" >
+								<input id="vehicle_number" name="vehicle_number" type="text" maxlength="30" class="form-control"
+									   value="{{ details.vehicle_plate_number or '' }}">
+							</div>
+							<div class="col-xs-2">
+								<label class="label">Vehicle Type</label>
+							</div>
+							<div class="form-group col-xs-10" id="vehicle_type_div" name="vehicle_type_div" >
+								<input id="vehicle_type" name="vehicle_type" type="text" maxlength="30" class="form-control"
+									   value="{{ details.vehicle_type or '' }}">
+							</div>
+							<div class="col-xs-2">
+								<label class="label">Model</label>
+							</div>
+							<div class="form-group col-xs-10" id="vehicle_category_div" name="vehicle_category_div" >
+								<input id="vehicle_model" name="vehicle_model" type="text" maxlength="30" class="form-control"
+									   value="{{ details.vehicle_model or '' }}">
+							</div>
+							<div class="col-xs-2">
+								<label class="label">Make/Color</label>
+							</div>
+							<div class="form-group col-xs-10" id="vehicle_make_div" name="vehicle_make_div" >
+								{% set make_color = (((details.vehicle_make or '') ~ ' ' ~ (details.vehicle_color or '')).strip()) %}
+								<input id="vehicle_make_display" name="vehicle_make_display" type="text" maxlength="120" class="form-control"
+									   value="{{ make_color if make_color else '' }}" readonly>
+								<input id="vehicle_make" name="vehicle_make" type="hidden"
+									   value="{{ details.vehicle_make if details.vehicle_make else '' }}">
+							</div>
+						</div>
+						<div class="form-group col-md-12" id="permit_image_div" name="permit_image_div" style="display: none">
+							<input type="hidden" id="permit_image" name="permit_image">
+							<div id="permit_preview_container" style="display: none; margin-bottom: 10px;">
+								<img id="permit_preview" src="" alt="Permit Preview" style="max-width: 200px; max-height: 150px; border: 2px solid #28a745; border-radius: 5px;">
+								<p style="font-size: 14px; color: #28a745; margin: 5px 0;">Permit</p>
+							</div>
+							<button type="button" id="capturePermitImage" class="btn btn-primary" style="width:48%;">
+								Capture Permit Image</button>
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Token Number</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="token_number" name="token_number" type="text" maxlength="30" class="form-control" value="">
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Expected Visit in hrs</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="visit_hrs" name="visit_hrs" type="number" class="form-control required" value="12">
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Expected Visit in days</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="visit_days" name="visit_days" type="number" class="form-control required" value="0" min="0" step="1">
+						</div>
+						<div id="passenger_count" name="passenger_count" style="display: none">
+							<div class="col-xs-2">
+								<label class="label">Male Passengers</label>
+							</div>
+							<div class="form-group col-xs-10">
+								<input id="male_passengers" name="male_passengers" type="number" min="0" max="999" step="1" class="form-control required" value="0">
+							</div>
+							<div class="col-xs-2">
+								<label class="label">Female Passengers</label>
+							</div>
+							<div class="form-group col-xs-10">
+								<input id="female_passengers" name="female_passengers" type="number" min="0" max="999" step="1" class="form-control required" value="0">
+							</div>
+							<div class="col-xs-2">
+								<label class="label">Child Passengers</label>
+							</div>
+							<div class="form-group col-xs-10">
+								<input id="child_passengers" name="child_passengers" type="number" min="0" max="999" step="1" class="form-control required" value="0">
+							</div>
+						</div>
+						<div class="col-xs-2">
+							<label class="label">Remarks</label>
+						</div>
+						<div class="form-group col-xs-10">
+							<input id="trip_reason" name="trip_reason" type="text" maxlength="30" class="form-control" value="">
+						</div>
+
+						<div class="col-xs-12 trip-verify-section">
+						<div class="trip-action-bar">
+								<button type="button" id="cancelbtn" name="cancelbtn" class="btn trip-btn-cancel">Cancel</button>
+								<button type="button" id="sbmt" name="sbmt" class="btn trip-btn-submit">Submit Trip</button>
+							</div>
+						</div>
+
+						<div id="spinner" class="spinner-overlay" style="display:none;">
+							<div class="spinner"></div>
+						</div>
+						</div>
+						<div id="myModal" class="modal image-preview-modal">
+							<!-- The Close Button -->
+							<span id="tripImageModalClose" class="close">&times;</span>
+
+							<!-- Modal Content (The Image) -->
+							<img class="modal-content image-preview-modal-content" id="tripImageModalImg">
+
+							<!-- Modal Caption (Image Text) -->
+							<div id="tripImageModalCaption" class="image-preview-modal-caption"></div>
+					  </div>
+					</div>
+				</div>	
+			</div>
+		</form>
+	</div>    
+
+	<!-- Modal for Camera Capture -->
+	<div id="cameraModal" class="modal">
+		<div class="modal-content">
+			<video id="cameraStream" width="100%"></video>
+			<span class="close">&times;</span>
+			<div class="col-xs-12 buttons text-center">
+				<button id="captureImage" class="btn btn-primary">Capture Image</button>
+			</div>
+			<canvas id="capturedImageCanvas" style="display: none;"></canvas>
+			<!-- <img id="capturedImagePreview" style="display: none;" /> -->
+		</div>
+	</div>
+</section>
+<script>
+	console.log("details:", {{ details | tojson | safe }});
+	console.log($('input[name="traveler_type"][type="hidden"]').val());
+	console.log("Validation Result:", ['CIVILIAN', 'GUEST', 'PERMISSION', 'TEACHER'].includes($('input[name="traveler_type"][type="hidden"]').val()));
+	var modal = document.getElementById('cameraModal');
+	var tripImageModal = document.getElementById('myModal');
+	var tripImageModalImg = document.getElementById('tripImageModalImg');
+	var tripImageModalCaption = document.getElementById('tripImageModalCaption');
+	var tripImageModalClose = document.getElementById('tripImageModalClose');
+	var btn = document.getElementById('capturePermitImage'); // Button that opens the modal
+	var cameraModalClose = modal.getElementsByClassName("close")[0];
+	var video = document.getElementById('cameraStream');
+	var canvas = document.getElementById('capturedImageCanvas');
+	var context = canvas.getContext('2d');
+	var captureButton = document.getElementById('captureImage');
+	//var temp_text = document.getElementById("temp_permit_img_text");
+	var permitPreviewContainer = document.getElementById('permit_preview_container');
+	var permitPreview = document.getElementById('permit_preview');
+
+	// When the user clicks the button, open the modal and start the camera
+	btn.onclick = function() {
+		modal.style.display = "block";
+		navigator.mediaDevices.getUserMedia({ video: true })
+			.then(function(stream) {
+				video.srcObject = stream;
+				video.play();
+			})
+			.catch(function(err) {
+				console.log("An error occurred: " + err);
+			});
+	}
+
+	// When the user clicks on <span> (x), close the modal
+	cameraModalClose.onclick = function() {
+		modal.style.display = "none";
+		video.srcObject.getTracks().forEach(track => track.stop());
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+			video.srcObject.getTracks().forEach(track => track.stop());
+		}
+	}
+
+	// Capture the image from the video stream
+	captureButton.onclick = function() {
+		modal.style.display = "none";
+		canvas.width = video.videoWidth;
+		canvas.height = video.videoHeight;
+		context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+		var imageData = canvas.toDataURL('image/jpeg', 0.8);
+		$('#permit_image').val(imageData);
+		permitPreview.src = imageData;
+		permitPreviewContainer.style.display = "block";
+	};
+
+  	function show_modal(label, image, aboveSwal) {
+		if (aboveSwal) {
+			tripImageModal.classList.add('is-above-swal');
+		} else {
+			tripImageModal.classList.remove('is-above-swal');
+		}
+		tripImageModalImg.src = image;
+		tripImageModalCaption.innerHTML = label;
+		tripImageModal.style.display = "block";
+    }
+
+	tripImageModalClose.onclick = function() {
+		tripImageModal.style.display = "none";
+		tripImageModal.classList.remove('is-above-swal');
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === tripImageModal) {
+			tripImageModal.style.display = "none";
+			tripImageModal.classList.remove('is-above-swal');
+		}
+	});
+
+  	function check_traveler_type(traveler_type) {
+		console.log('traveler type: ' , traveler_type.value);
+		console.log("Condition Check:", traveler_type.value === 'CIVILIAN');
+		if (traveler_type.value === 'DRIVER') {
+				console.log("Changing display to block:", traveler_type.value);
+				document.getElementById("passenger_count").style.display = "block";
+				document.getElementById("permit_image_div").style.display = "block";
+			} else {
+				console.log("Changing display to none:", traveler_type.value);
+				document.getElementById("passenger_count").style.display = "none";
+				document.getElementById("permit_image_div").style.display = "none";
+			}
+		if (typeof renderTripReview === 'function') {
+			renderTripReview();
+		}
+		console.log(document.getElementById("passenger_count"));
+		console.log(document.getElementById("permit_image_div"));
+	}
+
+  	function escapeHtml(value) {
+		return String(value || '')
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
+	function getConfirmPreviewSources() {
+		return {
+			person: {
+				label: displayValue($('#name').val()),
+				src: ($('#capturedImage').attr('src') || '').trim()
+			},
+			vehicle: {
+				label: displayValue($('#vehicle_number').val()),
+				src: ($('#vehicle_image').attr('src') || '').trim()
+			}
+		};
+	}
+
+	function buildConfirmPreviewImagesHtml() {
+		var previews = getConfirmPreviewSources();
+		var blocks = [];
+
+		[
+			{ key: 'person', caption: 'Visitor photo' },
+			{ key: 'vehicle', caption: 'Vehicle plate' }
+		].forEach(function(item) {
+			var preview = previews[item.key];
+			var thumbHtml;
+
+			if (preview.src) {
+				thumbHtml =
+					'<button type="button" class="trip-confirm-preview-thumb" ' +
+						'data-label="' + escapeHtml(preview.label) + '" ' +
+						'data-src="' + escapeHtml(preview.src) + '" ' +
+						'title="Click to enlarge">' +
+						'<img src="' + escapeHtml(preview.src) + '" alt="' + escapeHtml(item.caption) + '">' +
+						'<span class="trip-confirm-preview-expand" aria-hidden="true">Expand</span>' +
+					'</button>';
+			} else {
+				thumbHtml = '<div class="trip-confirm-preview-thumb trip-confirm-preview-thumb--empty">' +
+					'<span>No image</span>' +
+				'</div>';
+			}
+
+			blocks.push(
+				'<div class="trip-confirm-preview">' +
+					'<span class="trip-confirm-preview-label">' + escapeHtml(item.caption) + '</span>' +
+					thumbHtml +
+				'</div>'
+			);
+		});
+
+		return '<div class="trip-confirm-previews">' + blocks.join('') + '</div>';
+	}
+
+	function bindConfirmPreviewClicks() {
+		$('.trip-confirm-preview-thumb[data-src]').off('click.tripConfirmPreview').on('click.tripConfirmPreview', function() {
+			var label = $(this).data('label');
+			var src = $(this).data('src');
+			if (src) {
+				show_modal(label, src, true);
+			}
+		});
+	}
+
+	function displayValue(value, fallback) {
+		var text = (value || '').toString().trim();
+		return text || (fallback || 'Not provided');
+	}
+
+	function formatEntryTime(value) {
+		if (!value) {
+			return 'Not provided';
+		}
+		var parsed = new Date(value);
+		if (isNaN(parsed.getTime())) {
+			return value;
+		}
+		return parsed.toLocaleString(undefined, {
+			day: '2-digit',
+			month: 'short',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	}
+
+	function getTravelerTypeLabel() {
+		var hiddenType = $('input[name="traveler_type"][type="hidden"]').val();
+		if (!hiddenType) {
+			return 'Not provided';
+		}
+		return hiddenType.replace(/_/g, ' ');
+	}
+
+	function getExpectedDurationLabel() {
+		var days = parseInt($('#visit_days').val(), 10) || 0;
+		var hours = parseInt($('#visit_hrs').val(), 10) || 0;
+		if (!days && !hours) {
+			return 'Not provided';
+		}
+		return days + ' day(s), ' + hours + ' hour(s)';
+	}
+
+	function getPassengerSummary() {
+		var male = parseInt($('#male_passengers').val(), 10) || 0;
+		var female = parseInt($('#female_passengers').val(), 10) || 0;
+		var child = parseInt($('#child_passengers').val(), 10) || 0;
+		return male + ' male, ' + female + ' female, ' + child + ' child';
+	}
+
+		function buildTripReviewItems() {
+		var items = [
+			{ label: 'Visitor', value: displayValue($('#name').val()) },
+			{ label: 'Visitor type', value: getTravelerTypeLabel() },
+			{ label: 'Aadhar number', value: displayValue($('#primary_id_number').val()) },
+			{ label: 'Entry time', value: formatEntryTime($('#entry_time').val()) },
+			{ label: 'Coming from', value: displayValue($('#coming_from').val()) }
+		];
+
+		if ($('#going_to_wrapper').is(':visible')) {
+			items.push({ label: 'Going to', value: displayValue($('#going_to').val()) });
+		}
+
+		items.push(
+			{ label: 'Purpose', value: displayValue($('#visiting_person_name').val()) },
+			{ label: 'Vehicle number', value: displayValue($('#vehicle_number').val()) },
+			{ label: 'Vehicle type', value: displayValue($('#vehicle_type').val()) },
+			{ label: 'Vehicle model', value: displayValue($('#vehicle_model').val()) },
+			{ label: 'Make / color', value: displayValue($('#vehicle_make_display').val()) },
+			{ label: 'Expected duration', value: getExpectedDurationLabel() },
+			{ label: 'Token number', value: displayValue($('#token_number').val()) },
+			{ label: 'Remarks', value: displayValue($('#trip_reason').val()), full: true }
+		);
+
+		if ($('#passenger_count').is(':visible')) {
+			items.splice(items.length - 2, 0, {
+				label: 'Passengers',
+				value: getPassengerSummary(),
+				full: true
+			});
+		}
+
+		return items;
+	}
+
+	function renderTripReview() {
+		var items = buildTripReviewItems();
+		var html = items.map(function(item) {
+			var isEmpty = item.value === 'Not provided';
+			var itemClass = 'trip-review-item' + (item.full ? ' trip-review-item--full' : '');
+			var valueClass = 'trip-review-value' + (isEmpty ? ' is-empty' : '');
+			return '<div class="' + itemClass + '">' +
+				'<span class="trip-review-label">' + escapeHtml(item.label) + '</span>' +
+				'<span class="' + valueClass + '">' + escapeHtml(item.value) + '</span>' +
+			'</div>';
+		}).join('');
+		$('#tripReviewGrid').html(html);
+	}
+
+	// Fields that are not enforced by validation but are worth flagging before a trip is created.
+		function getRecommendedFieldLabels() {
+		var labels = ['Vehicle number', 'Purpose', 'Token number', 'Remarks'];
+		if ($('#going_to_wrapper').is(':visible')) {
+			labels.push('Going to');
+		}
+		return labels;
+	}
+
+	function getMissingRecommendedFields(items) {
+		var recommended = getRecommendedFieldLabels();
+		return items.filter(function(item) {
+			return item.value === 'Not provided' && recommended.indexOf(item.label) !== -1;
+		}).map(function(item) {
+			return item.label;
+		});
+	}
+
+
+	function buildConfirmSummaryHtml() {
+		var items = buildTripReviewItems();
+		var missing = getMissingRecommendedFields(items);
+
+		var allRows = items.map(function(item) {
+			var valueClass = 'trip-confirm-value' + ((!item.value || item.value === 'Not provided') ? ' is-missing' : '');
+			return '<div class="trip-confirm-row">' +
+				'<div class="trip-confirm-label">' + escapeHtml(item.label) + '</div>' +
+				'<div class="' + valueClass + '">' + escapeHtml(item.value || 'Not provided') + '</div>' +
+			'</div>';
+		}).join('');
+
+		var warning = '';
+		if (missing.length) {
+			warning = '<div class="trip-confirm-warning">' +
+				escapeHtml(missing.length === 1 ? '1 field is blank: ' : missing.length + ' fields are blank: ') +
+				'<b>' + escapeHtml(missing.join(', ')) + '</b>' +
+			'</div>';
+		}
+
+		return '<p class="trip-confirm-intro">Please verify all details before confirming. This trip record will be saved permanently.</p>' +
+			buildConfirmPreviewImagesHtml() +
+			'<div class="trip-confirm-summary">' + allRows + '</div>' +
+			warning;
+	}
+
+	function submitTripForm() {
+		$('#sbmt, #cancelbtn').prop('disabled', true);
+		document.getElementById('spinner').style.display = 'flex';
+		document.getElementById('form').submit();
+	}
+
+  $(document).ready(function(){
+	 var travelerTypeDropdown = document.getElementById("traveler_type");
+    // Ensure the function runs at page load using the current value of the dropdown
+    check_traveler_type(travelerTypeDropdown);
+	renderTripReview();
+
+	$('#form').on('input change', 'input, select, textarea', function() {
+		renderTripReview();
+	});
+
+  	$('#vehicle_selection_link').click(function(event){
+		event.preventDefault();
+		getVehicleDetails();
+		return false;
+	});
+
+  	function getVehicleDetails() {
+  	    var form_element = document.getElementById('form');
+		var existingDestination = form_element.querySelector('input[name="destination"]');
+		if (existingDestination) {
+			existingDestination.remove();
+		}
+        var destination_page = document.createElement('input');
+        destination_page.type = 'hidden';
+        destination_page.name = 'destination';
+        destination_page.value = 'recognize_vehicle';
+        form_element.appendChild(destination_page);
+        form_element.submit();
+    }
+
+  	$(document).keypress(function(e) {
+    	if(e.which == 13) {
+		    $("#sbmt").trigger("click");
+		  }
+		});
+
+		var CANCEL_URL = "{{ details.cancel_url | default(url_for('home')) }}";
+
+	$("#cancelbtn").click(function() {
+		Swal.fire({
+			title: 'Discard this trip?',
+			html: '<p class="trip-discard-text">All details you have entered will be <b>lost</b> and the trip will <b>not</b> be saved.</p>',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, go back',
+			cancelButtonText: 'Keep editing',
+			reverseButtons: true,
+			focusCancel: true,
+			width: 520,
+			customClass: {
+				popup: 'trip-confirm-modal trip-confirm-modal--danger'
+			}
+		}).then(function(result) {
+			if (result.isConfirmed) {
+				window.location.href = CANCEL_URL;
+			}
+		});
+	});
+
+    $.validator.addMethod("valueNotEquals", function(value, element, arg){
+     return arg != value;
+    }, "Value must not equal arg");
+    
+    $.validator.addMethod("alphanumeric", function(value, element) {
+    	return this.optional(element) || /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _,]*$/.test(value);
+    }, "Letters, numbers, spaces, and underscores only please");
+
+    $.validator.addMethod("textonly", function(value, element) {
+    	return this.optional(element) || /^[A-Za-z ]*[A-Za-z][A-Za-z ]*$/.test(value);
+    }, "Letters and Spaces only please");
+                   
+    $.validator.addMethod("numberonly", function(value, element) {
+    	return this.optional(element) || /^[0-9]*[0-9][0-9]*$/.test(value);
+    }, "Numbers only please");
+
+		$("#form").validate({
+			ignore: [], //include hidden fields
+			errorPlacement: function (error, element)
+			{
+				element.before(error);
+			},
+			rules: {
+				traveler_type: {
+					required: true
+				},
+				vehicle_number: {
+					alphanumeric: true
+				},
+				going_to: {
+					alphanumeric: true
+				},
+				entry_time: {
+					required: true,
+				},
+				messages: {
+					type: { valueNotEquals: "Please select an item!" }
+				}
+			}
+		});
+
+			$("#sbmt").click(function() {
+				if (!$('#form').valid()) {
+					Swal.fire({
+						title: 'Some details need attention',
+						html: '<p class="trip-confirm-intro">Please correct the highlighted fields before submitting.</p>',
+						icon: 'error',
+						confirmButtonText: 'Review fields',
+						width: 520,
+						customClass: {
+							popup: 'trip-confirm-modal trip-confirm-modal--danger'
+						}
+					});
+					return;
+				}
+
+				renderTripReview();
+
+				Swal.fire({
+					title: 'Submit this trip?',
+					html: buildConfirmSummaryHtml(),
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes, submit trip',
+					cancelButtonText: 'No, go back',
+					reverseButtons: true,
+					focusCancel: true,
+					allowOutsideClick: false,
+					width: 680,
+					customClass: {
+						popup: 'trip-confirm-modal'
+					},
+					didOpen: bindConfirmPreviewClicks
+				}).then(function(result) {
+					if (result.isConfirmed) {
+						submitTripForm();
+					}
+				});
+			});
+
+		});
+</script>        
+{% endblock content %}
+      

@@ -1,0 +1,283 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+/* Disable focus cursor and selection for entire page */
+* {
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+*:focus {
+    outline: none;
+}
+
+/* Re-enable text selection for input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+/* Disable clicks everywhere inside the form by default */
+#form * {
+    pointer-events: none;
+    user-select: none;
+}
+#form label {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Re-enable clicks only for real interactive elements */
+#form input,
+#form button {
+    pointer-events: auto;
+}
+
+/* Allow file input trigger button */
+#customFileBtn {
+    pointer-events: auto;
+}
+
+#previewImg.preview-image-frame {
+  margin: 0 auto;
+  max-width: 540px;
+  min-height: 320px;
+}
+
+.blacklist-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.blacklist-preview-placeholder {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  text-align: center;
+}
+</style>
+<section class="user user_register_section">
+	<div class="container-fluid">
+        <div class="row show-mood">
+			<div class="col-md-12">
+				<div class="col-md-1"></div>
+				<div class="col-md-10" style="text-align: center">
+					<div style="display: flex;align-items: center; justify-content: center;margin-bottom: 40px;">
+                        <h3 id="title" style="color: #ffd868;">
+                          <span style="color: #ffffff;"> {{ _('Please upload an image with') }} </span>
+                          {{ _(' only 1 face looking at the camera. Images with side faces or masks or sunglasses or caps are not allowed.') }}
+                        </h3>
+					</div>
+			  	</div>
+			  <div class="col-md-1"></div>
+		 	</div>
+	 	</div>
+
+        <!-- View Blacklisted Persons Button -->
+        <!-- Add Button -->
+        <div class="row" style="margin-bottom: 40px;">
+            <a href="{{ url_for('blacklisted_persons_list') }}" class="c-btn" style="width: 50%; border: 2px solid var(--button-color); display: flex;
+            align-items: center; justify-content: center; text-decoration: none;">{{ _('View Blacklisted Persons') }}</a>
+        </div>
+
+        <!--<div class="row" style="margin-bottom: 30px;">
+            <div class="col-md-12" style="text-align: center;">
+                <a href="{{ url_for('blacklisted_persons_list') }}"
+                   class="btn"
+                   style="
+                       background-color: #ffd868;
+                       color: #000;
+                       font-weight: 600;
+                       padding: 10px 25px;
+                       border-radius: 6px;
+                   ">
+                    {{ _('View Blacklisted Persons') }}
+                </a>
+            </div>
+        </div> -->
+
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+        <form id="form" action="{{ url_for('enroll_blacklisted_person') }}" method="post" enctype="multipart/form-data" class="login">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="collection_name" value="blacklist">
+                <div class="user-form">
+                    <div class="row" id="name_wrapper" style="align-items: center; justify-content: center; width=60%">
+                        <div class="col-xs-1">
+                            <label class="label">Name</label>
+                        </div>
+                        <div class="form-group col-xs-8">
+                            <input id="name" name="name" value="{{ details.name | default('') }}" type="text" maxlength="30"
+                                   pattern="[A-Za-z ]+" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row" id="id_wrapper" style="align-items: center; justify-content: center; width=60%">
+                        <div class="col-xs-1">
+                            <label class="label">ID</label>
+                        </div>
+                        <div class="form-group col-xs-8">
+                            <input id="id" name="id" value="{{ details.id | default('') }}" type="text" pattern="[A-Za-z0-9]+" maxlength="30" class="form-control">
+                        </div>
+                    </div>
+                  <!-- Custom File Input -->
+                  <div class="row" id="img-vg-content1">
+                      <div id="previewImg" class="preview-image-frame preview-image-frame--compact">
+                      {% if details.image_b64 %}
+                        <img
+                          src="data:{{ details.image_mime }};base64,{{ details.image_b64 }}"
+                          class="blacklist-preview-image"
+                        >
+                      {% else %}
+                        <span class="blacklist-preview-placeholder">Image preview will appear here</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="row" id="img-vg-content2">
+                      <span id="fileName">
+                        {{ details.image_name if details.image_name else "No file chosen" }}
+                      </span>
+                  </div>
+                  <div class="row" id="img-vg-content3">
+                      <input type="file" id="imageInput" name="image" accept="image/*" required style="display: none;">
+                      <button type="button" id="customFileBtn" class="btn btn-primary" style="width:40%">Choose Image</button>
+                  </div>
+                  <!-- Submit Button & Spinner -->
+                  <div class="row" id="img-vg-content4">
+                    <button type="submit" id="sbmt" class="btn btn-primary" style="display: none; width:60%">Submit</button>
+                    <div id="spinner" class="spinner-overlay" style="display:none;">
+                      <div class="spinner"></div>
+                    </div>
+                  </div>
+                </div>
+        </form>
+        </div>
+        <div class="col-md-2"></div>
+  </div>
+</section>
+<script>
+    function showMessage(text, type = "error") {
+      const msg = $("#message");
+      msg.text(text);
+      msg.fadeIn(150);
+    }
+
+    function clearMessage() {
+      $("#message").fadeOut(100).text("");
+    }
+
+  // Helper: File type check
+  function isValidImageType(file) {
+    const allowedTypes = [
+      "image/jpeg",  // covers .jpg and .jpeg
+      "image/png"
+    ];
+    return allowedTypes.includes(file.type);
+  }
+
+  // Helper: Resolution check
+  function checkImageResolution(file, callback) {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = function () {
+      const width = img.naturalWidth;
+      const height = img.naturalHeight;
+      URL.revokeObjectURL(objectUrl);
+
+      const MIN_WIDTH = 300;
+      const MIN_HEIGHT = 300;
+
+      if (width < MIN_WIDTH || height < MIN_HEIGHT) {
+        callback(false, `Image resolution too low. Please try another image.`);
+        return;
+      }
+      callback(true);
+    };
+
+    img.onerror = function () {
+      URL.revokeObjectURL(objectUrl);
+      callback(false, "Unable to read image resolution.");
+    };
+
+    img.src = objectUrl;
+  }
+
+  $(document).ready(function () {
+    const imageInput = document.getElementById('imageInput');
+    const previewImg = document.getElementById('previewImg');
+    const fileNameSpan = document.getElementById('fileName');
+    const customFileBtn = document.getElementById('customFileBtn');
+
+    // Trigger file input
+    customFileBtn.addEventListener('click', function () {
+      imageInput.click();
+    });
+
+    // Handle file selection
+    imageInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (!file) {
+        fileNameSpan.textContent = "No file chosen";
+        previewImg.innerHTML = '<span class="blacklist-preview-placeholder">Image preview will appear here</span>';
+        $("#sbmt").hide();
+        return;
+      }
+
+      // 1️⃣ Size check
+      const MAX_MB = 8;
+      if (file.size / 1024 / 1024 > MAX_MB) {
+        alert("Image is too large. Please upload an image smaller than " + MAX_MB + "MB.");
+        showMessage("Image is too large. Please upload an image smaller than " + MAX_MB + "MB.");
+        this.value = '';
+        fileNameSpan.textContent = "No file chosen";
+        previewImg.innerHTML = '<span class="blacklist-preview-placeholder">Image preview will appear here</span>';
+        $("#sbmt").hide();
+        return;
+      }
+
+      // 2️⃣ File type check
+      if (!isValidImageType(file)) {
+        alert("Invalid file type. Please upload JPG or PNG.")
+        showMessage("Invalid file type. Please upload JPG or PNG.")
+        this.value = '';
+        return;
+      }
+
+      // 3️⃣ Resolution check (async)
+      checkImageResolution(file, function (isValid, errorMsg) {
+        if (!isValid) {
+          alert(errorMsg);
+          showMessage(errorMsg);
+          imageInput.value = '';
+          return;
+        }
+
+        // ✅ Passed all checks → update filename and preview
+        fileNameSpan.textContent = file.name;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImg.innerHTML = `<img src="${e.target.result}" class="blacklist-preview-image">`;
+          $("#sbmt").show();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Submit button logic
+    $("#form").on('submit', function() {
+      $("#spinner").show();
+    });
+  });
+</script>
+{% endblock content %}

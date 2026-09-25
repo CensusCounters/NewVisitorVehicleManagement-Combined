@@ -1,0 +1,152 @@
+<style>
+    section.user_vehicle_section.trip-report-page {
+        width: 100%;
+        max-width: none;
+        margin: 0 auto;
+        padding-left: 50px;
+        padding-right: 50px;
+        box-sizing: border-box;
+    }
+
+    #trip-report-summary.trip-report-summary {
+        width: 100%;
+        max-width: 100%;
+        margin: 8px auto 40px;
+        padding: 20px 12px 16px;
+        border: 1px solid #00ffe4;
+        background: #000;
+        color: #fff;
+        text-align: left;
+        box-sizing: border-box;
+    }
+
+    .trip-report-summary-title {
+        color: #ffb347;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 20px;
+    }
+
+    .trip-report-summary-subtitle {
+        color: #00ffe4;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 20px 0 14px;
+    }
+
+    #trip-report-summary .trip-report-summary-destinations {
+        margin-bottom: 24px;
+    }
+
+    #trip-report-summary .table-responsive {
+        width: auto;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    #trip-report-summary .trip-summary-dest-table {
+        width: 100%;
+    }
+
+    #trip-report-summary .trip-summary-dest-table.trip-summary-table-like-details {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 12px;
+    }
+
+    /* One orange for every trip-report table header (summary + detailed). */
+    .trip-report-page #trip-report-summary .trip-summary-dest-table thead th,
+    .trip-report-page #trip-report-table.table thead > tr:first-child > th {
+        background-color: #111 !important;
+        color: #ffb347 !important;
+        font-weight: 700 !important;
+        font-size: 20px !important;
+        border-bottom: 2px solid #00ffe4 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        white-space: normal;
+        padding: 12px 10px !important;
+        line-height: 1.3 !important;
+        min-height: 48px;
+        box-sizing: border-box;
+    }
+
+    #trip-report-summary .trip-summary-dest-table.trip-summary-table-like-details tbody td {
+        color: #fff !important;
+        font-weight: 600;
+        font-size: 15px;
+        background: #000 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        padding: 12px 10px !important;
+        border-bottom: 1px dotted #00ffe4 !important;
+    }
+
+    /* Detailed report table — match summary body row values */
+    .trip-report-page #trip-report-table.table tbody td {
+        color: #fff !important;
+        font-weight: 600 !important;
+        font-size: 15px !important;
+        background: #000 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        padding: 12px 10px !important;
+        border-bottom: 1px dotted #00ffe4 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .trip-report-page #trip-report-table.table tbody td a,
+    .trip-report-page #trip-report-table.table tbody td .report-link-with-thumb {
+        font-weight: 600 !important;
+        font-size: 15px !important;
+    }
+
+    .trip-report-page #trip-report-table.table tbody td:nth-child(6) {
+        padding: 11px 9px !important;
+    }
+
+    .trip-report-page #trip-report-summary .trip-summary-dest-table tbody tr:nth-child(even) td,
+    .trip-report-page #trip-report-table.table tbody tr:nth-child(even) td {
+        background: #0a0a0a !important;
+    }
+
+    .trip-report-page #trip-report-summary .trip-summary-dest-table tbody tr,
+    .trip-report-page #trip-report-table.table tbody tr {
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+
+    .trip-report-page #trip-report-summary .trip-summary-dest-table tbody tr:hover td,
+    .trip-report-page #trip-report-table.table tbody tr:hover td {
+        background-color: #111 !important;
+        transition: background-color 150ms ease;
+    }
+
+    /* Remove global .table-striped row hover border on detailed table */
+    .trip-report-page #trip-report-table.table.table-striped > tbody > tr:hover,
+    .trip-report-page #trip-report-table.table.table-striped > tbody > tr:hover > td {
+        border: none !important;
+        border-bottom: 1px dotted #00ffe4 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .trip-report-page #trip-report-table.table.table-striped > tbody > tr:hover {
+        background: transparent !important;
+    }
+
+    #trip-report-summary .trip-summary-dest-table.trip-summary-table-like-details tfoot td {
+        color: #00ffe4 !important;
+        font-weight: 700;
+        font-size: 18px;
+        background: #111 !important;
+        border-top: 2px solid #00ffe4 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        padding: 12px 10px !important;
+    }
+</style>

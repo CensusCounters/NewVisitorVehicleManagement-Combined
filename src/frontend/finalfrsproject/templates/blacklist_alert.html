@@ -1,0 +1,175 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .blacklist-preview-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .blacklist-preview-frame {
+    height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .blacklist-preview-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+</style>
+<form id="form" action="{{ url_for('blacklist_alert') }}" method="post" enctype="multipart/form-data" class="login">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="No" id="blacklist_no_confirmed" value="">
+
+  <section class="picture_section" id="blacklist-alert-section">
+    <div class="row show-mood">
+      <div class="col-md-12" id="img-vg-content">
+        <div class="col-md-1"></div>
+        <div class="col-md-10" style="text-align: center">
+          <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+            <h3 style="color: #ffd868">{{ _('Blacklist verification required') }}</h3>
+          </div>
+          <h4 style="color: #dddddd">{{ details.message }}</h4>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+
+    <div class="row show-mood">
+      <div class="col-md-12" id="img-vg-content">
+        <div class="col-md-1"></div>
+        <div class="col-md-10" style="text-align: center">
+          <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+            <h3 style="color: #ffd868">{{ _('Blacklisted Person Details:') }}</h3>
+            <h3 style="color: #dddddd">&ensp;{{ details.blacklist_name or _('Not Available') }}, {{ details.blacklist_aadhaar or _('Not Available') }}</h3>
+          </div>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row" id="img-vg-content">
+        <div class="col-md-6">
+          <div class="take_picture_section user_left_portion preview-panel minimal-preview-panel blacklist-preview-panel" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+            {% if details.blacklist_image %}
+            <h1 class="preview-panel-title">{{ _('Blacklisted Person Picture') }}</h1>
+            <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame blacklist-preview-frame">
+              <img src="{{ details.blacklist_image }}" name="blacklist_image" id="blacklist_image" class="is-clickable"
+                   onclick='javascript:showBlacklistAlertImageModal({{ _("Blacklisted Person Picture")|tojson }}, {{ details.blacklist_image|tojson }})'>
+            </div>
+            {% else %}
+            <h1 class="preview-panel-title">{{ _('No Blacklist Image Found') }}</h1>
+            <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame blacklist-preview-frame">
+              <img src="/static/placeholder.png" name="blacklist_image" id="blacklist_image" class="is-clickable"
+                   onclick="javascript:showBlacklistAlertImageModal('No Blacklist Image Found', '/static/placeholder.png')">
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="take_picture_section user_left_portion preview-panel minimal-preview-panel blacklist-preview-panel" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+            {% if details.todays_image %}
+            <h1 class="preview-panel-title">{{ _('Today\'s Picture') }}</h1>
+            <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame blacklist-preview-frame">
+              <img src="{{ details.todays_image }}" name="todays_image" id="todays_image" class="is-clickable"
+                   onclick='javascript:showBlacklistAlertImageModal({{ _("Today\'s Picture")|tojson }}, {{ details.todays_image|tojson }})'>
+            </div>
+            {% else %}
+            <h1 class="preview-panel-title">{{ _('No Captured Image Found') }}</h1>
+            <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame blacklist-preview-frame">
+              <img src="/static/placeholder.png" name="todays_image" id="todays_image" class="is-clickable"
+                   onclick="javascript:showBlacklistAlertImageModal('No Captured Image Found', '/static/placeholder.png')">
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="blacklistAlertImageModal" class="modal image-preview-modal">
+      <span id="blacklistAlertImageModalClose" class="close">&times;</span>
+      <img class="modal-content image-preview-modal-content" id="blacklistAlertImageModalImg">
+      <div id="blacklistAlertImageModalCaption" class="image-preview-modal-caption"></div>
+    </div>
+
+    <div class="row show-mood">
+      <div class="col-md-12" id="img-vg-content">
+        <div class="col-md-1"></div>
+        <div class="col-md-10" style="text-align: center">
+          <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px;">
+            <h3 style="color: #ffd868">{{ _('Faces are same?') }}</h3>
+          </div>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="user user_register_section" style="margin-top: 10px !important;">
+    <div class="container-fluid">
+      <div class="row" id="img-vg-content" style="padding-top: 30px !important;">
+        <div class="col-md-6">
+          <button type="submit" id="Yes" name="Yes" value="Yes" class="btn btn-primary" style="width:100%;">Yes</button>
+        </div>
+      </div>
+      <div class="row" id="img-vg-content">
+        <div class="col-md-6">
+          <button type="submit" id="cancelbtn" name="No" value="No" class="btn btn-primary" style="width:100%;">No</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>
+
+<script>
+function showBlacklistAlertImageModal(label, image) {
+  var imageModal = document.getElementById('blacklistAlertImageModal');
+  var imageModalImg = document.getElementById('blacklistAlertImageModalImg');
+  var imageModalCaption = document.getElementById('blacklistAlertImageModalCaption');
+
+  imageModalImg.src = image;
+  imageModalCaption.innerHTML = label;
+  imageModal.style.display = 'block';
+}
+
+var blacklistAlertImageModal = document.getElementById('blacklistAlertImageModal');
+var blacklistAlertImageModalClose = document.getElementById('blacklistAlertImageModalClose');
+
+blacklistAlertImageModalClose.onclick = function() {
+  blacklistAlertImageModal.style.display = 'none';
+};
+
+window.addEventListener('click', function(event) {
+  if (event.target === blacklistAlertImageModal) {
+    blacklistAlertImageModal.style.display = 'none';
+  }
+});
+
+$(document).ready(function() {
+  $('#cancelbtn').click(function(e) {
+    e.preventDefault();
+    Swal.fire({
+      title: "Are you sure?",
+      html: `<span style="font-size: 18px;">Please click Confirm to proceed or Cancel to return to the page</span>`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#007bff',
+      cancelButtonColor: '#28a745'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#blacklist_no_confirmed').val('No');
+        $("#form").submit();
+      }
+    });
+  });
+});
+</script>
+{% endblock content %}
+

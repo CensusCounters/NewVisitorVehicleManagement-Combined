@@ -1,0 +1,16 @@
+FROM nvidia/cuda:12.2.2-base-ubuntu22.04
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3-pip lm-sensors docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir nvidia_ml_py3 psutil JSON-minify requests psycopg2-binary
+
+COPY ./src/topreport/top_report_service.py /project/top_report_service.py
+COPY ./src/topreport/conf.py /project/conf.py
+COPY ./src/topreport/known_person_image_sharing_with_vogic.py /project/known_person_image_sharing_with_vogic.py
+
+
+WORKDIR /project
+
+CMD ["python3", "top_report_service.py"]

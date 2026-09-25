@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user user_register_section">
+  <div class="container-fluid">
+    <form id="form" action= "{{ url_for('home') }}" enctype="multipart/form-data" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="row show-mood">
+        <div class="col-xs-12 buttons text-center">
+          <button type="submit" id ="400_error" name= "400_error" class="btn btn-primary">Continue</button>
+        </div>
+     </div>
+    </form>
+  </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,29 @@
+FROM nvcr.io/nvidia/tensorrt:25.03-py3
+
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+ENV PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
+
+RUN apt-get update &&\
+    apt-get install -y\
+            libgl1 libglx-mesa0 \
+            protobuf-compiler \
+            libprotoc-dev \
+            libb64-0d \
+            libturbojpeg \
+            python3-opencv \
+            ffmpeg &&\
+    rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN $PIP_INSTALL -r requirements.txt
+# GPU specific packages
+RUN $PIP_INSTALL cupy-cuda12x pynvjpeg
+RUN pip3 install pymilvus
+
+WORKDIR /app
+COPY api_trt /app/api_trt
+COPY entrypoint.sh /app/entrypoint.sh
+
+ENTRYPOINT [ "bash" ]
+CMD ["entrypoint.sh"]

@@ -1,0 +1,12 @@
+FROM ubuntu:22.04
+
+RUN apt update && apt install -y python3 python3-pip libpq-dev openssh-client git wget
+RUN apt update && apt install -y libgl1-mesa-glx libglib2.0-dev
+RUN apt update && apt-get install -y iputils-ping
+
+RUN python3 -m pip install --upgrade pip
+WORKDIR /build
+COPY src/frontend/requirements.txt .
+RUN pip3 install -r requirements.txt
+
+WORKDIR /project

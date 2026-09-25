@@ -1,0 +1,218 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+/* Disable focus cursor and selection for entire page */
+* {
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+*:focus {
+    outline: none;
+}
+
+.card-hover {
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    display: flex;
+    flex-direction: column;
+    height: 550px;
+
+    /* Prevent selection / focus issues */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+.card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.40);
+    border-color: rgba(255, 255, 255, 0.36);
+}
+
+.blacklisted-img-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 14px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-hover img {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+
+    /* Prevent white flash line */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    cursor: pointer;
+}
+
+.card-hover:hover img {
+    transform: scale(1.03);
+}
+
+.blacklisted-img-wrap::after {
+    content: "EXPAND";
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+}
+
+.card-hover:hover .blacklisted-img-wrap::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Remove focus outline if anything gets focused */
+.card-hover:focus,
+.card-hover img:focus {
+    outline: none;
+}
+
+/* Fix button focus cursor issue */
+.c-btn {
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+.c-btn:focus {
+    outline: none;
+}
+
+.name-text {
+    font-weight: 600;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.id-text {
+    color: #ffd868;
+    font-size: 20px;
+    margin-top: 5px;
+}
+
+.card-hover img {
+    cursor: pointer;
+}
+
+</style>
+
+
+<section class="user user_register_section">
+    <div class="container-fluid">
+
+        <!-- Add Button -->
+        <div class="row" style="margin-bottom: 40px;">
+            <a href="{{ url_for('enroll_blacklisted_person') }}" class="c-btn" style="width: 50%; border: 2px solid var(--button-color); display: flex;
+            align-items: center; justify-content: center; text-decoration: none;">{{ _('Add New Blacklisted Person') }}</a>
+        </div>
+
+
+        <!-- Cards -->
+        <div class="row" style="padding: 20px;">
+
+            {% if details.persons and details.persons|length > 0 %}
+
+                {% for person in details.persons %}
+
+                    <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 40px;">
+                        <div class="card-hover">
+                            <div class="blacklisted-img-wrap">
+                                <img src="{{ person.image_url }}"
+                                     class="clickable-image"
+                                     onclick='openImageModal({{ person.image_url | tojson }}, {{ person.name | tojson }}, {{ person.id | tojson }})'
+                                     alt="{{ person.name }}">
+                            </div>
+
+                            {% if 'name' in details.columns %}
+                            <div class="name-text">
+                                {{ person.name }}
+                            </div>
+                            {% endif %}
+
+                            {% if 'id' in details.columns %}
+                            <div class="id-text">
+                                ID: {{ person.id }}
+                            </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="col-md-12" style="text-align: center; color: #ffffff;">
+                    <h4>{{ _('No blacklisted persons found.') }}</h4>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</section>
+
+<!-- Image Modal -->
+<div id="imageModal" class="modal image-preview-modal" onclick="closeImageModal()">
+    <span id="blacklistedImageModalClose" class="close">&times;</span>
+    <img id="modalImage" class="modal-content image-preview-modal-content" onclick="event.stopPropagation()">
+    <div id="blacklistedImageCaption" class="image-preview-modal-caption"></div>
+</div>
+
+<script>
+function openImageModal(imageSrc, name, personId) {
+    document.getElementById('imageModal').style.display = 'block';
+    document.getElementById('modalImage').src = imageSrc;
+    const text = personId ? `${name} | ID: ${personId}` : name;
+    document.getElementById('blacklistedImageCaption').textContent = text;
+}
+
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+
+document.getElementById('blacklistedImageModalClose').addEventListener('click', function (event) {
+    event.stopPropagation();
+    closeImageModal();
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeImageModal();
+    }
+});
+</script>
+
+{% endblock content %}

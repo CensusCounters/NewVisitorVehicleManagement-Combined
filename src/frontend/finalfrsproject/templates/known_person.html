@@ -1,0 +1,554 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    .known-person-form .editable-field {
+        transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+    }
+    .known-person-form.is-editing .editable-field {
+        background-color: #071a1a;
+        border-color: #00d8c8;
+        box-shadow: 0 0 0 2px rgba(0, 216, 200, .14);
+    }
+    .known-person-status {
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 11px 14px;
+        text-align: center;
+    }
+    .known-person-status.status-success {
+        background: rgba(21, 186, 164, .16);
+        border: 1px solid #15baa4;
+        color: #8ff5e7;
+    }
+    .known-person-status.status-error {
+        background: rgba(220, 53, 69, .16);
+        border: 1px solid #dc3545;
+        color: #ff9ca6;
+    }
+    .known-person-actions {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 22px;
+        padding: 0 15px;
+    }
+    .known-person-actions .action-btn {
+        border-radius: 24px;
+        font-size: 17px;
+        font-weight: 600;
+        min-height: 48px;
+        transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+        width: 100%;
+    }
+    .known-person-actions .action-btn:hover,
+    .known-person-actions .action-btn:focus {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+        transform: translateY(-1px);
+    }
+    .action-edit {
+        background: transparent;
+        border: 2px solid #ffd868;
+        color: #ffd868;
+    }
+    .action-save {
+        background: #12b89f;
+        border: 2px solid #12b89f;
+        color: #041311;
+    }
+    .action-cancel {
+        background: transparent;
+        border: 2px solid #8d98a5;
+        color: #d9e0e7;
+    }
+    .action-continue {
+        background: #00c7b7;
+        border: 2px solid #00c7b7;
+        color: #031412;
+    }
+    .retake-id-btn {
+        background: #ffd868;
+        border: 0;
+        border-radius: 22px;
+        color: #111;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 10px 24px;
+    }
+    .id-camera-panel {
+        background: #111;
+        border: 1px solid #00d8c8;
+        border-radius: 14px;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, .65);
+        margin: 4% auto;
+        max-width: 900px;
+        padding: 24px;
+        width: 88%;
+    }
+    .id-camera-actions {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 16px;
+    }
+    .id-camera-actions .btn {
+        border-radius: 22px;
+        font-size: 16px;
+        min-height: 44px;
+        width: 100%;
+    }
+    @media (max-width: 600px) {
+        .known-person-actions,
+        .id-camera-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+<section class="user user_register_section">
+    <div class="container-fluid">
+        <form id="form" action="{{ url_for('known_person') }}" method="post" enctype="multipart/form-data" class="login known-person-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% if details.person_image %}
+            <input type="hidden" name="person_image" value="{{ details.person_image }}">
+            {% endif %}
+            <div class="row" id="img-vg-content">
+                    <div class="col-md-6">
+                        <div class="user_left_portion preview-panel minimal-preview-panel" id="capturedImageRow"
+                            style="background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%);
+                                     min-height: 100vh;
+                                     padding: 20px;">
+                           {% if details.person_image %}
+                              <h1 class="preview-panel-title" id="previewPersonName">{{ details.person_name }}</h1>
+                              <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
+                                  <img src="{{ details.person_image }}"
+                                      name="originalImage"
+                                      id="originalImage"
+                                      class="is-clickable"
+                                      onclick="javascript:show_modal('{{ details.person_name }}','{{ details.person_image }}')">
+                              </div>
+                           {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="user-form">
+                            <div id="editStatusMessage" class="col-xs-12" style="display:none; margin-bottom: 12px;">
+                                <div class="known-person-status status-success" id="editStatusText" role="status" aria-live="polite"></div>
+                            </div>
+                            <div class="col-xs-4"><label class="label">Traveler Type</label></div>
+                            <div class="form-group col-xs-8">
+                                <select name="traveler_type" id="traveler_type" class="form-control" disabled>
+                                    <option value="">Traveler Type</option>
+                                    {% for value in details.visitor_categories %}
+                                        <option value="{{ value }}" {% if details.traveler_type == value %} selected {% endif %}>
+                                            {{ value.replace('_', ' ') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                                <input type="hidden" name="traveler_type" value="{{ details.traveler_type or '' }}">
+                            <div class="col-xs-4"><label class="label">Name</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="name" name="name" type="text" maxlength="30" class="form-control required editable-field"
+                                    placeholder="Visitor's Name" value="{{ details.person_name or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-4"><label class="label">Gender</label></div>
+                            <div class="form-group col-xs-8">
+                                <select id="gender" name="gender" class="form-control required editable-field" disabled>
+                                    <option value="Male" {% if details.gender == "Male" %} selected {% endif %}>Male</option>
+                                    <option value="Female" {% if details.gender == "Female" %} selected {% endif %}>Female</option>
+                                </select>
+                            </div>
+                            <!--<div class="col-xs-4"><label class="label">Date of Birth</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="dob" name="dob" type="text" class="form-control required" placeholder="DD/MM/YYYY"
+                                       value="{{ details.dob }}" readonly>
+                            </div> -->
+                            <div class="col-xs-4"><label class="label">Mobile Number</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="mobile_number" name="mobile_number" type="text" class="form-control editable-field" placeholder="Mobile Number"
+                                       value="{{ details.mobile_number or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-4"><label class="label">C/O</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="guardians_name" name="guardians_name" type="text" class="form-control editable-field" placeholder="C/O"
+                                       value="{{ details.guardians_name or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-4"><label class="label">Address</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="address" name="address" type="text" class="form-control editable-field" placeholder="address"
+                                       value="{{ details.address or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-4"><label class="label">Purpose</label> </div>
+                            <div class="form-group col-xs-8">
+                                <select id="visiting_person_name" name="visiting_person_name" class="form-control editable-field" disabled>
+                                    {% set current_purpose = details.visiting_person_name or '' %}
+                                    {% if current_purpose and current_purpose not in details.visit_purpose_categories %}
+                                        <option value="{{ current_purpose }}" selected>{{ current_purpose }}</option>
+                                    {% endif %}
+                                    {% for value in details.visit_purpose_categories %}
+                                        <option value="{{ value }}" {% if current_purpose == value %} selected {% endif %}>
+                                            {{ value.replace('_', ' ') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-4"><label class="label">ID Type</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="id_type" name="id_type" type="text" maxlength="30" class="form-control required"
+                                    placeholder="ID Number" value="{{ details.primary_id_type or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-4"><label class="label">{{ details.known_person_schema.id_number_label }}</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="id_number" name="id_number" type="text" maxlength="30" class="form-control required"
+                                    placeholder="ID Number" value="{{ details.primary_id_number or '' }}" readonly>
+                            </div>
+                            {% if details.primary_id_image %}
+                            <div class="form-group col-md-12">
+                                <a id="id_image" name="id_image"  href="javascript:show_modal('{{  details.primary_id_type }}','{{ details.primary_id_image }}')">
+                                    {{ details.known_person_schema.id_image_label }}</a>
+                            </div>
+                            {% endif %}
+                            <div class="col-xs-4"><label class="label" id="dl_label">DL Number</label></div>
+                            <div class="form-group col-md-8">
+                                <input id="drivers_license" name="drivers_license" type="text" class="form-control" placeholder="Drivers License Number" value="{{ details.drivers_license or '' }}" readonly>
+                            </div>
+                            {% if details.drivers_license_image %}
+                            <div class="form-group col-md-12">
+                                <a id="drivers_license_image" name="drivers_license_image"  href="javascript:show_modal('Drivers License','{{ details.drivers_license_image }}')">
+                                    Drivers License Image</a>
+                            </div>
+                            {% endif %}
+                            <div class="col-xs-4"><label class="label">Details Entered By</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="details_entered_by" name="details_entered_by" type="text" class="form-control required"
+                                       placeholder="Details Entered By" value="{{ details.details_entered_by or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-4"><label class="label">Details Entered On</label></div>
+                            <div class="form-group col-xs-8">
+                                <input id="details_entered_on" name="details_entered_on" type="text" class="form-control required"
+                                       placeholder="Details Entered On" value="{{ details.details_entered_on or '' }}" readonly>
+                            </div>
+                            <div class="col-xs-12 known-person-actions">
+                                <button type="button" id="editBtn" class="btn action-btn action-edit">Edit Details</button>
+                                <button type="button" id="saveBtn" class="btn action-btn action-save" style="display:none;">Save Changes</button>
+                                <button type="button" id="cancelEditBtn" class="btn action-btn action-cancel" style="display:none;">Cancel Editing</button>
+                                <button type="submit" id="sbmt" name="sbmt" value="sbmt" class="btn action-btn action-continue">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="myModal" class="modal image-preview-modal">
+                    <!-- The Close Button -->
+                    <span id="knownPersonImageModalClose" class="close">&times;</span>
+
+                    <!-- Modal Content (The Image) -->
+                    <img class="modal-content image-preview-modal-content" id="knownPersonImageModalImg">
+
+                    <!-- Modal Caption (Image Text) -->
+                    <div id="knownPersonImageModalCaption" class="image-preview-modal-caption"></div>
+                    <div class="text-center" style="margin-top: 15px;">
+                        <button type="button" id="retakeIdImageBtn" class="btn retake-id-btn" style="display:none;">
+                            Retake ID Image
+                        </button>
+                    </div>
+               </div>
+               <div id="idCameraModal" class="modal">
+                <div class="id-camera-panel">
+                    <span id="idCameraModalClose" class="close">&times;</span>
+                    <h2 class="text-center">{{ _('Retake ID Image') }}</h2>
+                    <video id="idCameraStream" autoplay playsinline style="width:100%; max-height:420px;"></video>
+                    <canvas id="idCaptureCanvas" style="display:none;"></canvas>
+                    <div class="id-camera-actions">
+                        <div class="text-center">
+                            <img id="idFrontPreview" alt="ID Front Preview" style="display:none; max-width:100%; max-height:180px;">
+                            <button type="button" id="captureIdFrontBtn" class="btn btn-primary">Capture Front</button>
+                        </div>
+                        <div class="text-center">
+                            <img id="idBackPreview" alt="ID Back Preview" style="display:none; max-width:100%; max-height:180px;">
+                            <button type="button" id="captureIdBackBtn" class="btn btn-primary">Capture Back</button>
+                        </div>
+                    </div>
+                    <div class="text-center" style="margin-top:20px;">
+                        <button type="button" id="useRetakenIdBtn" class="btn btn-success">Use New ID Image</button>
+                    </div>
+                </div>
+               </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    var details = {{ details | tojson | safe }};
+    console.log(details);
+    var primary_id_image = {{ details.primary_id_image | tojson | safe }};
+    console.log(primary_id_image);
+    var knownPersonImageModal = document.getElementById("myModal");
+    var knownPersonImageModalImg = document.getElementById("knownPersonImageModalImg");
+    var knownPersonImageModalCaption = document.getElementById("knownPersonImageModalCaption");
+    var knownPersonImageModalClose = document.getElementById("knownPersonImageModalClose");
+
+    function show_modal(label, image) {
+        knownPersonImageModalImg.src = image;
+        knownPersonImageModalCaption.innerHTML = label;
+        knownPersonImageModal.style.display = "block";
+    }
+
+    knownPersonImageModalClose.onclick = function() {
+        knownPersonImageModal.style.display = "none";
+    };
+
+    window.addEventListener('click', function(event) {
+        if (event.target === knownPersonImageModal) {
+            knownPersonImageModal.style.display = "none";
+        }
+    });
+
+    $(document).ready(function(){
+        var originalValues = {};
+        var pendingIdImageData = '';
+        var idFrontImageData = '';
+        var idBackImageData = '';
+        var idCameraStream = null;
+        var editableFieldIds = {{ details.known_person_schema.editable_fields | tojson }};
+        var requiredFieldIds = {{ details.known_person_schema.required_fields | tojson }};
+        var canRetakeIdImage = String(details.primary_id_type || '').toUpperCase() === 'AADHAR';
+
+        function snapshotValues() {
+            originalValues = {};
+            editableFieldIds.forEach(function(id) {
+                originalValues[id] = $('#' + id).val();
+            });
+        }
+
+        function restoreValues() {
+            editableFieldIds.forEach(function(id) {
+                $('#' + id).val(originalValues[id]);
+            });
+        }
+
+        function setEditMode(enabled) {
+            $('#form').toggleClass('is-editing', enabled);
+            editableFieldIds.forEach(function(id) {
+                var $el = $('#' + id);
+                if ($el.is('select')) {
+                    $el.prop('disabled', !enabled);
+                } else {
+                    $el.prop('readonly', !enabled);
+                }
+            });
+            $('#editBtn').toggle(!enabled);
+            $('#saveBtn').toggle(enabled);
+            $('#cancelEditBtn').toggle(enabled);
+            $('#sbmt').toggle(!enabled);
+            $('#retakeIdImageBtn').toggle(enabled && canRetakeIdImage && !!primary_id_image);
+        }
+
+        function showStatus(message, isError) {
+            var $box = $('#editStatusMessage');
+            var $text = $('#editStatusText');
+            $text.removeClass('status-success status-error')
+                .addClass(isError ? 'status-error' : 'status-success')
+                .text(message);
+            $box.show();
+            setTimeout(function() { $box.fadeOut(); }, 4000);
+        }
+
+        snapshotValues();
+
+        $('#editBtn').on('click', function() {
+            snapshotValues();
+            setEditMode(true);
+            $('#name').trigger('focus');
+        });
+
+        $('#cancelEditBtn').on('click', function() {
+            restoreValues();
+            pendingIdImageData = '';
+            idFrontImageData = '';
+            idBackImageData = '';
+            setEditMode(false);
+        });
+
+        function stopIdCamera() {
+            if (idCameraStream) {
+                idCameraStream.getTracks().forEach(function(track) { track.stop(); });
+                idCameraStream = null;
+            }
+        }
+
+        function closeIdCameraModal() {
+            stopIdCamera();
+            $('#idCameraModal').hide();
+        }
+
+        function captureIdSide(previewSelector) {
+            var video = document.getElementById('idCameraStream');
+            var canvas = document.getElementById('idCaptureCanvas');
+            if (!video.videoWidth || !video.videoHeight) {
+                showStatus('Camera is not ready. Please try again.', true);
+                return '';
+            }
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            var imageData = canvas.toDataURL('image/jpeg', 0.8);
+            $(previewSelector).attr('src', imageData).show();
+            return imageData;
+        }
+
+        function combineIdImages(frontData, backData) {
+            return new Promise(function(resolve, reject) {
+                var front = new Image();
+                var back = new Image();
+                var loaded = 0;
+                function combine() {
+                    loaded += 1;
+                    if (loaded !== 2) return;
+                    var maxSideWidth = 800;
+                    var frontScale = Math.min(1, maxSideWidth / front.width);
+                    var backScale = Math.min(1, maxSideWidth / back.width);
+                    var frontWidth = Math.round(front.width * frontScale);
+                    var frontHeight = Math.round(front.height * frontScale);
+                    var backWidth = Math.round(back.width * backScale);
+                    var backHeight = Math.round(back.height * backScale);
+                    var canvas = document.createElement('canvas');
+                    canvas.width = frontWidth + backWidth;
+                    canvas.height = Math.max(frontHeight, backHeight);
+                    var context = canvas.getContext('2d');
+                    context.drawImage(front, 0, 0, frontWidth, frontHeight);
+                    context.drawImage(back, frontWidth, 0, backWidth, backHeight);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8));
+                }
+                front.onload = combine;
+                back.onload = combine;
+                front.onerror = back.onerror = reject;
+                front.src = frontData;
+                back.src = backData;
+            });
+        }
+
+        $('#retakeIdImageBtn').on('click', function() {
+            knownPersonImageModal.style.display = 'none';
+            $('#idCameraModal').show();
+            navigator.mediaDevices.getUserMedia({video: true})
+                .then(function(stream) {
+                    idCameraStream = stream;
+                    document.getElementById('idCameraStream').srcObject = stream;
+                })
+                .catch(function() {
+                    closeIdCameraModal();
+                    showStatus('Unable to access the camera. Please check camera permission.', true);
+                });
+        });
+
+        $('#captureIdFrontBtn').on('click', function() {
+            idFrontImageData = captureIdSide('#idFrontPreview');
+        });
+
+        $('#captureIdBackBtn').on('click', function() {
+            idBackImageData = captureIdSide('#idBackPreview');
+        });
+
+        $('#useRetakenIdBtn').on('click', function() {
+            if (!idFrontImageData || !idBackImageData) {
+                showStatus('Please capture both the front and back of the ID.', true);
+                return;
+            }
+            combineIdImages(idFrontImageData, idBackImageData)
+                .then(function(combinedImage) {
+                    pendingIdImageData = combinedImage;
+                    closeIdCameraModal();
+                    showStatus('New ID image captured. Click Save to update the visitor.', false);
+                })
+                .catch(function() {
+                    showStatus('Unable to prepare the captured ID image.', true);
+                });
+        });
+
+        $('#idCameraModalClose').on('click', closeIdCameraModal);
+
+        $('#saveBtn').on('click', function() {
+            var missingField = requiredFieldIds.find(function(id) {
+                return !String($('#' + id).val() || '').trim();
+            });
+            if (missingField) {
+                showStatus(missingField.replace(/_/g, ' ') + ' is required.', true);
+                return;
+            }
+            var name = ($('#name').val() || '').trim();
+
+            var $saveBtn = $('#saveBtn');
+            $saveBtn.prop('disabled', true).text('Saving Changes...');
+
+            $.ajax({
+                url: "{{ url_for('update_known_person') }}",
+                method: "POST",
+                data: {
+                    csrf_token: $('input[name="csrf_token"]').val(),
+                    name: name,
+                    gender: $('#gender').val(),
+                    mobile_number: $('#mobile_number').val(),
+                    guardians_name: $('#guardians_name').val(),
+                    address: $('#address').val(),
+                    visiting_person_name: $('#visiting_person_name').val(),
+                    id_image_data: pendingIdImageData
+                },
+                success: function(resp) {
+                    if (resp && resp.Status === 'Success') {
+                        var d = resp.Details || {};
+                        $('#name').val(d.person_name || name);
+                        $('#gender').val(d.gender || $('#gender').val());
+                        $('#mobile_number').val(d.mobile_number || '');
+                        $('#guardians_name').val(d.guardians_name || '');
+                        $('#address').val(d.address || '');
+                        if (d.visiting_person_name) {
+                            $('#visiting_person_name').val(d.visiting_person_name);
+                        }
+                        if (d.primary_id_image) {
+                            primary_id_image = d.primary_id_image;
+                            $('#id_image').attr('href', '#').off('click').on('click', function(event) {
+                                event.preventDefault();
+                                show_modal($('#id_type').val(), primary_id_image);
+                            });
+                        }
+                        pendingIdImageData = '';
+                        idFrontImageData = '';
+                        idBackImageData = '';
+                        $('#previewPersonName').text(d.person_name || name);
+                        snapshotValues();
+                        setEditMode(false);
+                        showStatus(resp.message || 'Visitor details updated successfully.', false);
+                    } else {
+                        showStatus((resp && resp.Details) || 'Update failed.', true);
+                    }
+                },
+                error: function(xhr) {
+                    var msg = 'Update failed.';
+                    try {
+                        var body = JSON.parse(xhr.responseText);
+                        if (body && body.Details) {
+                            msg = body.Details;
+                        }
+                    } catch (e) {}
+                    showStatus(msg, true);
+                },
+                complete: function() {
+                    $saveBtn.prop('disabled', false).text('Save Changes');
+                }
+            });
+        });
+
+        // Disabled selects are omitted from POST; re-enable before Continue submits.
+        $('#form').on('submit', function() {
+            $('#gender, #visiting_person_name').prop('disabled', false);
+        });
+
+            $("#cancelbtn").click(function(){
+                     $("#cancelbtn").data('clicked', true);
+                     if($('#cancelbtn').data('clicked')) {
+                        history.back();
+                     }
+                });
+    });
+</script>
+{% endblock content %}

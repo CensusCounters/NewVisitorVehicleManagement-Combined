@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ _('Document') }}</title>
+  <script defer src="{{ url_for('static', filename='js/face-api.min.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/faceapi-script.js') }}"></script>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <video id="video" width="720" height="560" autoplay muted></video>
+</body>
+<script type="text/javascript">
+  let image_to_be_sent;
+  const video = document.getElementById('video')
+  const canvas = document.getElementById('canvas_picture');
+  var width = 720; // We will scale the photo width to this
+  var height = 560;
+  const recognize_section = document.getElementById('recognize_section')
+  const form = document.getElementById('form')
+  const webcam_div = document.getElementById('webcam_div')
+  var capture_image_button = document.getElementById('capture_image');
+  var recognize_image_button = document.getElementById('recognize_image');
+  const box = {
+    // Set boundaries to their inverse infinity, so any number is greater/smaller
+      bottom: -Infinity,
+      left: Infinity,
+      right: -Infinity,
+      top: Infinity,
+
+      // Given the boundaries, we can compute width and height
+    get height() {return this.bottom - this.top;},
+    get width() {return this.right - this.left;},
+  };
+  
+  video.setAttribute("width", width)
+  video.setAttribute("height", height)
+
+  Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri('static/models'),
+    faceapi.nets.faceLandmark68Net.loadFromUri('static/models'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('static/models'),
+    faceapi.nets.faceExpressionNet.loadFromUri('static/models')
+  ]).then(startVideo)
+
+  function startVideo() {
+    navigator.getUserMedia(
+      { video: {deviceId: '5969b5d9502b940d49f0b586d5af0475657237ea0c68199e077d6d547e66e0a2'}},
+      stream => video.srcObject = stream,
+      err => console.error(err)
+    )
+  }
+
+  video.addEventListener('play', () => {
+    const canvas = faceapi.createCanvasFromMedia(video)
+    canvas.setAttribute("id",'webcam_canvas')
+    webcam_div.appendChild(canvas)
+    const displaySize = { width: video.width, height: video.height }
+    faceapi.matchDimensions(canvas, displaySize)
+    setInterval(async () => {
+      const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+      //const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+      console.log("detections length: ", detections.length) //_height:139.19827305931437, _width: 130.17927399973544, _x: 221.72587946237456, _y: 169.47887183441014)
+    if (detections.length > 0) {
+      document.getElementById("capture_image").display = "none";
+      for (const face of detections) {
+        box.bottom = Math.max(box.bottom, face.box.bottom);
+          box.left = Math.min(box.left, face.box.left);
+          box.right = Math.max(box.right, face.box.right);
+          box.top = Math.min(box.top, face.box.top);
+      }
+      const resizedDetections = faceapi.resizeResults(detections, displaySize)
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+        faceapi.draw.drawDetections(canvas, resizedDetections)  
+    } else {
+      document.getElementById("capture_image").display = "block";
+    }
+    
+      //faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+      //faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+    }, 0)
+  })
+
+  capture_image_button.addEventListener('click', function(ev) {
+      take_picture();
+      ev.preventDefault();
+  }, false);
+
+  recognize_image_button.addEventListener('click', function(ev) {
+      url = send_picture();
+      ev.preventDefault();
+  }, false);
+
+  //function clearphoto() {
+//    var context = canvas_picture.getContext('2d');
+//    context.fillStyle = "#AAA";
+//    context.fillRect(0, 0, canvas_picture.width, canvas_picture.height);
+//  }
+
+  function take_picture() {
+      var context = canvas_picture.getContext('2d');
+      if (box.width != -Infinity && box.height != -Infinity) {
+          let adjusted_box_top = box.top - (box.height*0.3);
+          let adjusted_box_height = box.height * 1.3;
+          let adjusted_box_width = box.width;
+          let adjusted_box_left = box.left;
+          
+          canvas_picture.width = adjusted_box_width;
+          canvas_picture.height = adjusted_box_height;
+          
+          context.drawImage(video,adjusted_box_left,adjusted_box_top,adjusted_box_width,adjusted_box_height,0,0,canvas_picture.width,canvas_picture.height);
+        
+        canvas_picture.toBlob(function(blob){
+            imageblog = blob;
+        });
+        canvas.getContext('2d').clearRect(0, 0, canvas_picture.width, canvas_picture.height)
+
+          canvas_picture.width = width;
+          canvas_picture.height = height;
+          context.drawImage(video, 0, 0, canvas_picture.width, canvas_picture.height); 
+      } else {
+        canvas.getContext('2d').clearRect(0, 0, canvas_picture.width, canvas_picture.height)
+        canvas_picture.width = width;
+          canvas_picture.height = height;
+          context.drawImage(video, 0, 0, canvas_picture.width, canvas_picture.height); 
+          canvas_picture.toBlob(function(blob){
+            imageblog = blob;
+        });
+
+      }
+
+          
+  }
+          
+  async function send_picture() {
+    const formData = new FormData();
+    formData.append('file', imageblog,'my-file.png'); 
+    formData.append("csrf_token","{{ csrf_token() }}");
+
+    const fetch_response = await fetch("{{ url_for('recognize_person') }}", {
+      method: "POST",
+      body: formData
+    })              
+    .then(response => {
+        if (response.ok) {
+          console.log(response.url);
+          return response.url; // or response.txt() or response.json() or response.blob() based on server response
+        }
+        throw new Error('Network response was not ok.');
+      })
+      .then(data => {
+        console.log('File uploaded successfully:', data);
+        window.location.href = data; 
+      })
+      .catch(error => {
+        console.error('There was a problem with the upload:', error);
+      });
+  }
+
+
+  $(document).ready(function(){
+    $('#capture_image').click(function(){
+      $('.sps_show').css('display', 'block');
+    });
+
+    $("#cancelbtn").click(function(){
+      $("#cancelbtn").data('clicked', true);
+        if($('#cancelbtn').data('clicked')) {
+          $.ajax({
+                //url: "/aadhar_lookup",
+                url: "{{ url_for('aadhar_lookup') }}",
+                data: "",
+                type: 'GET',
+                success: function (resp) {
+                    window.location.href = "/aadhar_lookup"
+                },
+                error: function(e) {
+                    alert("{{ _('Error:') }}" + ' ' + e);
+                }  
+          });
+      }
+    });
+
+  });
+</script>
+</html>

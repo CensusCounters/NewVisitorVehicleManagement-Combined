@@ -1,0 +1,221 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="recognize_section" id="recognize_section">
+	<form id="form" action="{{ url_for('recognize_person') }}" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+			<div class="row" id="img-vg-content">
+				<div class="wbcam-col"> 
+					<div class="take_picture_section user_left_portion preview-panel minimal-preview-panel" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+						<h1 class="preview-panel-title">{{ _('Live Camera Feed') }}</h1>
+						<div class="preview-image-frame minimal-preview-frame">
+							<div id="webcam_div" style="text-align: center; border: 0;">
+								<video id="video" width="720" height="560" autoplay muted></video>
+								<canvas id="canvas_box" style="top: 40%; left: 50%; transform: translate(-50%, -50%); width:400px; height:300px; position: absolute;"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 buttons faceapi-button">
+						<button type="button" id="capture_image" class="c-btn">{{ _('Take a Picture') }}</button>
+					</div>
+				</div>
+				 
+				<div class="rs-face-review sps_show d-none">
+					<div class="take_picture_section user_left_portion preview-panel minimal-preview-panel" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+						<h1 class="preview-panel-title">{{ _('Captured Picture') }}</h1>
+						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame" id="capturedPreviewFrame">
+							<div class="canvas_img">
+								<canvas id="canvas_picture" class="is-clickable" style="object-fit: contain; width:100%; cursor: zoom-in;"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 buttons faceapi-button">
+						<button type="button" id="recognize_image" class="c-btn">{{ _('Submit For Recognition') }}</button>
+					</div>
+				</div>
+			</div>
+			<div id="recognizeFaceImageModal" class="modal image-preview-modal">
+				<span id="recognizeFaceImageModalClose" class="close">&times;</span>
+				<img class="modal-content image-preview-modal-content" id="recognizeFaceImageModalImg">
+				<div id="recognizeFaceImageModalCaption" class="image-preview-modal-caption"></div>
+			</div>
+			<div class="row" id="img-vg-content">
+				<div class="col-xs-12 buttons text-center">
+			  		<button type="button" id ="cancelbtn" name="cancelbtn" class="c-btn" style="color:#dddddd; width:75%;">{{ _('Go Back') }}</button>
+				</div>
+			</div>
+			<div id="spinner" class="spinner-overlay" style="display:none;">
+			  <div class="spinner"></div>
+			</div>
+	</form>
+</section>
+<script type="text/javascript">
+
+	const canvas = document.getElementById('canvas_box');
+	const ctx = canvas.getContext('2d');
+
+	const borderWidth = 3;
+	const borderRadius = 20;
+	const width_x = canvas.width;
+	const height_y = canvas.height;
+
+	// Function to draw a corner arc
+	function drawCorner(x, y, startAngle, endAngle) {
+		ctx.beginPath();
+		ctx.arc(x, y, borderRadius, startAngle, endAngle);
+		ctx.lineWidth = borderWidth;
+		ctx.strokeStyle = 'red';
+		ctx.stroke();
+	}
+
+	// Top-left corner
+	drawCorner(borderRadius, borderRadius, Math.PI, 1.5 * Math.PI);
+
+	// Top-right corner
+	drawCorner(width_x - borderRadius, borderRadius, 1.5 * Math.PI, 2 * Math.PI);
+
+	// Bottom-right corner
+	drawCorner(width_x - borderRadius, height_y - borderRadius, 0, 0.5 * Math.PI);
+
+	// Bottom-left corner
+	drawCorner(borderRadius, height_y - borderRadius, 0.5 * Math.PI, Math.PI);
+
+	let image_to_be_sent;
+	const video = document.getElementById('video')
+	const canvas_picture = document.getElementById('canvas_picture');
+	var width = 720; // We will scale the photo width to this
+	var height = 560;
+	const recognize_section = document.getElementById('recognize_section')
+	const form = document.getElementById('form')
+	const webcam_div = document.getElementById('webcam_div')
+	const capturedPictureLabel = {{ _('Captured Picture')|tojson }};
+	var capture_image_button = document.getElementById('capture_image');
+	var recognize_image_button = document.getElementById('recognize_image');
+
+	video.setAttribute("width", width)
+	video.setAttribute("height", height)
+
+	function start_video() {
+	  navigator.getUserMedia(
+	    { video: {deviceId: '5969b5d9502b940d49f0b586d5af0475657237ea0c68199e077d6d547e66e0a2'}},
+	    stream => video.srcObject = stream,
+	    err => console.error(err)
+	  )
+	}
+
+	capture_image_button.addEventListener('click', function(ev) {
+	    take_picture();
+	    ev.preventDefault();
+	}, false);
+
+	recognize_image_button.addEventListener('click', function(ev) {
+	    url = send_picture();
+	    ev.preventDefault();
+	}, false);
+
+
+	function take_picture() {
+	    var context = canvas_picture.getContext('2d');
+	    if (width && height) {
+		    canvas_picture.getContext('2d').clearRect(0, 0, canvas_picture.width, canvas_picture.height)
+	    	canvas_picture.width = width;
+	        canvas_picture.height = height;
+	        context.drawImage(video, 0, 0, canvas_picture.width, canvas_picture.height); 
+			canvas_picture.toBlob(function(blob){
+		       	imageblog = blob;
+		    });
+	        canvas_picture.style.height = 'auto';
+	    }
+        
+	}
+
+	function showRecognizeFaceImageModal(label, imageDataUrl) {
+		var imageModal = document.getElementById('recognizeFaceImageModal');
+		document.getElementById('recognizeFaceImageModalImg').src = imageDataUrl;
+		document.getElementById('recognizeFaceImageModalCaption').textContent = label;
+		imageModal.style.display = 'block';
+	}
+
+	var recognizeFaceImageModal = document.getElementById('recognizeFaceImageModal');
+	document.getElementById('recognizeFaceImageModalClose').onclick = function() {
+		recognizeFaceImageModal.style.display = 'none';
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === recognizeFaceImageModal) {
+			recognizeFaceImageModal.style.display = 'none';
+		}
+	});
+			    
+	function hideSpinner() {
+		document.getElementById('spinner').style.display = "none";
+	}
+
+	async function send_picture() {
+		if (!imageblog) {
+			alert("{{ _('Please take a picture first.') }}");
+			return;
+		}
+
+		document.getElementById('spinner').style.display = "flex";
+		const formData = new FormData();
+		formData.append('file', imageblog, 'my-file.png');
+		formData.append("csrf_token", "{{ csrf_token() }}");
+
+		try {
+			const response = await fetch("{{ url_for('recognize_person') }}", {
+				method: "POST",
+				body: formData
+			});
+
+			if (response.ok) {
+				window.location.href = response.url;
+				return;
+			}
+
+			hideSpinner();
+			alert("{{ _('Face recognition failed. The face service may be unavailable. Please try again in a moment.') }}");
+		} catch (error) {
+			hideSpinner();
+			console.error('There was a problem with the upload:', error);
+			alert("{{ _('Could not reach the face recognition service. Please try again.') }}");
+		}
+	}
+
+
+	$(document).ready(function(){
+		start_video();
+
+		$('#capturedPreviewFrame').click(function(){
+			if (canvas_picture.width && canvas_picture.height) {
+				showRecognizeFaceImageModal(capturedPictureLabel, canvas_picture.toDataURL('image/png'));
+			}
+		});
+
+		$('#capture_image').click(function(){
+			$('.sps_show').css('display', 'block');
+		});
+
+		$("#cancelbtn").click(function(){
+			$("#cancelbtn").data('clicked', true);
+				if($('#cancelbtn').data('clicked')) {
+					$.ajax({
+   							//url: "/aadhar_lookup",
+   							url: "{{ url_for('aadhar_lookup') }}",
+    						data: "",
+    						type: 'GET',
+					    	success: function (resp) {
+					        	window.location.href = "/aadhar_lookup"
+					    	},
+					    	error: function(e) {
+					       		alert("{{ _('Error:') }}" + ' ' + e);
+					    	}  
+					});
+			}
+		});
+
+	});
+
+
+
+</script>
+{% endblock content %}

@@ -1,0 +1,8 @@
+[Unit]
+Description=Runs clean_uploads_folder.service daily at midnight
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/sankar/Documents/Projects/Visitor-Vehicle-Management/cleanup_images/clean_uploads_folder.py
+
+[Install]

@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+  <section class="user user_register_section">
+      <form id="form" action="{{ url_for('report_home') }}" class="login" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="col-xs-12 buttons text-center">
+          <button type="button" id ="sbmt" class="btn btn-primary" onclick="return_to_reports()">{{ _('Continue') }}</button>
+        </div>
+      </form>
+  </section>
+  <script>
+
+    function show_modal(vehicle_plate_number, vehicle_image) {
+        
+       // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the image and insert it inside the modal - use its "alt" text as a caption
+        //var img = document.getElementById("myImg");
+        var modalImg = document.getElementById("img01");
+        modalImg.src = vehicle_image;
+        var captionText = document.getElementById("caption");
+       //#img.onclick = function(){
+        modal.style.display = "block";
+        
+        captionText.innerHTML = vehicle_plate_number//this.alt;
+        //}
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+    }
+
+    function return_to_reports() {
+        var form_element = document.getElementById('form');
+        var report = document.createElement('input');
+        report.type = 'hidden';
+        report.name = 'report';
+        report.value = '{{ details.report }}';
+        form_element.appendChild(report);
+        form_element.submit();
+    }
+
+</script>
+{% endblock content %}

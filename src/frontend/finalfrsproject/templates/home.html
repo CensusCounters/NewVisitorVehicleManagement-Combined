@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user add-end-button-section">
+  <div class="container-fluid" style="width:90%;">
+    <form id="form" action="{{ url_for('home') }}" enctype="multipart/form-data" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row two-row-btn" id="img-vg-content">
+        <div class="col-md-4">
+          <div class="user-form">
+            <button type="submit" id="new_trip" class="fix_hbtn" name="new_trip" value="new_trip" >{{ _('New Visitor') }}</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="user-form">
+            <button type="submit" id="end_trip" class="fix_hbtn" name="end_trip" value="end_trip">{{ _('End Visit') }}</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="user-form">
+            <button type="submit" id="view_report" class="fix_hbtn" name="view_reports" value="View Reports">{{ _('View Report') }}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock content %}

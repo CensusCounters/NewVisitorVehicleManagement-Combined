@@ -1,0 +1,660 @@
+from flask import render_template, url_for, flash, redirect, request, Response, session, jsonify, make_response, abort
+from finalfrsproject import app, ALLOWED_PHOTO_EXTENSIONS, sqlCommands, jwt, routeMethods, errors, redisCommands
+#from customException import CustomException
+import os, shutil, sys 
+from datetime import datetime, time, timezone, timedelta
+from werkzeug.utils import secure_filename
+import json
+from io import BytesIO
+import base64
+import psycopg2
+from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required, set_access_cookies, unset_jwt_cookies, verify_jwt_in_request
+import redis
+import json
+import pandas as pd
+from flask_babel import _
+
+from .helpers import (
+    auth_helper,
+    report_home_helper,
+    vehicle_report_helper,
+    person_report_helper,
+    trip_report_helper,
+    home_helper,
+    aadhar_lookup_helper,
+    manual_face_verification_helper,
+    reregister_face_helper,
+    stop_processing_helper,
+    recognize_person_helper,
+    unknown_person_helper,
+    known_person_helper,
+    trip_registration_helper,
+    make_trip_summary_helper,
+    recognize_vehicle_helper,
+    unknown_vehicle_helper,
+    known_vehicle_helper,
+    autocomplete_vehicles_helper,
+    vehicle_helper,
+    get_unfinished_trips_helper,
+    autocomplete_trips_helper,
+    trips_helper,
+    person_lookup_helper, enroll_blacklisted_person_helper, blacklisted_persons_list_helper,
+    blacklist_alert_helper
+)
+
+@app.route('/set_language/<language>')
+def set_language(language):
+    if language in app.config['BABEL_SUPPORTED_LOCALES']:
+        session['lang'] = language
+        return jsonify({'message': 'Language updated successfully'}), 200
+    else:
+        return jsonify({'message': 'Invalid language selected'}), 500
+
+#Login
+@app.route("/", methods=['GET'])
+@app.route("/login", methods=['GET','POST'])
+def login():
+    print("In Login: ", request.method)
+    #POST
+    if request.method == 'POST':
+        return auth_helper.login_post(redisCommands.redis_conn, request.form)
+    #GET        
+    else:
+        return auth_helper.login_get()     
+
+#Logout
+@app.route("/logout", methods=['GET','POST'])
+@jwt_required()
+def logout():
+    print("In Logout: ", request.method)
+    jwt_details=get_jwt_identity()
+    #print("token: ", jwt_details)
+
+    #POST
+    if request.method == 'POST':
+        return auth_helper.logout_post(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return auth_helper.logout_get(jwt_details, redisCommands.redis_conn, request.form)
+        #return auth_helper.logout_get(jwt_details)
+
+
+# Cache shipped frontend assets, but never cache dynamic pages or runtime-generated files.
+@app.after_request
+def after_request(response):
+    cacheable_asset_prefixes = (
+        "/static/css/",
+        "/static/js/",
+        "/static/fonts/",
+        "/static/models/",
+    )
+    cacheable_asset_files = (
+        "/static/favicon-32x32.png",
+        "/static/images/vajr-28-div-logo.jpeg",
+        "/static/images/7RR-Logo.jpeg",
+        "/static/images/amogh-ganganagar-logo.png",
+        "/static/images/shakti-vijay-logo.jpeg",
+        "/static/images/question.png",
+        "/static/placeholder.png",
+        "/static/images/census-logo.png",
+    )
+
+    if request.path.startswith(cacheable_asset_prefixes) or request.path in cacheable_asset_files:
+        response.headers["Cache-Control"] = "public, max-age=2592000, immutable"
+        response.headers.pop("Pragma", None)
+        response.headers.pop("Expires", None)
+    else:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+
+    return response
+
+
+@app.before_request
+def enforce_active_login_lock():
+    """When enabled, only the most recent login for a username stays active."""
+
+    if not app.config.get("SINGLE_ACTIVE_LOGIN"):
+        return None
+
+    try:
+        verify_jwt_in_request(optional=True)
+    except Exception:
+        # JWT callbacks remain responsible for malformed or expired tokens.
+        return None
+
+    identity = get_jwt_identity()
+    if not isinstance(identity, dict):
+        return None
+
+    active_login_key = identity.get("active_login_key")
+    active_login_lock_id = identity.get("active_login_lock_id")
+    if not active_login_key or not active_login_lock_id:
+        return None
+
+    current_lock_value = redisCommands.redis_conn.get(active_login_key)
+    if isinstance(current_lock_value, bytes):
+        current_lock_value = current_lock_value.decode("utf-8")
+
+    if current_lock_value != active_login_lock_id:
+        session.clear()
+        message = _("Your session is no longer active. Please login again.")
+        response = make_response(redirect(url_for('login', message=message)))
+        unset_jwt_cookies(response)
+        return response
+
+    redisCommands.redis_conn.expire(
+        active_login_key, auth_helper._active_login_ttl_seconds()
+    )
+    return None
+
+#Home
+@app.route("/home", methods=['GET','POST'])
+@jwt_required()
+def home():
+    print("In Home: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return home_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return home_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+#Aadhar Lookup
+@app.route("/aadhar_lookup", methods=['GET','POST'])
+@jwt_required()
+def aadhar_lookup():
+    print("In aadhar_lookup: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return aadhar_lookup_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return aadhar_lookup_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+#Aadhar Lookup
+@app.route("/manual_face_verification", methods=['GET','POST'])
+@jwt_required()
+def manual_face_verification():
+    print("In manual face verification: ", request.method)
+    jwt_details=get_jwt_identity()
+    print("token: ", jwt_details)
+    #POST
+    if request.method == 'POST':
+        return manual_face_verification_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return manual_face_verification_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+#Aadhar Lookup
+@app.route("/reregister_face", methods=['GET','POST'])
+@jwt_required()
+def reregister_face():
+    print("In reregister face: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return reregister_face_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return reregister_face_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+
+@app.route("/blacklist_alert", methods=['GET','POST'])
+@jwt_required()
+def blacklist_alert():
+    print("In blacklist_alert: ", request.method)
+    jwt_details = get_jwt_identity()
+    if request.method == 'POST':
+        return blacklist_alert_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    return blacklist_alert_helper.get_handler(jwt_details, redisCommands.redis_conn)
+    
+#Aadhar Lookup
+@app.route("/stop_processing", methods=['GET','POST'])
+@jwt_required()
+def stop_processing():
+    print("In stop_processing: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return stop_processing_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return stop_processing_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+
+# Using an `after_request` callback, we refresh any token that is within 30datetime
+# minutes of expiring. Change the timedeltas to match the needs of your application.
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now()
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=10))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original response
+        return response
+
+@jwt.expired_token_loader
+def my_expired_token_callback(jwt_header, jwt_payload):
+    session.clear()
+    response = make_response(redirect(url_for('login')))
+    unset_jwt_cookies(response)
+    return response
+
+#Recognize 
+@app.route("/recognize_person", methods=['GET','POST'])
+@jwt_required()
+def recognize_person():
+    print("In recognize_person: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return recognize_person_helper.post_handler(jwt_details, redisCommands.redis_conn, request.files)
+    #GET
+    else:
+        return recognize_person_helper.get_handler(jwt_details, redisCommands.redis_conn)
+    
+
+#Enroll Person
+@app.route("/unknown_person", methods=['GET','POST'])
+@jwt_required()
+def unknown_person():
+    print("In unknown_person: ", request.method)
+    jwt_details=get_jwt_identity()
+    if request.method == 'POST':
+        return unknown_person_helper.post_handler(jwt_details, redisCommands.redis_conn, request)
+    #GET
+    elif request.method == 'GET':
+        return unknown_person_helper.get_handler(jwt_details, redisCommands.redis_conn)            
+
+#Confirm
+@app.route("/known_person", methods=['GET','POST'])
+@jwt_required()
+def known_person():
+    print("In known_person: ", request.method)
+    jwt_details=get_jwt_identity()
+    if request.method == 'POST':
+        return known_person_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return known_person_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+
+@app.route("/api/update_known_person", methods=['POST'])
+@jwt_required()
+def update_known_person():
+    print("In update_known_person: ", request.method)
+    jwt_details = get_jwt_identity()
+    return known_person_helper.update_handler(jwt_details, redisCommands.redis_conn, request.form)
+
+
+@app.route("/trip_registration", methods=['GET', 'POST'])
+@jwt_required()
+def trip_registration():
+    print("In trip_registration: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+            return trip_registration_helper.post_handler(jwt_details, redisCommands.redis_conn, request)
+    #GET
+    else:
+        return trip_registration_helper.get_handler(jwt_details, redisCommands.redis_conn)
+    
+
+@app.route("/make_trip_summary", methods=['GET', 'POST'])
+@jwt_required()
+def make_trip_summary():
+    print("In make_trip_summary: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return make_trip_summary_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return make_trip_summary_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+        
+@app.route("/recognize_vehicle", methods=['GET', 'POST'])
+@jwt_required()
+def recognize_vehicle():
+    print("In recognize_vehicle: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return recognize_vehicle_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return recognize_vehicle_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+
+@app.route("/unknown_vehicle", methods=['GET', 'POST'])
+@jwt_required()
+def unknown_vehicle():
+    print("In unknown_vehicle: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return unknown_vehicle_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return unknown_vehicle_helper.get_handler(jwt_details, redisCommands.redis_conn)
+            
+
+@app.route("/known_vehicle", methods=['GET', 'POST'])
+@jwt_required()
+def known_vehicle():
+    print("In known_vehicle: ", request.method)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return known_vehicle_helper.post_handler(jwt_details, redisCommands.redis_conn, request)
+    #GET
+    else:
+        return known_vehicle_helper.get_handler(jwt_details, redisCommands.redis_conn)
+                    
+
+@app.route('/autocomplete_vehicles')
+def autocomplete_vehicles():
+    print("In autocomplete_vehicles: ", request.method)
+    return autocomplete_vehicles_helper.get_handler(request)
+
+@app.route('/vehicle/<int:vehicle_id>', methods=['GET'])
+@jwt_required()
+def vehicle_details_by_id(vehicle_id):
+    print("In vehicle_details_by_id")
+    jwt_details=get_jwt_identity()
+    print("token: ", jwt_details)
+
+    if request.method == 'GET':
+        return vehicle_helper.get_handler(jwt_details, request, vehicle_id)
+
+
+@app.route("/api/get_unfinished_trips_table", methods=["POST"])
+@jwt_required()
+def get_unfinished_trips_table():
+    jwt_details = get_jwt_identity()
+
+    session_values_json_redis = json.loads(redisCommands.redis_conn.get(jwt_details.get('logged_in_user_id')))
+    open_trip_person_id = session_values_json_redis.get("open_trip_person_id")
+
+    draw = int(request.form.get("draw", 1))
+    start = int(request.form.get("start", 0))
+    length = int(request.form.get("length", 50))
+    search_value = request.form.get("search[value]", "").strip()
+    order_col_idx = int(request.form.get("order[0][column]", 6))
+    order_dir = request.form.get("order[0][dir]", "desc")
+
+    column_filters = {}
+    for i in range(16):
+        val = request.form.get(f"columns[{i}][search][value]", "").strip()
+        if val:
+            column_filters[i] = val
+
+    entry_time_preset = request.form.get("entry_time_preset", "").strip()
+    exit_time_preset = request.form.get("exit_time_preset", "").strip()
+    if entry_time_preset:
+        column_filters[6] = entry_time_preset
+    if exit_time_preset:
+        column_filters[7] = exit_time_preset
+
+    result = sqlCommands.get_unfinished_trips_paginated(
+        person_id=open_trip_person_id,
+        start=start,
+        length=length,
+        search_value=search_value,
+        order_col_idx=order_col_idx,
+        order_dir=order_dir,
+        column_filters=column_filters,
+    )
+
+    if not result or result.get("Status") == "Fail":
+        return jsonify({
+            "draw": draw,
+            "recordsTotal": 0,
+            "recordsFiltered": 0,
+            "data": [],
+        }), 200
+
+    return jsonify({
+        "draw": draw,
+        "recordsTotal": result.get("recordsTotal", 0),
+        "recordsFiltered": result.get("recordsFiltered", 0),
+        "data": result.get("Details", []),
+    })
+
+
+@app.route("/get_unfinished_trips", methods=['GET', 'POST'])
+@jwt_required()
+def get_unfinished_trips():
+    print("In unfinished_trips: ", request.method)
+    jwt_details=get_jwt_identity()
+    #print("token: ", jwt_details)
+    #POST
+    if request.method == 'POST':
+        return get_unfinished_trips_helper.post_handler(jwt_details, redisCommands.redis_conn, request)
+    #GET vehicle readings from 2022-12-08
+    else:
+        return get_unfinished_trips_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+@app.route('/autocomplete_trips')
+def autocomplete_trips():
+    print("In autocomplete_trips")        
+    return autocomplete_trips_helper.get_handler(request)
+
+@app.route('/trips/<int:trip_id>', methods=['GET'])
+@jwt_required()
+def trip_details_by_id(trip_id):
+    print("In trip_details_by_id")
+    jwt_details=get_jwt_identity()
+    print("token: ", jwt_details)
+    if request.method == 'GET':
+        return trips_helper.get_handler(jwt_details, trip_id)
+
+
+# def get_trip_details(trip_id):
+#     print("In get_trips_details")
+#     result = sqlCommands.get_unfinished_trips(trip_id)
+
+#     #trip_details = cursor.fetchall()
+#     return trip_details
+
+
+@app.route("/report_home", methods=['GET','POST'])
+@jwt_required()
+def report_home():
+    print("In report_home: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+
+    #POST
+    if request.method == 'POST':
+        return report_home_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return report_home_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+
+@app.route("/api/vehicle_report_table", methods=["POST"])
+@jwt_required()
+def vehicle_report_table():
+    draw = int(request.form.get("draw", 1))
+    start = int(request.form.get("start", 0))
+    length = int(request.form.get("length", 50))
+    search_value = request.form.get("search[value]", "").strip()
+    order_col_idx = int(request.form.get("order[0][column]", 3))
+    order_dir = request.form.get("order[0][dir]", "desc")
+
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    result = sqlCommands.get_all_vehicles_from_anpr_by_date_paginated(
+        start_date=start_date,
+        end_date=end_date,
+        start=start,
+        length=length,
+        search_value=search_value,
+        order_col_idx=order_col_idx,
+        order_dir=order_dir,
+    )
+
+    if not result or result.get("Status") == "Fail":
+        return jsonify({
+            "draw": draw,
+            "recordsTotal": 0,
+            "recordsFiltered": 0,
+            "data": [],
+        })
+
+    return jsonify({
+        "draw": draw,
+        "recordsTotal": result.get("recordsTotal", 0),
+        "recordsFiltered": result.get("recordsFiltered", 0),
+        "data": result.get("Details", []),
+    })
+
+
+@app.route("/vehicle_report", methods=['GET','POST'])
+@jwt_required()
+def vehicle_report():
+    print("In vehicle_report: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+
+    #POST
+    if request.method == 'POST':
+        return vehicle_report_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return vehicle_report_helper.get_handler(jwt_details, redisCommands.redis_conn)                
+
+@app.route("/person_report", methods=['GET','POST'])
+@jwt_required()
+def person_report():
+    print("In person report: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return person_report_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return person_report_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+@app.route("/person_lookup", methods=['GET','POST'])
+@jwt_required()
+def person_lookup():
+    print("In person lookup: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+    #POST
+    if request.method == 'POST':
+        return person_lookup_helper.post_handler(jwt_details, redisCommands.redis_conn, request)
+    #GET
+    else:
+        return person_lookup_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+@app.route("/api/trip_report_table", methods=["POST"])
+@jwt_required()
+def trip_report_table():
+    draw = int(request.form.get("draw", 1))
+    start = int(request.form.get("start", 0))
+    length = int(request.form.get("length", 50))
+    search_value = request.form.get("search[value]", "").strip()
+    order_col_idx = int(request.form.get("order[0][column]", 10))
+    order_dir = request.form.get("order[0][dir]", "desc")
+
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    column_filters = {}
+    for i in range(19):
+        val = request.form.get(f"columns[{i}][search][value]", "").strip()
+        if val:
+            column_filters[i] = val
+
+    entry_time_preset = request.form.get("entry_time_preset", "").strip()
+    exit_time_preset = request.form.get("exit_time_preset", "").strip()
+    if entry_time_preset:
+        column_filters[10] = entry_time_preset
+    if exit_time_preset:
+        column_filters[11] = exit_time_preset
+
+    result = sqlCommands.get_trip_details_by_date_paginated(
+        start_date=start_date,
+        end_date=end_date,
+        start=start,
+        length=length,
+        search_value=search_value,
+        order_col_idx=order_col_idx,
+        order_dir=order_dir,
+        column_filters=column_filters,
+    )
+
+    if not result or result.get("Status") == "Fail":
+        return jsonify({
+            "draw": draw,
+            "recordsTotal": 0,
+            "recordsFiltered": 0,
+            "data": [],
+            "summary": {
+                "total_trips": 0,
+                "total_males": 0,
+                "total_females": 0,
+                "total_children": 0,
+                "total_persons": 0,
+                "traveler_types": [],
+                "going_to": [],
+            },
+        })
+
+    return jsonify({
+        "draw": draw,
+        "recordsTotal": result.get("recordsTotal", 0),
+        "recordsFiltered": result.get("recordsFiltered", 0),
+        "data": result.get("Details", []),
+        "summary": result.get("Summary") or {
+            "total_trips": 0,
+            "total_males": 0,
+            "total_females": 0,
+            "total_children": 0,
+            "total_persons": 0,
+            "traveler_types": [],
+            "going_to": [],
+        },
+    })
+
+
+@app.route("/trip_report", methods=['GET','POST'])
+@jwt_required()
+def trip_report():
+    print("In trip report: ", request.method, flush=True)
+    jwt_details=get_jwt_identity()
+    if request.method == 'POST':
+        return trip_report_helper.post_handler(jwt_details, redisCommands.redis_conn, request.form)
+    #GET
+    else:
+        return trip_report_helper.get_handler(jwt_details, redisCommands.redis_conn)
+        
+#Enroll //blacklisted Person
+@app.route("/enroll_blacklisted_person", methods=['GET','POST'])
+@jwt_required()
+def enroll_blacklisted_person():
+    print("In enroll_blacklisted_person: ", request.method)
+    jwt_details=get_jwt_identity()
+    if request.method == 'POST':
+        return enroll_blacklisted_person_helper.post_handler(jwt_details, redisCommands.redis_conn, request)
+    #GET
+    elif request.method == 'GET':
+        return enroll_blacklisted_person_helper.get_handler(jwt_details, redisCommands.redis_conn)
+
+#Blacklisted Person List
+@app.route("/blacklisted_persons_list", methods=['GET'])
+@jwt_required()
+def blacklisted_persons_list():
+    print("In blacklisted_persons_list: ", request.method)
+    jwt_details = get_jwt_identity()
+    return blacklisted_persons_list_helper.get_handler(jwt_details, redisCommands.redis_conn)

@@ -1,0 +1,34 @@
+{% if request.endpoint in ('known_vehicle', 'unknown_vehicle') %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var pageName = {{ request.endpoint|tojson }};
+    var pageConfig = {{ vehicle_fields|tojson }}[pageName];
+    var form = document.getElementById('vehicle_details');
+    if (!form || !pageConfig) {
+        return;
+    }
+
+    var visibleFields = new Set(pageConfig.fields);
+    var requiredFields = new Set(pageConfig.required_fields);
+    form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(function (control) {
+        if (!control.name) {
+            return;
+        }
+        var visible = visibleFields.has(control.name);
+        var required = visible && requiredFields.has(control.name);
+        var fieldWrapper = control.closest('.form-group');
+        var labelWrapper = fieldWrapper ? fieldWrapper.previousElementSibling : null;
+
+        if (fieldWrapper) {
+            fieldWrapper.style.display = visible ? '' : 'none';
+        }
+        if (labelWrapper && labelWrapper.querySelector('label')) {
+            labelWrapper.style.display = visible ? '' : 'none';
+        }
+        control.disabled = !visible;
+        control.required = required;
+        control.classList.toggle('required', required);
+    });
+});
+</script>
+{% endif %}

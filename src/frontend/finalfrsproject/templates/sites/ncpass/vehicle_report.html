@@ -1,0 +1,261 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user_vehicle_section trip-report-page">
+    <form id="form" name="form" method="POST" action="{{ url_for('vehicle_report') }}" class="login">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" id="start_date" name="start_date">
+        <input type="hidden" id="end_date" name="end_date">
+        <input type="hidden" id="report" name="report" value="vehicle_report">
+
+        <div id="img-vg-content" class="trip-report-date-block">
+            <div class="searchbar-box">
+                <label>Report Date Range: </label>
+                <input type="text" class="form-control" id="date_input" name="date_input"
+                       style="width:50%; background: #000000; color: #fff; text-align: center; border: 1px solid#00ffe4; font-size: 18px;">
+            </div>
+            <button type="submit" id="sbmt_button" name="sbmt_button" class="c-btn">Submit</button>
+        </div>
+    </form>
+
+    {% include "components/vehicle_report_table_styles.html" %}
+    <div class="trip-report-details vehicle-report-details">
+        <div class="trip-report-details-title">Vehicle Report</div>
+        <div class="trip-report-toolbar" id="img-vg-content2">
+            <input type="text" class="form-control" id="search" name="search" placeholder="Search all columns...">
+            <button type="button" id="xls_button" name="xls_button" class="trip-report-tool-btn">Excel</button>
+            <button type="button" id="pdf_button" name="pdf_button" class="trip-report-tool-btn">PDF</button>
+        </div>
+
+        <div id="img-vg-content-3">
+            <div class="table-responsive">
+                <table id="vehicle-report-table" class="table table-striped dataTables-example dataTable">
+                    <thead>
+                        <tr>
+                            <th>SNo</th>
+                            <th>Image</th>
+                            <th>Plate Number</th>
+                            <th>Date Time</th>
+                            <th>Gate</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="spinner" class="spinner-overlay" style="display:none;">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="myModal" class="modal image-preview-modal">
+                <span id="vehicleReportImageModalClose" class="close">&times;</span>
+                <img class="modal-content image-preview-modal-content" id="vehicleReportImageModalImg">
+                <div id="vehicleReportImageModalCaption" class="image-preview-modal-caption"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var vehicleReportImageModal = document.getElementById("myModal");
+    var vehicleReportImageModalImg = document.getElementById("vehicleReportImageModalImg");
+    var vehicleReportImageModalCaption = document.getElementById("vehicleReportImageModalCaption");
+    var vehicleReportImageModalClose = document.getElementById("vehicleReportImageModalClose");
+
+    function show_modal(label, image) {
+        vehicleReportImageModalImg.src = image;
+        vehicleReportImageModalCaption.innerHTML = label;
+        vehicleReportImageModal.style.display = "block";
+    }
+
+    function handleVehicleImageError(imageElement) {
+        var container = imageElement.parentElement;
+        if (container) container.innerHTML = "<span>Picture Not Available</span>";
+    }
+
+    vehicleReportImageModalClose.onclick = function () {
+        vehicleReportImageModal.style.display = "none";
+    };
+
+    window.addEventListener('click', function (event) {
+        if (event.target === vehicleReportImageModal) {
+            vehicleReportImageModal.style.display = "none";
+        }
+    });
+
+    {% if details.alert_message %}
+    const reportAlert = {
+        title: {{ details.alert_title | tojson }},
+        text: {{ details.alert_message | tojson }},
+        icon: {{ details.alert_type | default('warning') | tojson }}
+    };
+    {% else %}
+    const reportAlert = null;
+    {% endif %}
+
+    $(document).ready(function () {
+        if (reportAlert && window.Swal) {
+            Swal.fire({
+                title: reportAlert.title,
+                html: `<span style="font-size: 18px;">${reportAlert.text}</span>`,
+                icon: reportAlert.icon,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+
+        let start_date = null;
+        let end_date = null;
+        let report_parameters = null;
+
+        $('#date_input').daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            timePicker: false,
+            autoApply: true
+        }, function (start, end) {
+            start_date = moment(start).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+            end_date = moment(end).endOf('day').format('YYYY-MM-DD HH:mm:ss');
+            $("#start_date").val(start_date);
+            $("#end_date").val(end_date);
+        });
+
+        {% if details.start_date %}
+        start_date = '{{ details.start_date }}';
+        $("#start_date").val(start_date);
+        $('#date_input').data('daterangepicker').setStartDate(moment(start_date));
+        {% else %}
+        start_date = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+        $("#start_date").val(start_date);
+        $('#date_input').data('daterangepicker').setStartDate(moment());
+        {% endif %}
+
+        {% if details.end_date %}
+        end_date = '{{ details.end_date }}';
+        $("#end_date").val(end_date);
+        $('#date_input').data('daterangepicker').setEndDate(moment(end_date));
+        {% else %}
+        end_date = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+        $("#end_date").val(end_date);
+        $('#date_input').data('daterangepicker').setEndDate(moment());
+        {% endif %}
+
+        function escJs(v) {
+            return String(v || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        var table = $('#vehicle-report-table').DataTable({
+            serverSide: true,
+            processing: true,
+            language: {
+                processing: '<div class="dt-loading-shell" role="status" aria-live="polite"><div class="dt-loading-ring" aria-hidden="true"></div><span class="dt-loading-label">Loading vehicles…</span></div>'
+            },
+            searching: true,
+            paging: true,
+            pageLength: 50,
+            lengthChange: true,
+            lengthMenu: [[25, 50, 100], [25, 50, 100]],
+            info: true,
+            ordering: true,
+            order: [[3, 'desc']],
+            dom: 'lrtip',
+            ajax: {
+                url: "{{ url_for('vehicle_report_table') }}",
+                type: "POST",
+                headers: { "X-CSRF-TOKEN": $('input[name="csrf_token"]').val() },
+                data: function (d) {
+                    d.start_date = $('#start_date').val();
+                    d.end_date = $('#end_date').val();
+                }
+            },
+            columns: [
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: "file",
+                    orderable: false,
+                    render: function (data, type, row) {
+                        if (!data || data === "None") return "Picture Not Available";
+                        const plate = row.plate || "Not Available";
+                        return `<img src="${data}" alt="Vehicle Image" class="img_main report-image-thumb is-clickable"
+                                 onerror="handleVehicleImageError(this)"
+                                 onclick="show_modal('${escJs(plate)}','${escJs(data)}')">`;
+                    }
+                },
+                {
+                    data: "plate",
+                    defaultContent: "Not Available"
+                },
+                {
+                    data: "timestamp",
+                    defaultContent: "Not Available"
+                },
+                {
+                    data: "camera_id",
+                    defaultContent: "Not Available"
+                }
+            ],
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    className: "btnExcel",
+                    messageTop: function () { return report_parameters; },
+                    exportOptions: {
+                        columns: [0, 2, 3, 4],
+                        modifier: { search: 'applied' }
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    className: "btnPDF",
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    messageTop: function () { return report_parameters; },
+                    exportOptions: {
+                        columns: [0, 2, 3, 4],
+                        modifier: { search: 'applied' }
+                    }
+                }
+            ],
+            initComplete: function () {
+                $('.dt-buttons').hide();
+            }
+        });
+
+        $('#search').on('keyup', function () {
+            table.search($(this).val()).draw();
+        });
+
+        $('#xls_button').on('click', function () {
+            const searchValue = $('#search').val().trim();
+            report_parameters = searchValue
+                ? `Report generated for Start Date-${start_date} End Date-${end_date} with Filter Text - ${searchValue}`
+                : `Report generated for Start Date-${start_date} End Date-${end_date} without any filters.`;
+            table.button('.btnExcel').trigger();
+        });
+
+        $('#pdf_button').on('click', function () {
+            const searchValue = $('#search').val().trim();
+            report_parameters = searchValue
+                ? `Report generated for Start Date-${start_date} End Date-${end_date} with Filter Text - ${searchValue}`
+                : `Report generated for Start Date-${start_date} End Date-${end_date} without any filters.`;
+            table.button('.btnPDF').trigger();
+        });
+
+        $('#form').on('submit', function () {
+            $('#spinner').show();
+        });
+    });
+</script>
+{% endblock content %}

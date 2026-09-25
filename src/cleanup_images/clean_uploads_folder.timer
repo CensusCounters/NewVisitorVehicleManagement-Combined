@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs clean_uploads_folder.service daily at midnight
+
+[Timer]
+OnCalendar=daily
+AccuracySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

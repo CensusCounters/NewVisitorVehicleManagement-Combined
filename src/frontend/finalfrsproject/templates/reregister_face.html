@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+{% block content %}
+<form id="form" action="{{ url_for('reregister_face') }}" method="post" enctype="multipart/form-data" class="login">
+	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">	
+	<section class="picture_section" id="black-icon-section">
+		<div class="row show-mood">
+			<div class="col-md-12" id="img-vg-content">
+				<div class="col-md-1"></div>
+				<div class="col-md-10" style="text-align: center">
+					<div style="display: flex;align-items: center; justify-content: center;margin-bottom: 10px;">
+						 <h3 id="title" style="color: #ffd868">{{ _('Automatic check of todays photo and previous photo:') }}  </h3>
+						 {% if details.face_recognition_result %}
+							<h3 id="message" style="color: #dddddd">&ensp;{{ details.face_recognition_result }}</h3>
+						 {% else %}
+							<h3 id="message" style="color: #dddddd">{{ _('&ensp;Face recognition result not available') }} </h3>
+						 {% endif %}
+					</div>
+			  	</div>
+			  <div class="col-md-1"></div>
+		 	</div>
+	 	</div>
+
+		<div class="row show-mood">
+			<div class="col-md-12" id="img-vg-content">
+				<div class="col-md-1"></div>
+				<div class="col-md-10" style="text-align: center">
+					<div style="display: flex;align-items: center; justify-content: center;margin-bottom: 10px;">
+						 <h3 id="title" style="color: #ffd868">{{ _('ID from Database:') }}  </h3>
+						 {% if details.database_id_number %}
+							<h3 id="message" style="color: #dddddd">&ensp;{{ details.database_id_number }} , {{ details.database_id_type }}</h3>
+						 {% else %}
+							<h3 id="message" style="color: #dddddd">{{ _('&ensp;No id number found') }} </h3>
+						 {% endif %}
+					</div>
+			  	</div>
+			  <div class="col-md-1"></div>	
+		 	</div>
+	 	</div>
+		{% if details.provided_id_number %}
+		<div class="row show-mood">
+			<div class="col-md-12" id="img-vg-content">
+				<div class="col-md-1"></div>
+				<div class="col-md-10" style="text-align: center">
+					<div style="display: flex;align-items: center; justify-content: center;margin-bottom: 10px;">
+						 <h3 id="title" style="color: #ffd868">{{ _('ID Provided:') }}  </h3>
+						 <h3 id="message" style="color: #dddddd">&ensp;{{ details.provided_id_number }} , {{ details.provided_id_type }}</h3>
+					</div>
+			  	</div>
+			  <div class="col-md-1"></div>
+		 	</div>
+	 	</div>
+    	{% endif %}
+		<div class="container-fluid ">
+			<div class="row" id="img-vg-content">
+				<div class="col-md-4"></div>
+				<div class="col-md-2" style="text-align: center;">
+					<img src="/static/images/question.png" name="question" id="question" style="width:50%;"></img>
+				</div>
+				<div class="col-md-4"></div>
+			</div>
+			<div class="row" id="img-vg-content">
+				<div class="col-md-6">
+					<div class="take_picture_section user_left_portion preview-panel minimal-preview-panel" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+					{% if details.enrolled_image %}
+						<h1 class="preview-panel-title">{{ _('Picture from the Database') }}</h1>
+						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
+							<img src="{{ details.enrolled_image }}" name="enrolled_image" id="enrolled_image" class="is-clickable"
+								onclick='javascript:showReregisterFaceImageModal({{ _("Picture from the Database")|tojson }}, {{ details.enrolled_image|tojson }})'>
+						</div>
+					{% else %}
+						<h1 class="preview-panel-title">{{ _('No Image Found') }}</h1>
+						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
+							<img src="/static/placeholder.png" name="enrolled_image" id="enrolled_image" class="is-clickable"
+								onclick='javascript:showReregisterFaceImageModal({{ _("No Image Found")|tojson }}, "/static/placeholder.png")'>
+						</div>
+					{% endif %}
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="take_picture_section user_left_portion preview-panel minimal-preview-panel" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+					{% if details.todays_image %}
+						<h1 class="preview-panel-title">{{ _('Today\'s Picture') }}</h1>
+						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
+							<img src="{{ details.todays_image }}" name="todays_image" id="todays_image" class="is-clickable"
+								onclick='javascript:showReregisterFaceImageModal({{ _("Today's Picture")|tojson }}, {{ details.todays_image|tojson }})'>
+						</div>
+					{% else %}
+						<h1 class="preview-panel-title">{{ _('No Image Found. Captured Image will show here') }}</h1>
+						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
+							<img src="/static/placeholder.png" name="todays_image" id="todays_image" class="is-clickable"
+								onclick='javascript:showReregisterFaceImageModal({{ _("No Image Found. Captured Image will show here")|tojson }}, "/static/placeholder.png")'>
+						</div>
+					{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="reregisterFaceImageModal" class="modal image-preview-modal">
+			<span id="reregisterFaceImageModalClose" class="close">&times;</span>
+			<img class="modal-content image-preview-modal-content" id="reregisterFaceImageModalImg">
+			<div id="reregisterFaceImageModalCaption" class="image-preview-modal-caption"></div>
+		</div>
+		<div class="row show-mood">
+			<div class="col-md-12" id="img-vg-content">
+			 <div class="col-md-1"></div>
+				 <div class="col-md-10" style="text-align: center">
+				 <div style="display: flex;align-items: center; justify-content: center;margin-top: 20px;">
+					 <h3 id="title" style="color: #ffd868">{{_('Faces are same?')}} </h3>
+				 </div>
+			  </div>
+			  <div class="col-md-1"></div>	
+		 </div>
+	</section>
+	<section class="user user_register_section" style="margin-top: 10px !important;">
+		<div class="container-fluid ">
+			<div class="row" id="img-vg-content" style="padding-top: 30px !important;">
+				<div class="col-md-6">
+			          <button type="submit" id="Yes" name="Yes" value="Yes" class="btn btn-primary" style="width:100%;padding">{{ _('Yes') }}</button>
+			    </div>
+			</div>
+			<div class="row" id="img-vg-content">	
+				<div class="col-md-6">
+		   			<button type="submit" id="cancelbtn" name="No" value="No" class="btn btn-primary" style="width:100%;">{{ _('No') }}</button>
+			    </div>
+			</div>
+		</div>
+	</section>
+</form>
+<script>
+	function showReregisterFaceImageModal(label, image) {
+		var imageModal = document.getElementById('reregisterFaceImageModal');
+		document.getElementById('reregisterFaceImageModalImg').src = image;
+		document.getElementById('reregisterFaceImageModalCaption').textContent = label;
+		imageModal.style.display = 'block';
+	}
+
+	var reregisterFaceImageModal = document.getElementById('reregisterFaceImageModal');
+	document.getElementById('reregisterFaceImageModalClose').onclick = function() {
+		reregisterFaceImageModal.style.display = 'none';
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === reregisterFaceImageModal) {
+			reregisterFaceImageModal.style.display = 'none';
+		}
+	});
+
+$(document).ready(function(){
+    $('#cancelbtn').click(function(e){  // Fix event reference
+        e.preventDefault();  // Prevent default action
+        Swal.fire({
+            title: "Are you sure?",
+            html: `<span style="font-size: 18px;">{{ _('Please click Confirm to proceed or Cancel to return to the page"') }}</span>`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#007bff', // Blue
+            cancelButtonColor: '#28a745',  // Green
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $("#form").submit();  // Fix: Target the correct form ID
+            }
+        });
+    });
+});
+</script>
+{% endblock content %}

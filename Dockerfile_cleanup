@@ -1,0 +1,9 @@
+FROM python:3.11
+
+RUN pip3 install requests boto3 kafka-python python-socketio[client] psycopg2 pytz
+
+WORKDIR /project/alert_sender
+#Entrypoint
+
+#ENTRYPOINT /bin/bash
+#ENTRYPOINT ["/bin/bash", "python3", "testConsumer_new.py"]

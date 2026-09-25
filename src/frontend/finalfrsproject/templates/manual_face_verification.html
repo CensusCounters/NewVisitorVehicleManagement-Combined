@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}
+<form id="form" action="{{ url_for('manual_face_verification') }}" method="post" enctype="multipart/form-data" class="login">
+	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">	
+	<section class="picture_section" id="black-icon-section">
+		<div class="container-fluid ">
+			<div class="row" id="img-vg-content">
+				<div class="col-md-4"></div>
+				<div class="col-md-2" style="text-align: center;">
+					<img src="/static/images/question.png" name="question" id="question" style="width:50%;"></img>
+				</div>
+				<div class="col-md-4"></div>
+			</div>
+
+
+			<div class="row" id="img-vg-content">
+				<div class="col-md-6">
+					<div class="take_picture_section" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+					{% if details.enrolled_image %}
+						<h3 style="font: 20px; font-weight: bold; color:#000">{{ _('Picture from the Database') }}</h3>
+						<img src={{ details.enrolled_image }} name="enrolled_image" id="enrolled_image" style="width:100%;"></img>
+					{% else %}
+						<h3 style="font: 20px; font-weight: bold; color:#000">{{ _('No Image Found') }}</h3>
+						<img src="/static/placeholder.png" name="enrolled_image" id="enrolled_image" style="width:100%;"></img>
+					{% endif %}
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="take_picture_section" style="text-align: center; background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%)">
+					{% if details.todays_image %}
+						<h3 style="font: 20px; font-weight: bold; color:#000">{{ _('Today\'s Picture') }}</h3>
+						<img src={{ details.todays_image }} name="todays_image" id="todays_image" style="width:100%;"></img>
+					{% else %}
+						<h3 style="font: 20px; font-weight: bold; color:#000">{{ _('No Image Found. Captured Image will show here') }}</h3>
+						<img src="/static/placeholder.png" name="todays_image" id="todays_image" style="width:100%;"></img>
+					{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="user user_register_section" style="margin-top: 10px !important;">
+		<div class="container-fluid ">
+			<div class="row" id="img-vg-content" style="padding-top: 30px !important;">
+				<div class="col-md-6">
+			          <button type="submit" id="Yes" name="Yes" value="Yes" class="btn btn-primary" style="width:100%;padding">{{ _('Yes') }}</button>
+			    </div>
+			</div>
+			<div class="row" id="img-vg-content">	
+				<div class="col-md-6">
+		   			<button type="submit" id="cancelbtn" name="No" value="No" class="btn btn-primary" style="width:100%;">{{ _('No') }}</button>
+			    </div>
+			</div>
+		</div>
+	</section>	
+			
+</form>
+{% endblock content %}

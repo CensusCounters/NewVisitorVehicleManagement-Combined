@@ -1,0 +1,532 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user user_register_section">
+	<div class="container-fluid">
+		<form id="form" action="{{ url_for('unknown_person') }}" method="post" enctype="multipart/form-data"
+			class="login">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+			{% if details.enrollment_id %}
+			<input type="hidden" id="enrollment_id" name="enrollment_id" value="{{ details.enrollment_id }}">
+			<!--<input type="hidden" id="aadhar_image" name="aadhar_image"
+				value="/static/images/census-logo.png"> -->
+			{% endif %}
+			<div class="row" id="img-vg-content">
+				<div class="col-md-6">
+					<div class="user_left_portion preview-panel minimal-preview-panel" id="capturedImageRow"
+						style="background: linear-gradient(to right, #f29d0a 0%, #cc8c1d 41%, #ad7109 100%); min-height: 100vh; height: auto; padding: 20px;">
+						{% if details.img %}
+						<h1 class="preview-panel-title">{{ _('Unknown User') }}</h1>
+						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
+							<img src="{{ details.img }}" name="capturedImage" id="capturedImage" class="is-clickable"
+								onclick='javascript:showImageModal({{ _("Unknown User")|tojson }}, {{ details.img|tojson }})'>
+						</div>
+						{% else %}
+						<h1 class="preview-panel-title">{{ _('No Image Found. Captured Image will show here') }}</h1>
+						<div class="preview-image-frame minimal-preview-frame">
+							<img src="/static/placeholder.png" name="capturedImage" id="capturedImage"
+								alt="Captured image will show here">
+						</div>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="user-form">
+						{% if details.img %}
+						<input type="hidden" id="person_image_relative_path" name="person_image_relative_path" value={{
+							details.img }} />
+						{% endif %}
+						{% if details.person_image_actual_path %}
+						<input type="hidden" id="person_image_actual_path" name="person_image_actual_path" value={{
+							details.person_image_actual_path }} />
+						{% endif %}
+						<div class="col-xs-4">
+							<label class="label">{{ _('Traveler Type') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<select name="traveler_type" id="traveler_type" class="form-control" disabled>
+								<option value="">{{ _('Traveler Type') }}</option>
+								{% for value in details.visitor_categories %}
+									<option value="{{ value }}" {% if details.traveler_type == value %} selected {% endif %}>
+										{{ value.replace('_', ' ') }}
+									</option>
+								{% endfor %}
+							</select>
+						</div>
+						<input type="hidden" name="traveler_type" value="{{ details.traveler_type }}">
+						<div class="col-xs-4">
+							<label class="label">{{ _('Name') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<input id="name" name="name" type="text" maxlength="30" class="form-control required"
+								placeholder="{{ _('Visitor\'s Name') }}" value="">
+						</div>
+						<div class="col-xs-4">
+							<label class="label">{{ _('Gender') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<select id="gender" name="gender" class="form-control required">
+								<option value="" disabled selected>{{ _('Select Gender') }}</option>
+								<option value="Male">{{ _('Male') }}</option>
+								<option value="Female">{{ _('Female') }}</option>
+							</select>
+						</div>
+						<!--<div class="col-xs-4">
+							<label class="label">{{ _('Date of Birth') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<input id="dob" name="dob" type="text" class="form-control" placeholder="{{ _('DD/MM/YYYY') }}">
+						</div>-->
+						<div class="col-xs-4">
+							<label class="label">{{ _('Mobile Number') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<input id="mobile_number" name="mobile_number" type="text" maxlength="30" class="form-control required"
+								placeholder="{{ _('Mobile Number') }}" value="">
+						</div>
+						<div id="member_fields">
+							<div class="col-xs-4"> <label class="label">{{ _('C/O') }}</label> </div>
+							<div class="form-group col-xs-8">
+									<input id="guardians_name" name="guardians_name" type="text" maxlength="30" class="form-control required"
+									placeholder="{{ _('Father Name') }}" value="">
+							</div>
+							<div class="col-xs-4"><label class="label">{{ _('Address') }}</label></div>
+							<div class="form-group col-xs-8">
+								<input id="address" name="address" type="text" maxlength="30" class="form-control required"
+									placeholder="{{ _('Resident Of') }}" value="">
+							</div>
+							<div class="col-xs-4"><label class="label">{{ _('Visit Purpose') }}</label></div>
+							<div class="form-group col-xs-8">
+								{% if details.unknown_person_page_fields.purpose_input == 'select' %}
+								<select id="visiting_person_name" name="visiting_person_name" class="form-control required">
+									<option value="">{{ _('Select Purpose') }}</option>
+									{% for value in details.visit_purpose_categories %}
+									<option value="{{ value }}">{{ value.replace('_', ' ') }}</option>
+									{% endfor %}
+								</select>
+								{% else %}
+								<input id="visiting_person_name" name="visiting_person_name" type="text" maxlength="30" class="form-control required"
+									placeholder="{{ _('Purpose') }}" value="">
+								{% endif %}
+							</div>
+						</div>
+
+					    <div class="col-xs-4">
+							<label class="label">{{ _('ID Type') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<input id="id_type" name="id_type" type="text" maxlength="30" class="form-control required"
+								placeholder="ID Number" value="{{ details.id_type }}" readonly>
+						</div>
+						<div class="col-xs-4">
+							<label class="label">{{ _('ID Number') }}</label>
+						</div>
+						<div class="form-group col-xs-8">
+							<input id="id_number" name="id_number" type="text" maxlength="30" class="form-control required"
+								placeholder="ID Number" value="{{ details.primary_id_number }}" readonly>
+						</div>
+
+						<div class="col-xs-12 buttons text-center">
+							<input type="hidden" id="id_image" name="id_image">
+
+							<input type="hidden" id="first_image" name="first_image">
+							<div id="first_preview_container" style="display: none; margin-bottom: 10px;">
+								<img id="first_preview" src="" alt="ID Front Preview" style="max-width: 200px; max-height: 150px; border: 2px solid #007bff; border-radius: 5px;">
+								<p style="font-size: 14px; color: #007bff; margin: 5px 0;">{{ _('ID Front') }}</p>
+							</div>
+
+							<input type="hidden" id="second_image" name="second_image">
+							<div id="second_preview_container" style="display: none; margin-bottom: 10px;">
+								<img id="second_preview" src="" alt="ID Back Preview" style="max-width: 200px; max-height: 150px; border: 2px solid #28a745; border-radius: 5px;">
+								<p style="font-size: 14px; color: #28a745; margin: 5px 0;">{{ _('ID Back') }}</p>
+							</div>
+
+							<button type="button" id="captureFirstImage" class="btn btn-primary"
+									style="background: red; border: 1px solid red; color: white; width:48%; margin-right: 2%;">{{ _('ID Front') }}</button>
+							<button type="button" id="captureSecondImage" class="btn btn-primary"
+									style="background: blue; border: 1px solid blue; color: white; width:48%;">{{ _('ID Back') }}</button>
+						</div>
+
+						<div id="supplemental_dl_section" style="display:none;">
+							<div class="col-xs-4"><label class="label">{{ _("Driver's Licence Number") }}</label></div>
+							<div class="form-group col-xs-8">
+								<input id="drivers_license" name="drivers_license" type="text" maxlength="30" class="form-control"
+									placeholder="{{ _("Driver's Licence Number") }}">
+							</div>
+							<div class="col-xs-12 buttons text-center">
+								<input type="hidden" id="drivers_license_image" name="drivers_license_image">
+								<div id="drivers_license_preview_container" style="display:none; margin-bottom:10px;">
+									<img id="drivers_license_preview" src="" alt="Driver's Licence Preview"
+										style="max-width:200px; max-height:150px; border:2px solid #28a745; border-radius:5px;">
+								</div>
+								<button type="button" id="captureDlImage" class="btn btn-primary"
+									style="background:green; border-color:green; color:white; width:100%;">{{ _("Capture Driver's Licence") }}</button>
+							</div>
+						</div>
+
+						<div class="col-xs-12 buttons text-center">
+							<button type="button" id="sbmt" name="sbmt" class="btn btn-primary">{{ _('Submit') }}</button>
+						</div>
+
+						<div id="spinner" class="spinner-overlay" style="display:none;">
+							<div class="spinner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="unknownPersonImageModal" class="modal image-preview-modal">
+		<span id="unknownPersonImageModalClose" class="close">&times;</span>
+		<img class="modal-content image-preview-modal-content" id="unknownPersonImageModalImg">
+		<div id="unknownPersonImageModalCaption" class="image-preview-modal-caption"></div>
+	</div>
+
+	<!-- Modal for Camera Capture -->
+	<div id="cameraModal" class="modal">
+		<div class="modal-content">
+			<video id="cameraStream" width="100%"></video>
+			<span class="close" id="unknownPersonCameraClose">{{ _('&times;') }}</span>
+			<div class="col-xs-12 buttons text-center">
+				<button id="captureImage" type="button" class="btn btn-primary">{{ _('Capture Image') }}</button>
+			</div>
+			<canvas id="capturedImageCanvas" style="display: none;"></canvas>
+			<!-- <img id="capturedImagePreview" style="display: none;" /> -->
+		</div>
+	</div>
+</section>
+
+
+<script>
+	function showImageModal(label, image) {
+		var imageModal = document.getElementById('unknownPersonImageModal');
+		document.getElementById('unknownPersonImageModalImg').src = image;
+		document.getElementById('unknownPersonImageModalCaption').textContent = label;
+		imageModal.style.display = 'block';
+	}
+
+	var unknownPersonImageModal = document.getElementById('unknownPersonImageModal');
+	document.getElementById('unknownPersonImageModalClose').onclick = function() {
+		unknownPersonImageModal.style.display = 'none';
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === unknownPersonImageModal) {
+			unknownPersonImageModal.style.display = 'none';
+		}
+	});
+
+	function show_alert_model() {
+	Swal.fire({
+		title: 'Info',
+		html: '<span style="font-size: 20px;">{{ _('Please add id image before you submit.') }}</span>',
+		confirmButtonText: 'OK',
+		confirmButtonColor: '#3085d6',
+		width: 400,
+		customClass: {
+			confirmButton: 'custom-confirm'
+		},
+		buttonsStyling: false
+		}).then((result) => {
+			if (result.isConfirmed) {
+				console.log('OK button was clicked');
+			}
+		});
+	}
+	// Get modal elements
+	var modal = document.getElementById('cameraModal');
+	var btn = document.getElementById('captureIDImage'); // Button that opens the modal
+	var span = document.getElementById('unknownPersonCameraClose');
+	var video = document.getElementById('cameraStream');
+	var canvas = document.getElementById('capturedImageCanvas');
+	var context = canvas.getContext('2d');
+	var captureButton = document.getElementById('captureImage');
+
+	var firstBtn = document.getElementById('captureFirstImage');
+	var firstPreview = document.getElementById('first_preview');
+	var firstPreviewContainer = document.getElementById('first_preview_container');
+
+	var secondBtn = document.getElementById('captureSecondImage');
+	var secondPreview = document.getElementById('second_preview');
+	var secondPreviewContainer = document.getElementById('second_preview_container');
+	var dlBtn = document.getElementById('captureDlImage');
+	var dlPreview = document.getElementById('drivers_license_preview');
+	var dlPreviewContainer = document.getElementById('drivers_license_preview_container');
+
+	var currentCaptureMode = null;
+
+	// Consolidated function to open camera
+	function openCameraModal(mode) {
+		currentCaptureMode = mode;
+		modal.style.display = "block";
+		navigator.mediaDevices.getUserMedia({ video: true })
+			.then(function(stream) {
+				video.srcObject = stream;
+				video.play();
+			})
+			.catch(function(err) {
+				console.log("An error occurred: " + err);
+			});
+	}
+
+	firstBtn.onclick = () => openCameraModal('first');
+	secondBtn.onclick = () => openCameraModal('second');
+	if (dlBtn) {
+		dlBtn.onclick = () => openCameraModal('dl');
+	}
+
+	// Updated capture button logic with preview
+	captureButton.onclick = function() {
+		modal.style.display = "none";
+		canvas.width = video.videoWidth;
+		canvas.height = video.videoHeight;
+		context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+		var imageData = canvas.toDataURL('image/jpeg', 0.8);
+
+		// Save to the correct input and show preview
+		if (currentCaptureMode === 'first') {
+			$('#first_image').val(imageData);
+			firstPreview.src = imageData;
+			firstPreviewContainer.style.display = "block";
+		} else if (currentCaptureMode === 'second') {
+			$('#second_image').val(imageData);
+			secondPreview.src = imageData;
+			secondPreviewContainer.style.display = "block";
+		} else if (currentCaptureMode === 'dl') {
+			$('#drivers_license_image').val(imageData);
+			dlPreview.src = imageData;
+			dlPreviewContainer.style.display = "block";
+		}
+
+		// Stop camera
+		video.srcObject.getTracks().forEach(track => track.stop());
+	};
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+		video.srcObject.getTracks().forEach(track => track.stop());
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+			video.srcObject.getTracks().forEach(track => track.stop());
+		}
+	}
+
+	function prepareIdImage() {
+		return new Promise((resolve) => {
+			const firstImageData = document.getElementById('first_image').value;
+			const secondImageData = document.getElementById('second_image').value;
+
+			if (firstImageData && secondImageData) {
+				const img1 = new Image();
+				const img2 = new Image();
+				let loadedCount = 0;
+
+				function onImageLoad() {
+					loadedCount++;
+					if (loadedCount === 2) {
+						const combinedCanvas = document.createElement('canvas');
+						const combinedContext = combinedCanvas.getContext('2d');
+
+						// Optimized for Full HD max - scale down to 800px width for speed
+						const targetMaxWidth = 800;
+						const scale1 = Math.min(1, targetMaxWidth / img1.width);
+						const scale2 = Math.min(1, targetMaxWidth / img2.width);
+
+						const scaledImg1Width = img1.width * scale1;
+						const scaledImg1Height = img1.height * scale1;
+						const scaledImg2Width = img2.width * scale2;
+						const scaledImg2Height = img2.height * scale2;
+
+						const maxHeight = Math.max(scaledImg1Height, scaledImg2Height);
+						combinedCanvas.width = scaledImg1Width + scaledImg2Width;
+						combinedCanvas.height = maxHeight;
+
+						// Optimized settings for Full HD processing
+						combinedContext.imageSmoothingEnabled = false;
+
+						// Draw images side by side
+						combinedContext.drawImage(img1, 0, 0, scaledImg1Width, scaledImg1Height);
+						combinedContext.drawImage(img2, scaledImg1Width, 0, scaledImg2Width, scaledImg2Height);
+
+						// Balanced quality/speed for Full HD inputs
+						const combinedImageData = combinedCanvas.toDataURL('image/jpeg', 0.8);
+						document.getElementById('id_image').value = combinedImageData;
+						resolve(combinedImageData);
+					}
+				}
+
+				img1.onload = onImageLoad;
+				img2.onload = onImageLoad;
+				img1.src = firstImageData;
+				img2.src = secondImageData;
+			}
+			else if (firstImageData) {
+				document.getElementById('id_image').value = firstImageData;
+				resolve(firstImageData);
+			}
+			else if (secondImageData) {
+				document.getElementById('id_image').value = secondImageData;
+				resolve(secondImageData);
+			}
+			else {
+				document.getElementById('id_image').value = '';
+				resolve('');
+			}
+		});
+	}
+
+	$(document).ready(function () {
+		var details = {{ details | tojson }};
+		var unknownPersonPageFields = details.unknown_person_page_fields || {};
+		var requireDlFor = unknownPersonPageFields.require_dl_for || [];
+		console.log(details);
+		traveler_type = document.getElementById("traveler_type");
+		{% if details.traveler_type %}
+			traveler_type.value = `{{ details.traveler_type | safe }}`;
+		{% else %}
+			traveler_type.value = 'Driver'
+		{% endif %}
+
+		var requiresSupplementalDl = requireDlFor.indexOf(traveler_type.value) !== -1 &&
+			String(details.id_type || '').toUpperCase() !== 'DRIVERS LICENSE';
+		$('#supplemental_dl_section').toggle(requiresSupplementalDl);
+
+		$(document).keypress(function (e) {
+			if (e.which == 13) {
+				$("#sbmt").trigger("click");
+			}
+		});
+
+		$.validator.addMethod("maxDate", function (value, element, max) {
+			return new Date(value) <= new Date(max);
+		}, "Date of Birth cannot be in the future.");
+
+		$.validator.addMethod("minDate", function (value, element, min) {
+			return new Date(value) >= new Date(min);
+		}, "Person must be at least 18 years old.");
+
+		$.validator.addMethod("valueNotEquals", function (value, element, arg) {
+			return arg != value;
+		}, "Value must not equal arg");
+
+		$.validator.addMethod("alphanumeric", function (value, element) {
+			return this.optional(element) || /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/.test(value);
+		}, "Letters, numbers, spaces, and underscores only please");
+
+		$.validator.addMethod("textonly", function (value, element) {
+			return this.optional(element) || /^[A-Za-z ]*[A-Za-z][A-Za-z ]*$/.test(value);
+		}, "Letters and Spaces only please");
+
+		$.validator.addMethod("numberonly", function (value, element) {
+			return this.optional(element) || /^[0-9]*[0-9][0-9]*$/.test(value);
+		}, "Numbers only please");
+
+		$.validator.addMethod("driverslicense", function (value, element) {
+			if (!requiresSupplementalDl || !value) {
+				return true;
+			}
+			var cleanedValue = value.replace(/[-\s]/g, "");
+			return /^[A-Za-z0-9]+$/.test(cleanedValue) && cleanedValue.length === 15;
+		}, "Driver's Licence number must be exactly 15 alphanumeric characters (spaces and dashes are ignored).");
+
+		$.validator.addMethod("dateFormat", function(value, element) {
+    		return /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value); // Allows single or double-digit DD/MM
+		}, "Please enter a valid date in DD/MM/YYYY format");
+
+		$.validator.addMethod("validateAge", function(value, element) {
+			let enteredDate = new Date(value.split("/").reverse().join("-")); // Convert DD/MM/YYYY to YYYY-MM-DD
+			let today = new Date();
+			let minAllowedDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+			return enteredDate <= minAllowedDate; // Ensure user is at least 18
+		}, "You must be 18 years or older.");
+
+		$.validator.setDefaults({
+			ignore: "" // Forces validation on hidden fields
+		});
+
+
+		$("#form").validate({
+			errorPlacement: function (error, element) {
+				if (element.attr("type") === "hidden") {
+     				$("#sbmt").before(error); // Places error before the submit ID button
+    			} else {
+	    			element.before(error);
+    			}
+			},
+			rules: {
+				name: {
+					required: true,
+					textonly: true
+				},
+				gender: {
+					required: true,
+					textonly: true
+				},
+				mobile_number: {
+					required: true,
+					numberonly: true,
+					minlength:10,
+					maxlength:10
+				},
+				traveler_type: {
+					required: true
+				},
+				drivers_license: {
+					required: function () { return requiresSupplementalDl; },
+					driverslicense: true
+				},
+				drivers_license_image: {
+					required: function () { return requiresSupplementalDl; }
+				},
+				id_image: {
+	    			required: true
+	    		},
+				//dob: {
+						//date: true,
+						//dateFormat: true,  // Custom format validation
+						//validateAge: true
+				//}
+			},
+			messages: {
+				type: { valueNotEquals: "Please select an item!" },
+				//dob: {
+				//	date: "Please enter a valid date.",
+				//	maxDate: "Please check your birthdate. It cannot be in the future or age cant be less than 18 years old."
+				//},
+				id_image: {
+					required: "Please upload the id image."
+				},
+				drivers_license: {
+					required: "Driver's Licence number is required for this visitor type."
+				},
+				drivers_license_image: {
+					required: "Please capture the Driver's Licence image."
+				}
+			}
+		});
+		// Apply inline styling after validation initializes
+		$(".error").css({
+			"font-size": "16px",
+			"color": "red",
+			"font-weight": "bold"
+		});
+		$("#sbmt").click(function (event) {
+			event.preventDefault();
+			// Prepare id_image before validation
+			prepareIdImage().then(() => {
+				// Now run validation with the prepared id_image
+				if ($('#form').valid()) {
+					// Show spinner
+					document.getElementById('spinner').style.display = "flex";
+					$(this).prop('disabled', true);
+					$("#form").submit();
+				}
+			});
+		});
+	});
+</script>
+{% endblock content %}

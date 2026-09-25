@@ -1,0 +1,16 @@
+FROM python:latest
+
+ENV HOME=/build
+
+RUN python3 -m pip install --upgrade pip
+RUN pip3 install numpy cmake Flask pandas matplotlib psycopg2
+
+#RUN apt install -y libcanberra-gtk3-module
+
+#COPY ./anpr_webhook /project
+WORKDIR /project
+
+#Entrypoint
+
+#ENTRYPOINT /bin/bash
+ENTRYPOINT ["/bin/bash", "python3", "app.py"]

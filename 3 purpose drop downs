@@ -1,0 +1,39 @@
+3 purpose drop downs
+- official
+- local
+- tourist
+
+Change Gate to Parking Slots - Changed to Counter
+
+1. Pull Latest Code
+2. Check Vehicle Report Pagination
+
+WARN[0000] Found orphan containers ([deployment-census_counters_engine-1 deployment-census_counters_engine-2 census_counters_webservice_vanguard census_counters_alert_sender census_counters_local_management_workers census_counters_local_management_service]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
+
+
+3. Drivers License
+4. Update Known Persons
+7. 2 Cameras at NC Pass, 2 Cameras at SM Hill Boom Barrier, 2 Cameras at parking spot
+9. Where should the vehicle type be shown
+10. Do we need all the fields in the reports
+
+
+Completed: 
+
+1. System Set Up
+2. Vehicle Detection on 4 Cameras at SM Hill - Tested and Deployed
+3. Face Recognition at 3 Counters at SM Hill - Tested and Deployed
+4. User Training of 2 Users
+5. 7 User IDs created for both NC Pass and SM Hill counters - 1 user name for each counter.
+6. 1 User ID created for Admin use at HQ.
+
+Results of Visitor Vehicle Management System test at SM Hill:
+
+1. SM Hill Counter for Driver Registration is facing the sun and will give wrong face recognition results. - Need to put a shade and a curtain to block the sun. The camera should not face the sun.
+2. At other SM Hill counters, we need to separate the person with registered from the people in the queue for Face Recognition accuracy. Right now, when people queue up and a picture is taken, multiple faces show up in the image leading to errors.
+3. Servers should be placed at a location with AC and not open to dust and heat. 
+
+4. There is 1 NC Pass camera now but the feed quality was poor. The switch, OFC, and camera needs to be checked.
+5. The 2 NC Pass camera is not an IP camera and thus not avaialble on the network.
+6. Both NC Pass cameras need to be connected to the same network as the SM Hill cameras. 
+

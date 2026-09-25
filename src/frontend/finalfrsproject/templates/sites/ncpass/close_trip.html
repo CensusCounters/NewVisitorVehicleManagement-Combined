@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+  <section class="user login_section">
+    <div class="user-form">
+      <form id="form" action="{{ url_for(('close_trip')) }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if details.trip_id %}
+          <input type="hidden" id="trip_id" name="trip_id" value="{{ details.trip_id }}">
+        {% endif %}
+        <div class="form-group col-md-12">
+          <input id="exit_time" name="exit_time" id="exit_time" type="datetime-local" class="form-control required" placeholder="Exit Time">
+        </div>
+        <div class="col-xs-12 buttons text-center">
+          <button type="submit" id = "exit_time_btn" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+  $(document).ready(function(){
+    $(document).keypress(function(e) {
+      if(e.which == 13) {
+      	$("#login").trigger("click");
+      }
+    });
+    $("#form").validate({
+      errorPlacement: function (error, element){ 
+        element.before(error);
+      },
+      rules: {
+        exit_time: "required"
+      }
+    });
+    $("#login").click(function() {
+      if($('#form').valid()) {
+      	form.submit();
+      }	
+    });
+  });
+</script>
+{% endblock content %}

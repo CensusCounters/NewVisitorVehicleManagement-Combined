@@ -1,0 +1,2371 @@
+# Hindi translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-08-17 16:06+0530\n"
+"PO-Revision-Date: 2024-05-31 15:45+0530\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.15.0\n"
+
+#: src/frontend/finalfrsproject/errors.py:16
+msgid "You have been logged out due to inactivity. Please login again."
+msgstr "Aap inactivity ki wajah se logout ho gaye. Kripya dubara login karein."
+
+#: src/frontend/finalfrsproject/errors.py:17
+#: src/frontend/finalfrsproject/errors.py:27
+#: src/frontend/finalfrsproject/errors.py:37
+#: src/frontend/finalfrsproject/errors.py:47
+#: src/frontend/finalfrsproject/errors.py:56
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:62
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:237
+#: src/frontend/finalfrsproject/helpers/stop_processing_helper.py:15
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:26
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:82
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:115
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:154
+#: src/frontend/finalfrsproject/site_workflows/kupwara/make_trip_summary_helper.py:111
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:52
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:191
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:221
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:26
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:82
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:115
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:154
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/make_trip_summary_helper.py:111
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:52
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:191
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:221
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:26
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:82
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:115
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:154
+msgid "Error"
+msgstr "Error"
+
+#: src/frontend/finalfrsproject/errors.py:26
+msgid "The token has expired. Please login again."
+msgstr "Token expire ho gaya hai. Kripya dubara login karein."
+
+#: src/frontend/finalfrsproject/errors.py:36
+msgid "Invalid token. Please login again."
+msgstr "Invalid token hai. Kripya dubara login karein."
+
+#: src/frontend/finalfrsproject/errors.py:46
+msgid "Missing token. Please login again."
+msgstr "Token missing hai. Kripya dubara login karein."
+
+#: src/frontend/finalfrsproject/errors.py:55
+msgid "Uploaded file too large. Max 2GB allowed."
+msgstr "Uploaded file bahut bada hai. Max 2GB allowed hai."
+
+#: src/frontend/finalfrsproject/redisCommands.py:27
+msgid "Known Person"
+msgstr "Known Person"
+
+#: src/frontend/finalfrsproject/redisCommands.py:65
+msgid "Known Visitor"
+msgstr "Known Visitor"
+
+#: src/frontend/finalfrsproject/redisCommands.py:75
+#: src/frontend/finalfrsproject/redisCommands.py:94
+msgid "Unknown Person"
+msgstr "Unknown Person"
+
+#: src/frontend/finalfrsproject/redisCommands.py:247
+msgid "Please select traveler type and enter trip details."
+msgstr "Kripya traveler type select karke trip details enter karein."
+
+#: src/frontend/finalfrsproject/redisCommands.py:250
+msgid "Add Trip"
+msgstr "Add Trip"
+
+#: src/frontend/finalfrsproject/redisCommands.py:267
+msgid "Trip added Successfully. Click Continue to return to the home page."
+msgstr ""
+"Trip successfully add ho gaya. Home page par jaane ke liye Continue "
+"clickkarein."
+
+#: src/frontend/finalfrsproject/redisCommands.py:271
+msgid "Trip Summary"
+msgstr "Trip Summary"
+
+#: src/frontend/finalfrsproject/redisCommands.py:284
+msgid "Unknown Vehicle"
+msgstr "Unknown Vehicle"
+
+#: src/frontend/finalfrsproject/redisCommands.py:298
+msgid "Unknown Trip"
+msgstr "Unknown Trip"
+
+#: src/frontend/finalfrsproject/redisCommands.py:299
+msgid "Please select a trip from the list below."
+msgstr "Kripya neeche list me se ek trip select karein."
+
+#: src/frontend/finalfrsproject/helpers/vehicle_helper.py:35
+#: src/frontend/finalfrsproject/redisCommands.py:325
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:48
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:48
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:48
+msgid "Unregistered Vehicle"
+msgstr "Unregistered Vehicle"
+
+#: src/frontend/finalfrsproject/redisCommands.py:347
+msgid "Known Vehicle"
+msgstr "Known Vehicle"
+
+#: src/frontend/finalfrsproject/redisCommands.py:348
+msgid "Success! Vehicle Information is in the database. Please continue."
+msgstr "Success! Visitor information database mein save ho gayi. Please continue."
+
+#: src/frontend/finalfrsproject/routeMethods.py:643
+msgid "No records found. Please try again with different dates."
+msgstr "Koi records nahi mile. Kripya doosri dates ke saath dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/get_unfinished_trips_helper.py:33
+#: src/frontend/finalfrsproject/helpers/get_unfinished_trips_helper.py:72
+#: src/frontend/finalfrsproject/helpers/get_unfinished_trips_helper.py:114
+#: src/frontend/finalfrsproject/helpers/get_unfinished_trips_helper.py:155
+#: src/frontend/finalfrsproject/helpers/trips_helper.py:43
+#: src/frontend/finalfrsproject/routeMethods.py:644
+#: src/frontend/finalfrsproject/routeMethods.py:656
+msgid "End Trip"
+msgstr "End Trip"
+
+#: src/frontend/finalfrsproject/helpers/trips_helper.py:42
+#: src/frontend/finalfrsproject/routeMethods.py:655
+msgid ""
+"Please select a trip from the list below. It will be closed with the "
+"current time."
+msgstr ""
+"Kripya neeche list me se ek trip select karein. Ye current time ke "
+"saathclose ho jayega."
+
+#: src/frontend/finalfrsproject/routeMethods.py:700
+#: src/frontend/finalfrsproject/routeMethods.py:775
+#: src/frontend/finalfrsproject/site_workflows/ncpass/vehicle_report_helper.py:103
+#: src/frontend/finalfrsproject/site_workflows/ncpass/vehicle_report_helper.py:224
+msgid ""
+"Following records were found for the selected dates. Please try again "
+"with different dates."
+msgstr ""
+"Selected dates ke liye ye records mile. Kripya doosri dates select "
+"karkedobara try karein."
+
+#: src/frontend/finalfrsproject/routeMethods.py:703
+#: src/frontend/finalfrsproject/routeMethods.py:730
+msgid "Vehicle Report"
+msgstr "Vehicle Report"
+
+#: src/frontend/finalfrsproject/routeMethods.py:710
+#: src/frontend/finalfrsproject/routeMethods.py:712
+#: src/frontend/finalfrsproject/routeMethods.py:713
+#: src/frontend/finalfrsproject/routeMethods.py:714
+#: src/frontend/finalfrsproject/routeMethods.py:715
+#: src/frontend/finalfrsproject/routeMethods.py:716
+#: src/frontend/finalfrsproject/routeMethods.py:718
+#: src/frontend/finalfrsproject/routeMethods.py:787
+#: src/frontend/finalfrsproject/routeMethods.py:788
+#: src/frontend/finalfrsproject/routeMethods.py:789
+#: src/frontend/finalfrsproject/routeMethods.py:794
+#: src/frontend/finalfrsproject/routeMethods.py:795
+#: src/frontend/finalfrsproject/templates/person_report.html:59
+#: src/frontend/finalfrsproject/templates/person_report.html:65
+#: src/frontend/finalfrsproject/templates/person_report.html:87
+#: src/frontend/finalfrsproject/templates/person_report.html:117
+#: src/frontend/finalfrsproject/templates/person_report.html:123
+#: src/frontend/finalfrsproject/templates/person_report.html:129
+#: src/frontend/finalfrsproject/templates/person_report.html:137
+#: src/frontend/finalfrsproject/templates/person_report.html:143
+#: src/frontend/finalfrsproject/templates/person_report.html:149
+#: src/frontend/finalfrsproject/templates/person_report.html:155
+#: src/frontend/finalfrsproject/templates/person_report.html:161
+#: src/frontend/finalfrsproject/templates/person_report.html:167
+#: src/frontend/finalfrsproject/templates/person_report.html:173
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:59
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:65
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:87
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:117
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:123
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:129
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:137
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:143
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:149
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:155
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:161
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:167
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:173
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:59
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:65
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:87
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:117
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:123
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:129
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:137
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:143
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:149
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:155
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:161
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:167
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:173
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:73
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:101
+msgid "No records found"
+msgstr "Koi records nahi mile."
+
+#: src/frontend/finalfrsproject/routeMethods.py:727
+#: src/frontend/finalfrsproject/routeMethods.py:802
+msgid ""
+"No records found for the selected dates. Please try again with different "
+"dates."
+msgstr ""
+"Selected dates ke liye koi records nahi mile. Kripya doosri dates ke "
+"saathdobara try karein."
+
+#: src/frontend/finalfrsproject/routeMethods.py:778
+#: src/frontend/finalfrsproject/routeMethods.py:805
+msgid "Person Report"
+msgstr "Person Report"
+
+#: src/frontend/finalfrsproject/routes.py:142
+#, fuzzy
+msgid "Your session is no longer active. Please login again."
+msgstr "Aap inactivity ki wajah se logout ho gaye. Kripya dubara login karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ganganagar_helper.py:38
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:38
+msgid "Please select the ID type and the ID number to verify identity."
+msgstr "Identity verify karne ke liye ID type aur ID number select karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ganganagar_helper.py:168
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ganganagar_helper.py:211
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:121
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:154
+#, fuzzy
+msgid "The ID Number entered - "
+msgstr "Enter the id number"
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ganganagar_helper.py:168
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:121
+#, fuzzy
+msgid " - was not found in the system. Please register this person."
+msgstr "Ye person system me nahi hai. Kripya details fill karke Submit karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ganganagar_helper.py:211
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:154
+msgid " - was found in the system. Please do a face recognition now."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:24
+msgid "Add member passenger details. Please enter the aadhar number"
+msgstr "Member passenger details add karein. Kripya Aadhar number enter karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:30
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:50
+msgid "ID Lookup"
+msgstr "ID Lookup"
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:61
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:236
+msgid "Error in ID look up. Please try again."
+msgstr "ID lookup me error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:146
+msgid "The ID lookup failed due to a system issue. Please try again."
+msgstr "System issue ki wajah se ID lookup fail ho gaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:169
+#, python-format
+msgid ""
+"The ID Number entered - %(id_number)s - was not found in the system. "
+"Please register this person."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_kupwara_helper.py:219
+#, python-format
+msgid ""
+"The ID Number entered - %(id_number)s - was found in the system. Please "
+"do a face recognition now."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:21
+#, fuzzy
+msgid "Please select the Visitor type and the ID number to verify identity."
+msgstr "Identity verify karne ke liye ID type aur ID number select karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:69
+#, fuzzy
+msgid "Please select a valid visitor type, ID type and ID number."
+msgstr "Identity verify karne ke liye ID type aur ID number select karein."
+
+#: src/frontend/finalfrsproject/helpers/aadhar_lookup_ncpass_helper.py:89
+#, fuzzy
+msgid "Please select a valid ID type."
+msgstr "Kripya neeche list me se ek trip select karein."
+
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:32
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:140
+#, python-formatmsgid """The ID Number entered - %(id_number)s - was found in the system. Please ""do a face recognition now.", python-formatmsgid """The ID Number entered - %(id_number)s - was not found in the system. ""Please register this person."
+msgid "Welcome. Please login with your name and password to continue."
+msgstr ""
+"Enter kiya gaya ID number - %(id_number)s - system me mil gaya. Ab "
+"facerecognition karein."
+
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:33
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:62
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:96
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:141
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:159
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:199
+#: src/frontend/finalfrsproject/templates/login.html:21
+msgid "Login"
+msgstr "Login"
+
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:61
+msgid ""
+"Login information incorrect. Please check the username and password "
+"entered."
+msgstr ""
+"Login info galat hai. Kripya enter kiya hua username aur password "
+"checkkarein."
+
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:95
+msgid "This user is already logged in. Please log out first."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:158
+msgid "An unexpected error occurred. Please try again."
+msgstr "Unexpected error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/auth_helper.py:198
+msgid "An unexpected error occurred at logout. Please try again."
+msgstr "Logout ke time unexpected error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/blacklist_alert_helper.py:80
+msgid ""
+"Possible blacklist match detected. Please confirm if these faces are the "
+"same person."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/blacklist_alert_helper.py:81
+#: src/frontend/finalfrsproject/helpers/blacklist_alert_helper.py:110
+#, fuzzy
+msgid "Blacklist Alert"
+msgstr "Blacklist"
+
+#: src/frontend/finalfrsproject/helpers/blacklist_alert_helper.py:109
+msgid "Processing stopped due to a blacklist alert. Click Continue to proceed."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/blacklisted_persons_list_helper.py:37
+#: src/frontend/finalfrsproject/helpers/blacklisted_persons_list_helper.py:56
+#, fuzzy
+msgid "Blacklisted Persons"
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:23
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_lookup_helper.py:21
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:21
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_lookup_helper.py:21
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:21
+msgid ""
+"Please upload a picture and click submit. Only use pictures with the face"
+" of a single person."
+msgstr ""
+"Kripya ek photo upload karein aur Submit click karein. Sirf single "
+"personface wali photo use karein."
+
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:26
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:43
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:68
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:98
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:164
+#: src/frontend/finalfrsproject/helpers/enroll_blacklisted_person_helper.py:182
+msgid "Enroll Blacklisted Person"
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/helpers/home_helper.py:25
+msgid ""
+"Please click on one of the options below to continue. This will start a "
+"new thread."
+msgstr ""
+"Continue karne ke liye neeche diye gaye options me se ek select karein. "
+"Isseek naya thread start hoga."
+
+#: src/frontend/finalfrsproject/helpers/home_helper.py:26
+#: src/frontend/finalfrsproject/helpers/home_helper.py:90
+msgid "Home Page"
+msgstr "Home Page"
+
+#: src/frontend/finalfrsproject/helpers/home_helper.py:89
+msgid ""
+"Error while processing your request. Please click on one of the options "
+"below to continue."
+msgstr ""
+"Aapki request process karte waqt error aaya. Continue karne ke liye "
+"neechediye gaye options me se ek select karein."
+
+#: src/frontend/finalfrsproject/helpers/known_person_helper.py:29
+msgid ""
+"You cannot add the same person again to the trip. Please start with a new"
+" ID to continue."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/manual_face_verification_helper.py:16
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:84
+msgid ""
+"Please manually check that these pictures are of the same person. If you "
+"are sure, press Yes. Else, press No."
+msgstr ""
+"Kripya manually check karein ki ye photos same person ki hain. Agar "
+"surehain to Yes dabayein, warna No."
+
+#: src/frontend/finalfrsproject/helpers/manual_face_verification_helper.py:28
+msgid "Manual Face Verification"
+msgstr "Manual Face Verification"
+
+#: src/frontend/finalfrsproject/helpers/manual_face_verification_helper.py:47
+msgid "This person has been manually verified."
+msgstr "Is person ka manual verification ho gaya hai."
+
+#: src/frontend/finalfrsproject/helpers/manual_face_verification_helper.py:63
+#: src/frontend/finalfrsproject/helpers/manual_face_verification_helper.py:70
+msgid ""
+"The Aadhar card provided does not belong to this visitor. Please use the "
+"correct aadhar card and try again."
+msgstr ""
+"Jo Aadhar card diya gaya hai wo is visitor ka nahi hai. Kripya sahi "
+"Aadharcard use karke dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:28
+msgid "Recognize Person"
+msgstr "Recognize Person"
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:128
+#, fuzzy
+msgid "Face recognition service is unavailable. Please try again."
+msgstr "Person recognize karte waqt error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:170
+#, fuzzy
+msgid "Face recognition failed. Please try again."
+msgstr "Person recognize karte waqt error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:213
+msgid ""
+"Picture found for this enrollment id. Please confirm this is the same "
+"person."
+msgstr ""
+"Is enrollment ID ke liye photo mil gayi. Kripya confirm karein ki ye "
+"wahiperson hai."
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:221
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:232
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:252
+msgid "Fail"
+msgstr "Fail"
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:225
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:256
+msgid "Pass"
+msgstr "Pass"
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:229
+msgid "Different person found for the ID provided. Please confirm below."
+msgstr "Diye gaye ID ke liye different person mila. Kripya neeche confirm karein."
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:304
+msgid "This picture matched another ID. Please confirm below."
+msgstr "Ye photo kisi aur ID se match hua. Kripya neeche confirm karein."
+
+#: src/frontend/finalfrsproject/helpers/recognize_person_helper.py:413
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:169
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:236
+msgid "This person is not in the system. Please enter details and submit."
+msgstr "Ye person system me nahi hai. Kripya details fill karke Submit karein."
+
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:22
+msgid "Reregister Face"
+msgstr "Reregister Face"
+
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:99
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:115
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:319
+msgid "Success! Visitor Information is in the database. Please continue."
+msgstr "Success! Visitor information database mein save ho gayi. Please continue."
+
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:147
+msgid ""
+"This person's image is already used with another ID. Please use the "
+"correct ID and try again."
+msgstr ""
+"Is person ki image kisi aur ID ke saath already used hai. Kripya sahi ID "
+"usekarke dobara try karein."
+
+#: src/frontend/finalfrsproject/helpers/reregister_face_helper.py:207
+msgid ""
+"Different person found for the ID provided. Please use the correct ID and"
+" try again."
+msgstr ""
+"Diye gaye ID ke liye different person mila. Kripya sahi ID use karke "
+"dobaratry karein."
+
+#: src/frontend/finalfrsproject/helpers/trip_report_helper.py:27
+#: src/frontend/finalfrsproject/helpers/trip_report_helper.py:76
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/vehicle_report_helper.py:27
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/vehicle_report_helper.py:75
+#: src/frontend/finalfrsproject/site_workflows/kupwara/vehicle_report_helper.py:27
+#: src/frontend/finalfrsproject/site_workflows/kupwara/vehicle_report_helper.py:75
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/vehicle_report_helper.py:27
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/vehicle_report_helper.py:75
+msgid "Report for the selected dates."
+msgstr "Selected dates ke liye report."
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:90
+#, python-format
+msgid "Required fields missing: %(fields)s"
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:100
+msgid "The selected visitor type and ID type are not allowed."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:108
+#, fuzzy
+msgid "Please select a valid gender."
+msgstr "Select Gender"
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:117
+msgid "Mobile number must contain exactly 10 digits."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:125
+msgid "Please select a valid visit purpose."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:143
+msgid "Driver's licence number and image are required for this visitor type."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/unknown_person_helper.py:152
+msgid "Driver's licence number must be exactly 15 alphanumeric characters."
+msgstr ""
+
+#: src/frontend/finalfrsproject/helpers/vehicle_helper.py:34
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:84
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:84
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:84
+msgid "Please identify the vehicle from the list below."
+msgstr "Kripya neeche list me se vehicle identify/select karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/make_trip_summary_helper.py:110
+#: src/frontend/finalfrsproject/site_workflows/kupwara/make_trip_summary_helper.py:110
+#: src/frontend/finalfrsproject/site_workflows/ncpass/make_trip_summary_helper.py:62
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/make_trip_summary_helper.py:110
+msgid "Error in the trip summary page. Please go to the home page."
+msgstr "Trip summary page me error aaya. Kripya home page par jaayein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_lookup_helper.py:24
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_lookup_helper.py:40
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_report_helper.py:29
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:24
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:40
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:29
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:82
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:99
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_lookup_helper.py:24
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_lookup_helper.py:40
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_report_helper.py:29
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:24
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:40
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:29
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:82
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:99
+#, python-formatmsgid """The Aadhar Number entered - %(aadhar_number)s - was found in the system. ""Please do a face recognition now.", python-formatmsgid """The Aadhar Number entered - %(aadhar_number)s - was not found in the ""system. Please register this person."
+msgid "Person Lookup"
+msgstr ""
+"Enter kiya gaya Aadhar number - %(aadhar_number)s - system me mil gaya. "
+"Abface recognition karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_report_helper.py:50
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_report_helper.py:61
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:50
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:61
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_report_helper.py:50
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_report_helper.py:61
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:50
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:61
+msgid "Person Trip Report"
+msgstr "Person Trip Report"
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_report_helper.py:60
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:60
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_report_helper.py:60
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:60
+msgid "Following records were found for the selected person."
+msgstr "Selected person ke liye ye records mile."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_report_helper.py:81
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/person_report_helper.py:98
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:81
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:98
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_report_helper.py:81
+#: src/frontend/finalfrsproject/site_workflows/ncpass/person_report_helper.py:98
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:81
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:98
+msgid "Error in the person trip report page. Please try again."
+msgstr "Person trip report page me error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/recognize_vehicle_helper.py:69
+#: src/frontend/finalfrsproject/site_workflows/kupwara/recognize_vehicle_helper.py:69
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/recognize_vehicle_helper.py:69
+#, fuzzy
+msgid "Recognize Vehicle"
+msgstr "Recognize Face:"
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/recognize_vehicle_helper.py:70
+#: src/frontend/finalfrsproject/site_workflows/kupwara/recognize_vehicle_helper.py:70
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/recognize_vehicle_helper.py:70
+#, fuzzy
+msgid "Error while checking if the vehicle is in the system. Please try again."
+msgstr "Open trips retrieve karte waqt error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/recognize_vehicle_helper.py:77
+#: src/frontend/finalfrsproject/site_workflows/kupwara/recognize_vehicle_helper.py:77
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/recognize_vehicle_helper.py:77
+msgid "Please review and click submit to save the vehicle data."
+msgstr ""
+"Kripya review karein aur vehicle data save karne ke liye Submit "
+"clickkarein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/report_home_helper.py:18
+#: src/frontend/finalfrsproject/site_workflows/kupwara/report_home_helper.py:18
+#: src/frontend/finalfrsproject/site_workflows/ncpass/report_home_helper.py:28
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/report_home_helper.py:18
+msgid "Please click on a report from the list below."
+msgstr "Kripya neeche list me se ek report select karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:21
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:25
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:21
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:25
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:21
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:25
+msgid "System was unable to retrieve vehicle list from ANPR. Please try again."
+msgstr ""
+"System ANPR se vehicle list retrieve nahi kar paaya. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:49
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:49
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:49
+msgid "Please fill the vehicle details and click submit."
+msgstr "Kripya vehicle details fill karein aur Submit click karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:77
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:81
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:77
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:81
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:77
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:81
+msgid "Unexpected error in Unknown Vehicle get method. Please try again."
+msgstr ""
+"Unknown Vehicle get method me unexpected error aaya. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:108
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:108
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:108
+msgid "System was unable to insert a vehicle record. Please try again."
+msgstr "System vehicle record insert nahi kar paaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:114
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:114
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:114
+msgid "System was unable to insert a vehicle record. Please try again"
+msgstr "System vehicle record insert nahi kar paaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:148
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:148
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:148
+msgid "Unexpected error while handling Unknown Vehicle. Please try again."
+msgstr ""
+"Unknown Vehicle handle karte waqt unexpected error aaya. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/ganganagar/unknown_vehicle_helper.py:153
+#: src/frontend/finalfrsproject/site_workflows/kupwara/unknown_vehicle_helper.py:153
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/unknown_vehicle_helper.py:153
+msgid "Unexpected error while handling Unknown Vehicle. Please try again"
+msgstr ""
+"Unknown Vehicle handle karte waqt unexpected error aaya. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/make_trip_summary_helper.py:91
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/make_trip_summary_helper.py:91
+msgid "Trip registration completed"
+msgstr "Trip registration complete ho gaya."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:37
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:37
+msgid "Error in person look up. Please try again."
+msgstr "Person lookup me error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:67
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:67
+msgid "Please upload a valid image file for person lookup."
+msgstr "Kripya person lookup ke liye valid image file upload karein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:68
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:183
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:192
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:68
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:183
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:192
+msgid "Person Look Up"
+msgstr "Person Look Up"
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:94
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:94
+msgid "No matches found for the uploaded picture."
+msgstr "Uploaded photo ke liye koi match nahi mila."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:95
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:167
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:95
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:167
+msgid "Person Look Up Result"
+msgstr "Person Look Up Result"
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:165
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:165
+msgid "Following matches were found for the upload picture."
+msgstr "Uploaded photo ke liye ye matches mile."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:182
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_lookup_helper.py:191
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:182
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_lookup_helper.py:191
+msgid "Error in person look up. Please try again"
+msgstr "Person lookup me error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:28
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:32
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:28
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:32
+msgid "Error while retrieving trips for uploaded picture. Please try again."
+msgstr ""
+"Uploaded photo ke trips retrieve karte waqt error aaya. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/person_report_helper.py:49
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/person_report_helper.py:49
+msgid "No records found for the selected person."
+msgstr "Selected person ke liye koi records nahi mile."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:51
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:51
+msgid "Unexpected error while generating add trip form. Please try again."
+msgstr ""
+"Add trip form generate karte waqt unexpected error aaya. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:85
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:85
+msgid "'Please identify the vehicle from the list below.'"
+msgstr "'Kripya neeche list me se vehicle identify/select karein.'"
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:184
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:184
+msgid "System was unable to insert a trip record. Please try again."
+msgstr "System trip record insert nahi kar paaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:190
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:190
+msgid "System was unable to insert a trip record. Please try again"
+msgstr "System trip record insert nahi kar paaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:203
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:203
+msgid "Trip updated Successfully. Click Continue for trip summary."
+msgstr ""
+"Trip successfully update ho gaya. Trip summary ke liye Continue "
+"clickkarein."
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:206
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:206
+msgid "Trip Successfully Added"
+msgstr "Trip Successfully Added"
+
+#: src/frontend/finalfrsproject/site_workflows/kupwara/trip_registration_helper.py:220
+#: src/frontend/finalfrsproject/site_workflows/tangdhar/trip_registration_helper.py:220
+msgid "No form received for creating new trip. Please try again."
+msgstr ""
+"New trip create karne ke liye koi form receive nahi hua. Kripya dobara "
+"trykarein."
+
+#: src/frontend/finalfrsproject/site_workflows/ncpass/vehicle_report_helper.py:13
+#, fuzzy
+msgid "Too many records found. Please select a smaller date range."
+msgstr "Koi records nahi mile. Kripya doosri dates ke saath dobara try karein."
+
+#: src/frontend/finalfrsproject/site_workflows/ncpass/vehicle_report_helper.py:14
+#, fuzzy
+msgid "Too many records found"
+msgstr "Koi records nahi mile."
+
+#: src/frontend/finalfrsproject/templates/401.html:9
+#: src/frontend/finalfrsproject/templates/404.html:9
+#: src/frontend/finalfrsproject/templates/500.html:9
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:51
+#: src/frontend/finalfrsproject/templates/sites/kupwara/401.html:9
+#: src/frontend/finalfrsproject/templates/sites/kupwara/404.html:9
+#: src/frontend/finalfrsproject/templates/sites/kupwara/500.html:9
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:51
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:10
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/401.html:9
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/404.html:9
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/500.html:9
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:51
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:10
+#: src/frontend/finalfrsproject/templates/success_page.html:8
+#: src/frontend/finalfrsproject/templates/token_error.html:9
+#: src/frontend/finalfrsproject/templates/trip_summary.html:10
+msgid "Continue"
+msgstr "Continue"
+
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_kupwara.html:9
+#: src/frontend/finalfrsproject/templates/add_trip.html:38
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:38
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:38
+msgid "Visitor Type"
+msgstr "Visitor Type"
+
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_kupwara.html:18
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_ncpass.html:132
+#: src/frontend/finalfrsproject/templates/unknown_person.html:114
+msgid "ID Type"
+msgstr "ID Type"
+
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_kupwara.html:26
+msgid "Enter the id number"
+msgstr "Enter the id number"
+
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_kupwara.html:30
+msgid "Search"
+msgstr "Search"
+
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_kupwara.html:32
+msgid "Skip"
+msgstr "Skip"
+
+#: src/frontend/finalfrsproject/templates/aadhar_lookup_ncpass.html:146
+#, fuzzy
+msgid "Enter the ID number"
+msgstr "Enter the id number"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:42
+#: src/frontend/finalfrsproject/templates/person_report.html:32
+#: src/frontend/finalfrsproject/templates/recognize_trip.html:23
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:42
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:32
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_trip.html:23
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:13
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:20
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:42
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:32
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_trip.html:23
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:13
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:20
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:13
+#: src/frontend/finalfrsproject/templates/trip_summary.html:20
+#: src/frontend/finalfrsproject/templates/unknown_person.html:43
+#: src/frontend/finalfrsproject/templates/unknown_person.html:47
+msgid "Traveler Type"
+msgstr "Traveler Type"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:52
+#: src/frontend/finalfrsproject/templates/person_report.html:37
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:52
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:37
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:24
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:52
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:37
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:24
+#: src/frontend/finalfrsproject/templates/trip_summary.html:24
+msgid "Entry Time"
+msgstr "Entry Time"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:59
+#: src/frontend/finalfrsproject/templates/person_lookup_result_list.html:35
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:59
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup_result_list.html:35
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:59
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup_result_list.html:35
+#: src/frontend/finalfrsproject/templates/unknown_person.html:57
+msgid "Name"
+msgstr "Name"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:65
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:65
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:65
+#: src/frontend/finalfrsproject/templates/unknown_person.html:121
+msgid "ID Number"
+msgstr "ID Number"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:73
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:27
+#: src/frontend/finalfrsproject/templates/person_report.html:30
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:73
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:27
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:30
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:31
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:73
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:27
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:30
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:31
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:31
+msgid "Vehicle Number"
+msgstr "Vehicle Number"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:80
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:80
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:44
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:80
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:44
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:44
+msgid "M/T"
+msgstr "M/T"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:87
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:87
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:87
+msgid "Click here to select another vehicle"
+msgstr "Click here to select another vehicle"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:92
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:92
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:22
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:92
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:22
+#: src/frontend/finalfrsproject/templates/trip_summary.html:22
+#: src/frontend/finalfrsproject/templates/unknown_person.html:92
+msgid "Address"
+msgstr "Address"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:100
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:100
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:23
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:100
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:23
+#: src/frontend/finalfrsproject/templates/trip_summary.html:23
+msgid "To Meet"
+msgstr "To Meet"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:107
+#: src/frontend/finalfrsproject/templates/person_report.html:41
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:107
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:41
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:21
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:107
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:41
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:21
+#: src/frontend/finalfrsproject/templates/trip_summary.html:21
+#: src/frontend/finalfrsproject/templates/unknown_person.html:108
+msgid "Purpose"
+msgstr "Purpose"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:114
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:114
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:114
+msgid "Token Number"
+msgstr "Token Number"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:120
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:120
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:120
+msgid "Expected Visit in hrs"
+msgstr "Expected Visit in hrs"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:126
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:126
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:126
+msgid "Expected Visit in min"
+msgstr "Expected Visit in min"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:135
+#: src/frontend/finalfrsproject/templates/person_report.html:35
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:135
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:35
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:86
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:135
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:35
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:86
+#: src/frontend/finalfrsproject/templates/trip_summary.html:86
+msgid "Permit"
+msgstr "Permit"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:137
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:137
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:137
+msgid "Capture Permit Image"
+msgstr "Capture Permit Image"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:141
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:141
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:20
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:141
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:20
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:20
+msgid "Male Passengers"
+msgstr "Male Passengers"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:147
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:147
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:21
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:147
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:21
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:21
+msgid "Female Passengers"
+msgstr "Female Passengers"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:153
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:153
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:22
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:153
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:22
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:22
+msgid "Child Passengers"
+msgstr "Child Passengers"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:160
+#: src/frontend/finalfrsproject/templates/person_report.html:42
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:160
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:42
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:29
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:160
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:42
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:29
+#: src/frontend/finalfrsproject/templates/trip_summary.html:29
+msgid "Remarks"
+msgstr "Remarks"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:169
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:169
+msgid "Review before submitting"
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:170
+#, fuzzy
+msgid "Please verify the information below. Press"
+msgstr "Kripya neeche list me se ek trip select karein."
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/add_trip.html:181
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:181
+#, fuzzy
+msgid "Submit Trip"
+msgstr "Submit"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:170
+msgid "to proceed, or"
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/add_trip.html:180
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:180
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:170
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:170
+msgid "to go back and make changes."
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:175
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:175
+#, fuzzy
+msgid "Trip summary"
+msgstr "Trip Summary"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:190
+#: src/frontend/finalfrsproject/templates/add_trip.html:208
+#: src/frontend/finalfrsproject/templates/person_report.html:192
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:190
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:208
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:192
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:117
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:190
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:208
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:192
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:117
+#: src/frontend/finalfrsproject/templates/trip_summary.html:117
+#: src/frontend/finalfrsproject/templates/unknown_person.html:188
+msgid "&times;"
+msgstr "&times;"
+
+#: src/frontend/finalfrsproject/templates/add_trip.html:210
+#: src/frontend/finalfrsproject/templates/sites/kupwara/add_trip.html:210
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/add_trip.html:210
+#: src/frontend/finalfrsproject/templates/unknown_person.html:190
+msgid "Capture Image"
+msgstr "Capture Image"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:33
+msgid "Blacklist verification required"
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:46
+#, fuzzy
+msgid "Blacklisted Person Details:"
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:47
+#, fuzzy
+msgid "Not Available"
+msgstr "Not Applicable"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:59
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:62
+#, fuzzy
+msgid "Blacklisted Person Picture"
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:65
+#, fuzzy
+msgid "No Blacklist Image Found"
+msgstr "No Image Found"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:77
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:80
+#: src/frontend/finalfrsproject/templates/manual_face_verification.html:31
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:118
+#: src/frontend/finalfrsproject/templates/reregister_face.html:82
+#: src/frontend/finalfrsproject/templates/reregister_face.html:85
+msgid "Today's Picture"
+msgstr "Today's Picture"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:83
+#, fuzzy
+msgid "No Captured Image Found"
+msgstr "No Image Found"
+
+#: src/frontend/finalfrsproject/templates/blacklist_alert.html:105
+#: src/frontend/finalfrsproject/templates/reregister_face.html:108
+msgid "Faces are same?"
+msgstr "Faces are same?"
+
+#: src/frontend/finalfrsproject/templates/blacklisted_persons_list.html:136
+#, fuzzy
+msgid "Add New Blacklisted Person"
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/templates/blacklisted_persons_list.html:176
+#, fuzzy
+msgid "No blacklisted persons found."
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/templates/close_trip.html:11
+#: src/frontend/finalfrsproject/templates/person_report.html:38
+#: src/frontend/finalfrsproject/templates/sites/kupwara/close_trip.html:11
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:38
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/close_trip.html:11
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:38
+msgid "Exit Time"
+msgstr "Exit Time"
+
+#: src/frontend/finalfrsproject/templates/close_trip.html:14
+#: src/frontend/finalfrsproject/templates/person_lookup.html:22
+#: src/frontend/finalfrsproject/templates/sites/kupwara/close_trip.html:14
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:22
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/close_trip.html:14
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:22
+#: src/frontend/finalfrsproject/templates/unknown_person.html:167
+msgid "Submit"
+msgstr "Submit"
+
+#: src/frontend/finalfrsproject/templates/enroll_blacklisted_person.html:77
+msgid "Please upload an image with"
+msgstr "Kripya ek image upload karein jisme"
+
+#: src/frontend/finalfrsproject/templates/enroll_blacklisted_person.html:78
+msgid ""
+" only 1 face looking at the camera. Images with side faces or masks or "
+"sunglasses or caps are not allowed."
+msgstr ""
+" sirf 1 face camera ki taraf ho. Side face/mask/sunglasses/caps wali "
+"imagesallowed nahi hain."
+
+#: src/frontend/finalfrsproject/templates/enroll_blacklisted_person.html:90
+#: src/frontend/finalfrsproject/templates/enroll_blacklisted_person.html:104
+#, fuzzy
+msgid "View Blacklisted Persons"
+msgstr "Enroll Blacklisted Person"
+
+#: src/frontend/finalfrsproject/templates/faceapi.html:7
+msgid "Document"
+msgstr "Document"
+
+#: src/frontend/finalfrsproject/templates/faceapi.html:195
+#: src/frontend/finalfrsproject/templates/recognize_person.html:210
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:109
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:109
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:109
+msgid "Error:"
+msgstr "Error:"
+
+#: src/frontend/finalfrsproject/templates/home.html:10
+msgid "New Visitor"
+msgstr "New Visitor"
+
+#: src/frontend/finalfrsproject/templates/home.html:15
+msgid "End Visit"
+msgstr "End Visit"
+
+#: src/frontend/finalfrsproject/templates/home.html:20
+msgid "View Report"
+msgstr "View Report"
+
+#: src/frontend/finalfrsproject/templates/known_person.html:258
+#, fuzzy
+msgid "Retake ID Image"
+msgstr "ID Image"
+
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:10
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:13
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:10
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:13
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:10
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:13
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:10
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:13
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:10
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:13
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:10
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:13
+msgid "Vehicle Picture"
+msgstr "Vehicle Picture"
+
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:20
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:20
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:20
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:20
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:20
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:20
+msgid "Vehicle Details"
+msgstr "Vehicle Details"
+
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:33
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:33
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:38
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:33
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:38
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:38
+msgid "Owner"
+msgstr "Owner"
+
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:39
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:39
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:39
+msgid "Make"
+msgstr "Make"
+
+#: src/frontend/finalfrsproject/templates/known_vehicle.html:45
+#: src/frontend/finalfrsproject/templates/sites/kupwara/known_vehicle.html:45
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:50
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/known_vehicle.html:45
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:50
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:50
+msgid "Color"
+msgstr "Color"
+
+#: src/frontend/finalfrsproject/templates/login.html:7
+msgid "Enter your username"
+msgstr "Enter your username"
+
+#: src/frontend/finalfrsproject/templates/login.html:10
+msgid "Enter your password"
+msgstr "Enter your password"
+
+#: src/frontend/finalfrsproject/templates/login.html:15
+msgid "English"
+msgstr "English"
+
+#: src/frontend/finalfrsproject/templates/login.html:16
+msgid "Hinglish"
+msgstr "Hinglish"
+
+#: src/frontend/finalfrsproject/templates/login.html:71
+msgid "Error changing language"
+msgstr "Language change karte waqt error aaya."
+
+#: src/frontend/finalfrsproject/templates/logout.html:7
+#: src/frontend/finalfrsproject/templates/manual_face_verification.html:46
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:130
+#: src/frontend/finalfrsproject/templates/person_report.html:103
+#: src/frontend/finalfrsproject/templates/reregister_face.html:118
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:103
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:103
+msgid "Yes"
+msgstr "Yes"
+
+#: src/frontend/finalfrsproject/templates/logout.html:12
+#: src/frontend/finalfrsproject/templates/manual_face_verification.html:51
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:135
+#: src/frontend/finalfrsproject/templates/reregister_face.html:123
+msgid "No"
+msgstr "No"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification.html:20
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:110
+#: src/frontend/finalfrsproject/templates/reregister_face.html:65
+#: src/frontend/finalfrsproject/templates/reregister_face.html:68
+msgid "Picture from the Database"
+msgstr "Picture from the Database"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification.html:23
+#: src/frontend/finalfrsproject/templates/reregister_face.html:71
+#: src/frontend/finalfrsproject/templates/reregister_face.html:74
+msgid "No Image Found"
+msgstr "No Image Found"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification.html:34
+#: src/frontend/finalfrsproject/templates/reregister_face.html:88
+#: src/frontend/finalfrsproject/templates/reregister_face.html:91
+#: src/frontend/finalfrsproject/templates/unknown_person.html:24
+msgid "No Image Found. Captured Image will show here"
+msgstr "Koi image nahi mili. Captured image yahan dikhai degi."
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:5
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:5
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:5
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:5
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:5
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:5
+#: src/frontend/finalfrsproject/templates/static-recognize.html:5
+msgid "Automatic Visitor and Vehicle Recognition System"
+msgstr "Automatic Visitor and Vehicle Recognition System"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:45
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:45
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:45
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:45
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:45
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:45
+#: src/frontend/finalfrsproject/templates/static-recognize.html:45
+msgid "Logged In User: Tushar Khichariya"
+msgstr "Logged In User: Tushar Khichariya"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:52
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:52
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:52
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:52
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:52
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:52
+#: src/frontend/finalfrsproject/templates/static-recognize.html:52
+msgid "day"
+msgstr "day"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:54
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:54
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:54
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:54
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:54
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:54
+#: src/frontend/finalfrsproject/templates/static-recognize.html:54
+msgid "month"
+msgstr "month"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:62
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:62
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:62
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:62
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:62
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:62
+#: src/frontend/finalfrsproject/templates/static-recognize.html:62
+msgid "Home"
+msgstr "Home"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:69
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:69
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:69
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:69
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:69
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:69
+#: src/frontend/finalfrsproject/templates/static-recognize.html:69
+msgid "Logout"
+msgstr "Logout"
+
+#: src/frontend/finalfrsproject/templates/manual_face_verification_static.html:83
+msgid "Manual Face Verification:"
+msgstr "Manual Face Verification:"
+
+#: src/frontend/finalfrsproject/templates/person_lookup.html:10
+#: src/frontend/finalfrsproject/templates/person_lookup.html:48
+#: src/frontend/finalfrsproject/templates/person_lookup.html:58
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:10
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:48
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:58
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:10
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:48
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:58
+msgid "Image preview will appear here"
+msgstr "Image preview will appear here"
+
+#: src/frontend/finalfrsproject/templates/person_lookup.html:14
+#: src/frontend/finalfrsproject/templates/person_lookup.html:47
+#: src/frontend/finalfrsproject/templates/person_lookup.html:57
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:14
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:47
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:57
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:14
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:47
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:57
+msgid "No file chosen"
+msgstr "No file chosen"
+
+#: src/frontend/finalfrsproject/templates/person_lookup.html:18
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:18
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:18
+msgid "Choose Image"
+msgstr "Choose Image"
+
+#: src/frontend/finalfrsproject/templates/person_lookup.html:55
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup.html:55
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup.html:55
+msgid "Image is too large. Please upload an image smaller than"
+msgstr ""
+"Image bahut badi hai. Kripya isse chhoti image upload karein jo isse kam "
+"ho:"
+
+#: src/frontend/finalfrsproject/templates/person_lookup_result_list.html:17
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:11
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup_result_list.html:17
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:11
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup_result_list.html:17
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:11
+msgid "Back"
+msgstr "Back"
+
+#: src/frontend/finalfrsproject/templates/person_lookup_result_list.html:25
+#: src/frontend/finalfrsproject/templates/person_report.html:11
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:19
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup_result_list.html:25
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:11
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:19
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup_result_list.html:25
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:11
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:19
+msgid "Search..."
+msgstr "Search..."
+
+#: src/frontend/finalfrsproject/templates/person_lookup_result_list.html:34
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:28
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup_result_list.html:34
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:28
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:109
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup_result_list.html:34
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:28
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:109
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:109
+msgid "Image"
+msgstr "Image"
+
+#: src/frontend/finalfrsproject/templates/person_lookup_result_list.html:36
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup_result_list.html:36
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup_result_list.html:36
+msgid "Confidence"
+msgstr "Confidence"
+
+#: src/frontend/finalfrsproject/templates/person_lookup_result_list.html:37
+#: src/frontend/finalfrsproject/templates/person_report.html:33
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_lookup_result_list.html:37
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:33
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:19
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_lookup_result_list.html:37
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:33
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:19
+#: src/frontend/finalfrsproject/templates/trip_summary.html:19
+msgid "ID"
+msgstr "ID"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:16
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:16
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:16
+msgid "Excel"
+msgstr "Excel"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:19
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:19
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:19
+msgid "PDF"
+msgstr "PDF"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:27
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:27
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:27
+msgid "SNo"
+msgstr "SNo"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:28
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:28
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:28
+msgid "Person Name"
+msgstr "Person Name"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:29
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:29
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:29
+msgid "Person Image"
+msgstr "Person Image"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:31
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:31
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:31
+msgid "Vehicle Image"
+msgstr "Vehicle Image"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:34
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:34
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:34
+msgid "ID Image"
+msgstr "ID Image"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:36
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:36
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:36
+msgid "Permit Image Location"
+msgstr "Permit Image Location"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:39
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:39
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:39
+msgid "Expected Stay Hrs"
+msgstr "Expected Stay Hrs"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:40
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:40
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:40
+msgid "Overstay Hrs"
+msgstr "Overstay Hrs"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:43
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:43
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:43
+msgid "Total Persons"
+msgstr "Total Persons"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:44
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:44
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:44
+msgid "Phone"
+msgstr "Phone"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:45
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:45
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:45
+msgid "Entry"
+msgstr "Entry"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:46
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:46
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:46
+msgid "Exit"
+msgstr "Exit"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:70
+#: src/frontend/finalfrsproject/templates/person_report.html:75
+#: src/frontend/finalfrsproject/templates/person_report.html:81
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:70
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:75
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:81
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:70
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:75
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:81
+msgid "Pedestrian"
+msgstr "Pedestrian"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:93
+#: src/frontend/finalfrsproject/templates/person_report.html:99
+#: src/frontend/finalfrsproject/templates/person_report.html:105
+#: src/frontend/finalfrsproject/templates/person_report.html:111
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:93
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:99
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:105
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:111
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:53
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:65
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:71
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:79
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:94
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:93
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:99
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:105
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:111
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:53
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:65
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:71
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:79
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:90
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:94
+#: src/frontend/finalfrsproject/templates/trip_summary.html:53
+#: src/frontend/finalfrsproject/templates/trip_summary.html:65
+#: src/frontend/finalfrsproject/templates/trip_summary.html:71
+#: src/frontend/finalfrsproject/templates/trip_summary.html:79
+#: src/frontend/finalfrsproject/templates/trip_summary.html:94
+msgid "Not Applicable"
+msgstr "Not Applicable"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:181
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:181
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:181
+msgid "No Data"
+msgstr "No Data"
+
+#: src/frontend/finalfrsproject/templates/person_report.html:386
+#: src/frontend/finalfrsproject/templates/sites/kupwara/person_report.html:386
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/person_report.html:386
+msgid "${message}"
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:9
+msgid "Live Camera Feed"
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:18
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:101
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:101
+#: src/frontend/finalfrsproject/templates/static-recognize.html:101
+msgid "Take a Picture"
+msgstr "Take a Picture"
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:24
+#: src/frontend/finalfrsproject/templates/recognize_person.html:90
+#, fuzzy
+msgid "Captured Picture"
+msgstr "Capture Image"
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:32
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:108
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:108
+#: src/frontend/finalfrsproject/templates/static-recognize.html:108
+#, python-brace-formatmsgid "${message}"msgstr "${message}"
+msgid "Submit For Recognition"
+msgstr "Submit For Recognition"
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:43
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:59
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:59
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:59
+msgid "Go Back"
+msgstr "Go Back"
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:155
+#, fuzzy
+msgid "Please take a picture first."
+msgstr "Take a Picture"
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:176
+msgid ""
+"Face recognition failed. The face service may be unavailable. Please try "
+"again in a moment."
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/recognize_person.html:180
+#, fuzzy
+msgid "Could not reach the face recognition service. Please try again."
+msgstr "Face recognition page banate waqt error aaya. Kripya dobara try karein."
+
+#: src/frontend/finalfrsproject/templates/recognize_trip.html:19
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_trip.html:19
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_trip.html:19
+msgid "Id"
+msgstr "Id"
+
+#: src/frontend/finalfrsproject/templates/recognize_trip.html:20
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_trip.html:20
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_trip.html:20
+msgid "Date Created"
+msgstr "Date Created"
+
+#: src/frontend/finalfrsproject/templates/recognize_trip.html:21
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_trip.html:21
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_trip.html:21
+msgid "Traveler Name"
+msgstr "Traveler Name"
+
+#: src/frontend/finalfrsproject/templates/recognize_trip.html:22
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_trip.html:22
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_trip.html:22
+msgid "Traveler Image"
+msgstr "Traveler Image"
+
+#: src/frontend/finalfrsproject/templates/recognize_trip.html:24
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_trip.html:24
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_trip.html:24
+msgid "Vehicle Plate Number"
+msgstr "Vehicle Plate Number"
+
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:29
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:29
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:110
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:29
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:110
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:110
+msgid "Plate Number"
+msgstr "Plate Number"
+
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:30
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:30
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:111
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:30
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:111
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:111
+msgid "Date Time"
+msgstr "Date Time"
+
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:31
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:31
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:31
+msgid "Gate"
+msgstr "Gate"
+
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:60
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:60
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:60
+msgid "Add Vehicle"
+msgstr "Add Vehicle"
+
+#: src/frontend/finalfrsproject/templates/recognize_vehicle.html:77
+#: src/frontend/finalfrsproject/templates/sites/kupwara/recognize_vehicle.html:77
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/recognize_vehicle.html:77
+msgid "' + message + '"
+msgstr "' + message + '"
+
+#: src/frontend/finalfrsproject/templates/reregister_face.html:11
+msgid "Automatic check of todays photo and previous photo:"
+msgstr "Aaj ki photo aur previous photo ka automatic check:"
+
+#: src/frontend/finalfrsproject/templates/reregister_face.html:15
+msgid "&ensp;Face recognition result not available"
+msgstr "&ensp;Face recognition result not available"
+
+#: src/frontend/finalfrsproject/templates/reregister_face.html:28
+msgid "ID from Database:"
+msgstr "ID from Database:"
+
+#: src/frontend/finalfrsproject/templates/reregister_face.html:32
+msgid "&ensp;No id number found"
+msgstr "&ensp;No id number found"
+
+#: src/frontend/finalfrsproject/templates/reregister_face.html:45
+msgid "ID Provided:"
+msgstr "ID Provided:"
+
+#: src/frontend/finalfrsproject/templates/reregister_face.html:153
+msgid "Please click Confirm to proceed or Cancel to return to the page\""
+msgstr ""
+"Proceed karne ke liye Confirm click karein ya page par wapas jaane ke "
+"liyeCancel.\""
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:83
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:83
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:83
+msgid "Unknown Vehicle:"
+msgstr "Unknown Vehicle:"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:98
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:98
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:98
+msgid "Search by plate number"
+msgstr "Search by plate number"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:122
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:122
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:122
+msgid "ap05bm6068"
+msgstr "ap05bm6068"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:131
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:131
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:131
+msgid "ka05nd8105"
+msgstr "ka05nd8105"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:140
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:140
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:140
+msgid "ka02al3752"
+msgstr "ka02al3752"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:149
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:149
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:149
+msgid "ka02af2093"
+msgstr "ka02af2093"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:158
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:158
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:158
+msgid "ka507902"
+msgstr "ka507902"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:167
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:167
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:167
+msgid "sq7002"
+msgstr "sq7002"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:176
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:176
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:176
+msgid "ka04mv7806"
+msgstr "ka04mv7806"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:185
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:185
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:185
+msgid "ka01hn0294"
+msgstr "ka01hn0294"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:194
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:194
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:194
+msgid "ka05m676"
+msgstr "ka05m676"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:203
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:203
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:203
+msgid "ka03af4813"
+msgstr "ka03af4813"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:212
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:212
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:212
+msgid "exi1gaic22"
+msgstr "exi1gaic22"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:221
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:221
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:221
+msgid "exi1gatb"
+msgstr "exi1gatb"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize-vehicle.html:230
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize-vehicle.html:230
+#: src/frontend/finalfrsproject/templates/static-recognize-vehicle.html:230
+msgid "ka03xk6788"
+msgstr "ka03xk6788"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:83
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:83
+#: src/frontend/finalfrsproject/templates/static-recognize.html:83
+msgid "Recognize Face:"
+msgstr "Recognize Face:"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static-recognize.html:84
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static-recognize.html:84
+#: src/frontend/finalfrsproject/templates/static-recognize.html:84
+msgid "Hello"
+msgstr "Hello"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:11
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:17
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:11
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:17
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:11
+#: src/frontend/finalfrsproject/templates/trip_summary.html:17
+msgid "Traveler"
+msgstr "Traveler"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:12
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:18
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:12
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:18
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:12
+#: src/frontend/finalfrsproject/templates/trip_summary.html:18
+msgid "Vehicle"
+msgstr "Vehicle"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:14
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:14
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:14
+msgid "Coming From"
+msgstr "Coming From"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:15
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:15
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:15
+msgid "Going To"
+msgstr "Going To"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:16
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:16
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:16
+msgid "Entered At"
+msgstr "Entered At"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:17
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:17
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:17
+msgid "Trip Type"
+msgstr "Trip Type"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:18
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:27
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:18
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:27
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:18
+#: src/frontend/finalfrsproject/templates/trip_summary.html:27
+msgid "Permit Image"
+msgstr "Permit Image"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:19
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:19
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:19
+msgid "Trip Reason"
+msgstr "Trip Reason"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:30
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:55
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:30
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:55
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:30
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:55
+msgid "Name 1"
+msgstr "Name 1"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:36
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:36
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:36
+msgid "Number 1"
+msgstr "Number 1"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:39
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:64
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:39
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:64
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:39
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:64
+msgid "Driver"
+msgstr "Driver"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:40
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:65
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:40
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:65
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:40
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:65
+msgid "A"
+msgstr "A"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:41
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:66
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:41
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:66
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:41
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:66
+msgid "B"
+msgstr "B"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:43
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:68
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:43
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:68
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:43
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:68
+msgid "Local"
+msgstr "Local"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:44
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:69
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:44
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:69
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:44
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:69
+msgid "Click here for the permit image"
+msgstr "Click here for the permit image"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:46
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:71
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:46
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:71
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:46
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:71
+msgid "X"
+msgstr "X"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:61
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:61
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:61
+msgid "Number 2"
+msgstr "Number 2"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/static_trip_summary.html:81
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/static_trip_summary.html:81
+#: src/frontend/finalfrsproject/templates/static_trip_summary.html:81
+msgid "Done"
+msgstr "Done"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:25
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:25
+#: src/frontend/finalfrsproject/templates/trip_summary.html:25
+msgid "Est Duration"
+msgstr "Est Duration"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:26
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:26
+#: src/frontend/finalfrsproject/templates/trip_summary.html:26
+msgid "Mobile"
+msgstr "Mobile"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:28
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:28
+#: src/frontend/finalfrsproject/templates/trip_summary.html:28
+msgid "Total Passengers"
+msgstr "Total Passengers"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:90
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:101
+#: src/frontend/finalfrsproject/templates/trip_summary.html:90
+#: src/frontend/finalfrsproject/templates/trip_summary.html:101
+msgid "None"
+msgstr "None"
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/trip_summary.html:112
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/trip_summary.html:112
+#: src/frontend/finalfrsproject/templates/trip_summary.html:112
+msgid "Download CSV"
+msgstr "Download CSV"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:18
+#: src/frontend/finalfrsproject/templates/unknown_person.html:21
+msgid "Unknown User"
+msgstr "Unknown User"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:61
+msgid "Visitor's Name"
+msgstr "Visitor's Name"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:64
+msgid "Gender"
+msgstr "Gender"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:68
+msgid "Select Gender"
+msgstr "Select Gender"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:69
+msgid "Male"
+msgstr "Male"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:70
+msgid "Female"
+msgstr "Female"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:74
+msgid "Date of Birth"
+msgstr "Date of Birth"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:77
+msgid "DD/MM/YYYY"
+msgstr "DD/MM/YYYY"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:80
+#: src/frontend/finalfrsproject/templates/unknown_person.html:84
+msgid "Mobile Number"
+msgstr "Mobile Number"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:87
+msgid "C/O"
+msgstr "C/O"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:90
+msgid "Father Name"
+msgstr "Father Name"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:95
+msgid "Resident Of"
+msgstr "Resident Of"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:97
+msgid "Visit Purpose"
+msgstr "Visit Purpose"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:101
+#, fuzzy
+msgid "Select Purpose"
+msgstr "Visit Purpose"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:134
+#: src/frontend/finalfrsproject/templates/unknown_person.html:144
+msgid "ID Front"
+msgstr "ID Front"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:140
+#: src/frontend/finalfrsproject/templates/unknown_person.html:146
+msgid "ID Back"
+msgstr "ID Back"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:150
+#: src/frontend/finalfrsproject/templates/unknown_person.html:153
+#, fuzzy
+msgid "Driver's Licence Number"
+msgstr "Vehicle Number"
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:162
+msgid "Capture Driver's Licence"
+msgstr ""
+
+#: src/frontend/finalfrsproject/templates/unknown_person.html:221
+msgid "Please add id image before you submit."
+msgstr "Submit se pehle kripya ID image add karein."
+
+#: src/frontend/finalfrsproject/templates/sites/kupwara/unknown_vehicle.html:56
+#: src/frontend/finalfrsproject/templates/sites/tangdhar/unknown_vehicle.html:56
+#: src/frontend/finalfrsproject/templates/unknown_vehicle.html:56
+msgid "Submit to Add Vehicle"
+msgstr "Submit to Add Vehicle"
+
+#~ msgid "Please enter the aadhar number of the visitor to verify identity."
+#~ msgstr "Identity verify karne ke liye visitor ka Aadhar number enter karein."
+
+#~ msgid "The Aadhar Number entered - "
+#~ msgstr "Aapne jo Aadhar number enter kiya - "
+
+#~ msgid "Language updated successfully"
+#~ msgstr "Language successfully update ho gayi."
+
+#~ msgid "Invalid language selected"
+#~ msgstr "Galat/invalid language select hui hai."
+
+#~ msgid "Blacklisted Person successfully enrolled."
+#~ msgstr "Blacklisted person successfully enroll ho gaya."
+
+#~ msgid "Error while enrolling blacklisted person. Please try again"
+#~ msgstr ""
+#~ "Blacklisted person enroll karte waqt "
+#~ "error aaya. Kripya dobara try karein."
+
+#~ msgid "Validation service not configured"
+#~ msgstr "Validation service configure nahi hai."
+
+#~ msgid "Image validation service error"
+#~ msgstr "Image validation service error aaya."
+
+#~ msgid "Image quality check failed"
+#~ msgstr "Image quality check fail ho gaya."
+
+#~ msgid "Image validation passed"
+#~ msgstr "Image validation pass ho gaya."
+
+#~ msgid "Image validation service unavailable"
+#~ msgstr "Image validation service unavailable hai."
+
+#~ msgid "Success! Visitor Information updated. Please continue."
+#~ msgstr ""
+#~ "Success! Visitor information database mein "
+#~ "save ho gayi. Please continue."
+
+#~ msgid "Add member passenger details. Please scan the aadhar card here."
+#~ msgstr ""
+#~ "Member passenger details add karein. "
+#~ "Kripya Aadhar card yahan scan karein."
+
+#~ msgid "Please scan the aadhaar card here."
+#~ msgstr "Kripya Aadhaar card yahan scan karein."
+
+#~ msgid ""
+#~ "The Aadhar Number lookup failed due "
+#~ "to a system issue. Please try "
+#~ "again."
+#~ msgstr ""
+#~ "System issue ki wajah se Aadhar "
+#~ "number lookup fail ho gaya. Kripya "
+#~ "dobaratry karein."
+
+#~ msgid ""
+#~ "Please check if the person is "
+#~ "already in our system. Click on "
+#~ "Take a Picture button and then "
+#~ "Submit for Recognition."
+#~ msgstr ""
+#~ "Kripya check karein ki person hamare "
+#~ "system me pehle se hai ya nahi."
+#~ " Take aPicture button click karke "
+#~ "Recognition ke liye Submit karein."
+
+#~ msgid "There was no file sent in the recognize person form. Please try again"
+#~ msgstr ""
+#~ "Recognize person form me koi file "
+#~ "nahi bheji gayi. Kripya dobara try "
+#~ "karein."
+
+#~ msgid ""
+#~ "Picture found for this enrollment id."
+#~ " Please reregister this is the same"
+#~ " person."
+#~ msgstr ""
+#~ "Is enrollment id ke liye picture "
+#~ "mil gayi. Kripya confirm karein "
+#~ "kiyewahiperson hai."
+
+#~ msgid ""
+#~ "The enrollment id lookup failed due "
+#~ "to a system issue. Please try "
+#~ "again."
+#~ msgstr ""
+#~ "System issue ki wajah se enrollment "
+#~ "ID lookup fail ho gaya. Kripya "
+#~ "dobaratry karein."
+
+#~ msgid "Report Home"
+#~ msgstr "Report Home"
+
+#~ msgid "Fraud Alert"
+#~ msgstr "Fraud Alert"
+
+#~ msgid ""
+#~ "An unexpected error occurred while "
+#~ "generating the trip report. Please try"
+#~ " again.."
+#~ msgstr ""
+#~ "Trip report generate karte waqt "
+#~ "unexpected error aaya. Kripya dobara "
+#~ "trykarein.."
+
+#~ msgid ""
+#~ "An unexpected error occurred while "
+#~ "generating the trip report. Please try"
+#~ " again."
+#~ msgstr ""
+#~ "Trip report generate karte waqt "
+#~ "unexpected error aaya. Kripya dobara "
+#~ "trykarein."
+
+#~ msgid "Trip Report"
+#~ msgstr "Trip Report"
+
+#~ msgid "System was unable to insert a person record. Please try again."
+#~ msgstr "System person record insert nahi kar paaya. Kripya dobara try karein."
+
+#~ msgid "System was unable to insert a person record. Please try again"
+#~ msgstr "System person record insert nahi kar paaya. Kripya dobara try karein."
+
+#~ msgid ""
+#~ "An unexpected error occurred while "
+#~ "generating the report. Please try again."
+#~ msgstr ""
+#~ "Report generate karte waqt unexpected "
+#~ "error aaya. Kripya dobara try karein."
+
+#~ msgid ""
+#~ "An unexpected error occurred while "
+#~ "generating the vehicle report. Please "
+#~ "try again."
+#~ msgstr ""
+#~ "Vehicle report generate karte waqt "
+#~ "unexpected error aaya. Kripya dobara "
+#~ "trykarein."
+
+#~ msgid ""
+#~ "An unexpected error occurred while "
+#~ "generating the person report. Please try"
+#~ " again."
+#~ msgstr ""
+#~ "Person report generate karte waqt "
+#~ "unexpected error aaya. Kripya dobara "
+#~ "trykarein."
+
+#~ msgid ""
+#~ "An unexpected error occurred while "
+#~ "generating the vehicle report. Please "
+#~ "try again.."
+#~ msgstr ""
+#~ "Vehicle report generate karte waqt "
+#~ "unexpected error aaya. Kripya dobara "
+#~ "trykarein.."
+
+#~ msgid "Do you want to procced with male passenger details."
+#~ msgstr "Kya aap male passenger details ke saath proceed karna chahte hain?"
+
+#~ msgid "Go!"
+#~ msgstr "Go!"
+
+#~ msgid "Image resolution too low. Please try another image."
+#~ msgstr "Image resolution bahut low hai. Kripya doosri image try karein."
+
+#~ msgid "Unable to read image resolution."
+#~ msgstr "Image resolution read nahi ho paaya."
+
+#~ msgid "Invalid file type. Please upload JPG or PNG."
+#~ msgstr "Invalid file type hai. Kripya JPG ya PNG upload karein."
+
+#~ msgid "address"
+#~ msgstr "address"
+
+#~ msgid "Details Entered By"
+#~ msgstr "Details Entered By"
+
+#~ msgid "Details Entered On"
+#~ msgstr "Details Entered On"
+
+#~ msgid "Update"
+#~ msgstr "Update"
+
+#~ msgid "Logged In User:"
+#~ msgstr "Logged In User:"
+
+#~ msgid "Vajr Entry Management System"
+#~ msgstr "Vajr Entry Management System"
+
+#~ msgid ""
+#~ "System unable to read the aadhar "
+#~ "details. Please add aadhar number "
+#~ "manually."
+#~ msgstr ""
+#~ "System aadhar details read nahi kar "
+#~ "paaya. Kripya aadhar number manually "
+#~ "addkarein."
+
+#~ msgid "Aadhaar Number:"
+#~ msgstr "Aadhaar Number:"
+
+#~ msgid "Name:"
+#~ msgstr "Name:"
+
+#~ msgid "DOB:"
+#~ msgstr "DOB:"
+
+#~ msgid "Gender:"
+#~ msgstr "Gender:"
+
+#~ msgid "VID:"
+#~ msgstr "VID:"
+
+#~ msgid "Video stream not available."
+#~ msgstr "Video stream available nahi hai."
+
+#~ msgid "Report Date Range:"
+#~ msgstr "Report Date Range:"
+
+#~ msgid "End trip"
+#~ msgstr "End trip"
+
+#~ msgid "Close"
+#~ msgstr "Close"

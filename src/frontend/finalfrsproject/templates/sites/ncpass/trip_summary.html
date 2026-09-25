@@ -1,0 +1,179 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="user user_register_section">
+	<div class="container-fluid">
+		<form id="form" action="{{ url_for('make_trip_summary') }}" method="post" enctype="multipart/form-data" class="login">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" id="trip_summary_report" name="trip_summary_report" value="trip_summary_report">
+
+      <div class="col-xs-12 buttons text-center">
+        <button type="submit" id ="end_trip_registration" name= "end_trip_registration" value="end_trip_registration" class="btn btn-primary">Continue</button>
+      </div>
+
+			<div class="table-responsive" style="padding-top: 30px;">
+      	<table class="table table-striped dataTables-example dataTable" cellspacing="20px">
+        	<thead>
+            <tr>
+              <th>Traveler</th>
+              <th>Vehicle</th>
+              <th>ID</th>
+              <th>Traveler Type</th>
+              <th>Purpose</th>
+              <th>Coming From</th>
+              <th>Going To</th>
+              <th>Entry Time</th>
+              <th>Est Duration</th>
+              <th>Mobile</th>
+              <th>Permit Image</th>
+              <th>Total Passengers</th>
+              <th>Remarks</th>
+            </tr>
+         	</thead>
+          <tbody>
+          	{% if details.trip_and_traveler_details %}
+            	{% for trip_traveler_detail in details.trip_and_traveler_details %}
+              	{% if trip_traveler_detail.person_id %}
+                  <tr style="cursor: default;">
+                    <td>
+                      <figure>
+                            <img onclick="javascript:show_modal('{{ trip_traveler_detail.traveler_name if trip_traveler_detail.traveler_name and trip_traveler_detail.traveler_name != 'None' else 'Not Available' }}','{{ trip_traveler_detail.person_image }}')"
+                              src="{{ trip_traveler_detail.person_image }}" alt="Person Image" class="img_main report-image-thumb is-clickable">
+                        <figcaption id="traveler_name" name="traveler_name"> {{ trip_traveler_detail.traveler_name if trip_traveler_detail.traveler_name and trip_traveler_detail.traveler_name != 'None' else 'Not Available' }}</figcaption>
+                      </figure>
+                    </td>
+                    {% if trip_traveler_detail.vehicle_image and trip_traveler_detail.vehicle_image != 'None' %}
+                      <td>
+                        <figure>
+                           <img onclick="javascript:show_modal('{{ trip_traveler_detail.vehicle_number if trip_traveler_detail.vehicle_number and trip_traveler_detail.vehicle_number != 'None' else 'Not Available' }}','{{ trip_traveler_detail.vehicle_image }}')"
+                             src="{{ trip_traveler_detail.vehicle_image}}" alt="Vehicle Image" class="img_main report-image-thumb is-clickable">
+                          <figcaption id="vehicle" name="vehicle"> {{ trip_traveler_detail.vehicle_number if trip_traveler_detail.vehicle_number and trip_traveler_detail.vehicle_number != 'None' else 'Not Available' }}</figcaption>
+                        </figure>
+                      </td>
+                      {% else %}
+                        <td>Not Available</td>
+                      {% endif %}
+                     {% if trip_traveler_detail.primary_id_image and trip_traveler_detail.primary_id_image != 'None' %}
+                      <td>
+                        <figure>
+                           <img onclick="javascript:show_modal('{{ trip_traveler_detail.primary_id_number if trip_traveler_detail.primary_id_number and trip_traveler_detail.primary_id_number != 'None' else 'Not Available' }}','{{ trip_traveler_detail.primary_id_image }}')"
+                             src="{{ trip_traveler_detail.primary_id_image}}" alt="ID Image" class="img_main report-image-thumb is-clickable">
+                          <figcaption id="ID" name="ID"> {{ trip_traveler_detail.primary_id_number if trip_traveler_detail.primary_id_number and trip_traveler_detail.primary_id_number != 'None' else 'Not Available' }}</figcaption>
+                        </figure>
+                      </td>
+                      {% else %}
+                        <td>Not Available</td>
+                      {% endif %}
+                    <td>{{ trip_traveler_detail.traveler_type if trip_traveler_detail.traveler_type and trip_traveler_detail.traveler_type != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.visiting_person_name if trip_traveler_detail.visiting_person_name and trip_traveler_detail.visiting_person_name != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.coming_from if trip_traveler_detail.coming_from and trip_traveler_detail.coming_from != 'None' else 'Not Available' }}</td>
+                    {% if trip_traveler_detail.traveler_type in ['TEACHER', 'PASS HOLDER']  %}
+                        <td>Not Applicable</td>
+                    {% else %}
+                         <td>{{ trip_traveler_detail.going_to if trip_traveler_detail.going_to and trip_traveler_detail.going_to != 'None' else 'Not Available' }}</td>
+                    {% endif %}
+                    <td>{{ trip_traveler_detail.entry_time if trip_traveler_detail.entry_time and trip_traveler_detail.entry_time != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.expected_visit_duration if trip_traveler_detail.expected_visit_duration and trip_traveler_detail.expected_visit_duration != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.mobile_number if trip_traveler_detail.mobile_number and trip_traveler_detail.mobile_number != 'None' else 'Not Available' }}</td>
+                    {% if trip_traveler_detail.traveler_type in ['TEACHER', 'PASS HOLDER']  %}
+                        <td>Not Applicable</td>
+                    {% else %}
+                    {% if trip_traveler_detail.permit_image and trip_traveler_detail.permit_image != 'None' %}
+                        <td>
+                            <figure>
+                                <img onclick="javascript:show_modal('Permit','{{ trip_traveler_detail.permit_image }}')"
+                                  src="{{ trip_traveler_detail.permit_image }}" alt="Permit Image" class="img_main report-image-thumb is-clickable">
+                                <figcaption id="permit_image" name="permit_image"> Permit</figcaption>
+                            </figure>
+                        </td>
+                    {% else %}
+                      <td>Not Available</td>
+                    {% endif %}
+                    {% endif %}
+                    {% if trip_traveler_detail.traveler_type in ['TEACHER', 'PASS HOLDER']  %}
+                        <td>Not Applicable</td>
+                    {% else %}
+                      <td>{{ trip_traveler_detail.total_passengers if trip_traveler_detail.total_passengers is not none and trip_traveler_detail.total_passengers != 'None' else 'Not Available' }}</td>
+                    {% endif %}
+                    {% if trip_traveler_detail.trip_reason and trip_traveler_detail.trip_reason != 'None' %}
+                        <td>{{ trip_traveler_detail.trip_reason }}</td>
+                    {% else %}
+                       <td>Not Available</td>
+                    {% endif %}
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+      <!--
+        <input type="hidden" id="csv_data" name="csv_data" value="{{ trip_traveler_detail }}">
+        <div style="text-align: center; margin-top: 100px" ><button type="submit" id = "download" name="download" value="download" class="c-btn">Download CSV</button></div>
+      -->
+    </form>
+    <div id="myModal" class="modal image-preview-modal">
+      <!-- The Close Button -->
+      <span id="tripSummaryImageModalClose" class="close">&times;</span>
+        <!-- Modal Content (The Image) -->
+      <img class="modal-content image-preview-modal-content" id="tripSummaryImageModalImg">
+        <!-- Modal Caption (Image Text) -->
+      <div id="tripSummaryImageModalCaption" class="image-preview-modal-caption"></div>
+    </div>
+      
+    
+	</div>    
+</section>
+	
+<script>
+	var tripSummaryImageModal = document.getElementById("myModal");
+	var tripSummaryImageModalImg = document.getElementById("tripSummaryImageModalImg");
+	var tripSummaryImageModalCaption = document.getElementById("tripSummaryImageModalCaption");
+	var tripSummaryImageModalClose = document.getElementById("tripSummaryImageModalClose");
+
+  
+    function show_modal(label, image) {
+		tripSummaryImageModalImg.src = image;
+		tripSummaryImageModalCaption.innerHTML = label;
+		tripSummaryImageModal.style.display = "block";
+    }
+
+	tripSummaryImageModalClose.onclick = function() {
+		tripSummaryImageModal.style.display = "none";
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === tripSummaryImageModal) {
+			tripSummaryImageModal.style.display = "none";
+		}
+	});
+
+
+
+
+
+  $(document).ready(function(){
+  	$(document).keypress(function(e) {
+    	if(e.which == 13) {
+		    $("#sbmt").trigger("click");
+		  }
+		});
+
+	var details = {{ details | tojson }};
+    console.log(details);
+
+  	/*sends the user back to the previous page*/
+		$("#cancelbtn").click(function(){
+				 $("#cancelbtn").data('clicked', true);
+				 if($('#cancelbtn').data('clicked')) {
+					history.back();
+			 }
+		});
+
+    //$("#sbmt").click(function() {
+    //		form.submit();
+    //});
+
+});
+</script>        
+{% endblock content %}
+      
