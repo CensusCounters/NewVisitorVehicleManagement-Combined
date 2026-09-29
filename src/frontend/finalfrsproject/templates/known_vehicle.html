@@ -1,54 +1,139 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+<section class="user vehicle_detail_section ncpass-vehicle-form">
+{% else %}
 <section class="user vehicle_detail_section">
+{% endif %}
 	<div class="container">
 		<div class="row d-flex align-items-stretch" id="img-vg-content">
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+			<div class="col-md-5 d-flex">
+{% else %}
 			<div class="col-md-4 d-flex">
+{% endif %}
 				<div class="user_left_portion preview-panel minimal-preview-panel known-vehicle-tall-panel" id="capturedImageRow"
 					style="flex: 1; background: linear-gradient(to right, #900C3F 0%, #C70039 41%, #581845 100%); padding: 20px;">
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+
+{% endif %}
 					{% if details.vehicle_image %}
-					<h1 class="preview-panel-title">{{ _('Vehicle Picture') }}</h1>
+					<h1 class="preview-panel-title">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Vehicle Picture') }}{% else %}Vehicle Picture{% endif %}</h1>
 					<div class="preview-image-frame preview-image-frame--compact preview-image-frame--clickable minimal-preview-frame known-vehicle-tall-frame">
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<img src="{{ details.vehicle_image }}" name="vehicle_image" id="vehicle_image"
+							class="is-clickable"
+							onclick="javascript:showVehicleImageModal('Vehicle Picture', '{{ details.vehicle_image }}')">
+{% else %}
 						<img src="{{ details.vehicle_image }}" name="vehicle_image" id="vehicle_image" class="is-clickable"
+{% if not template_profiles.known_vehicle.translate_labels %}
+							onclick='javascript:showVehicleImageModal("Vehicle Picture", {{ details.vehicle_image|tojson }})'>
+{% else %}
 							onclick='javascript:showVehicleImageModal({{ _("Vehicle Picture")|tojson }}, {{ details.vehicle_image|tojson }})'>
+{% endif %}
+{% endif %}
 					</div>
 					{% endif %}
-			  </div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+
+{% endif %}
+				</div>
 			</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+
+
+			<div class="col-md-7">
+{% else %}
 			<div class="col-md-8">
+{% endif %}
 				<div class="user-form row">
-					<h1 style="margin-bottom: 30px;">{{ _('Vehicle Details') }}</h1>
+					<h1 style="margin-bottom: 30px;">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Vehicle Details') }}{% else %}Vehicle Details{% endif %}</h1>
 					<form id="vehicle_details" action="{{ url_for('known_vehicle') }}" method="post" enctype="multipart/form-data" class="login">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 						{% if details.vehicle_image %}
 						<input type="hidden" name="vehicle_image_url" value="{{ details.vehicle_image }}">
 						{% endif %}
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+{% else %}
 						<div class="col-xs-2">
-							<label class="label">{{ _('Vehicle Number') }}</label>
+{% endif %}
+							<label class="label">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Vehicle Number') }}{% else %}Vehicle Number{% endif %}</label>
 						</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<div class="form-group col-xs-9">
+							<input id="vehicle_number" name="vehicle_number" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_number or '' }}">
+{% else %}
 						<div class="form-group col-xs-10">
 							<input id="vehicle_number" name="vehicle_number" type="text" maxlength="30" class="form-control required" value=" {{ details.vehicle_number }}">
+{% endif %}
 					  	</div>
-						<div class="col-xs-2">
-							<label class="label">{{ _('Owner') }}</label>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+							<label class="label">Vehicle Type</label>
 						</div>
+						<div class="form-group col-xs-9">
+							<input id="vehicle_type" name="vehicle_type" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_type or '' }}">
+						</div>
+						<div class="col-xs-3">
+							<label class="label">Model</label>
+						</div>
+					  	<div class="form-group col-xs-9">
+							<input id="vehicle_model" name="vehicle_model" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_model if details.vehicle_model else '' }}">
+					  	</div>
+						<div class="col-xs-3">
+{% else %}
+						<div class="col-xs-2">
+{% endif %}
+							<label class="label">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Owner') }}{% else %}Owner{% endif %}</label>
+						</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<div class="form-group col-xs-9">
+							<input id="vehicle_owner_name" name="vehicle_owner_name" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_owner or '' }}">
+{% else %}
 						<div class="form-group col-xs-10">
 							<input id="vehicle_owner_name" name="vehicle_owner_name" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_owner }}">
+{% endif %}
 						</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+							<label class="label">RC</label>
+						</div>
+						<div class="form-group col-xs-9">
+							<input id="vehicle_registration_number" name="vehicle_registration_number" type="text" maxlength="30"
+								   class="form-control" value="{{ details.vehicle_registration_number if details.vehicle_registration_number else '' }}" >
+						</div>
+						<div class="col-xs-3">
+{% else %}
 						<div class="col-xs-2">
-							<label class="label">{{ _('Make') }}</label>
+{% endif %}
+							<label class="label">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Make') }}{% else %}Make{% endif %}</label>
 						</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+					  	<div class="form-group col-xs-9">
+							<input id="make" name="make" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_make if details.vehicle_make else '' }}">
+{% else %}
 					  	<div class="form-group col-xs-10">
 							<input id="make" name="make" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_make if details.vehicle_make else 'None' }}">
+{% endif %}
 					  	</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+{% else %}
 						<div class="col-xs-2">
-							<label class="label">{{ _('Color') }}</label>
+{% endif %}
+							<label class="label">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Color') }}{% else %}Color{% endif %}</label>
 						</div>
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+					  	<div class="form-group col-xs-9">
+							<input id="color" name="color" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_color if details.vehicle_color else '' }}">
+{% else %}
 					  	<div class="form-group col-xs-10">
 							<input id="color" name="color" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_color if details.vehicle_color else 'None' }}">
+{% endif %}
 					  	</div>
 						<div class="col-xs-12 buttons text-center">
-						   <button type="submit" id = "sbmt_button" name="sbmt_button" value="back_to_select" class="btn btn-primary">{{ _('Continue') }}</button>
+						   <button type="submit" id = "sbmt_button" name="sbmt_button" value="back_to_select" class="btn btn-primary">{% if template_profiles.known_vehicle.translate_labels %}{{ _('Continue') }}{% else %}Continue{% endif %}</button>
 						</div>
 					</form>
 				</div>
@@ -64,13 +149,27 @@
 <script>
 	function showVehicleImageModal(label, image) {
 		var imageModal = document.getElementById('knownVehicleImageModal');
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+		var imageModalImg = document.getElementById('knownVehicleImageModalImg');
+		var imageModalCaption = document.getElementById('knownVehicleImageModalCaption');
+
+		imageModalImg.src = image;
+		imageModalCaption.innerHTML = label;
+{% else %}
 		document.getElementById('knownVehicleImageModalImg').src = image;
 		document.getElementById('knownVehicleImageModalCaption').textContent = label;
+{% endif %}
 		imageModal.style.display = 'block';
 	}
 
 	var knownVehicleImageModal = document.getElementById('knownVehicleImageModal');
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
+	var knownVehicleImageModalClose = document.getElementById('knownVehicleImageModalClose');
+
+	knownVehicleImageModalClose.onclick = function() {
+{% else %}
 	document.getElementById('knownVehicleImageModalClose').onclick = function() {
+{% endif %}
 		knownVehicleImageModal.style.display = 'none';
 	};
 
@@ -81,7 +180,13 @@
 	});
 	
 	$(document).ready(function(){
+{% if template_profiles.known_vehicle.extended_vehicle_details %}
       /*sends the user back to the previous page*/
+{% else %}
+{% if not (not template_profiles.known_vehicle.translate_labels) %}
+      /*sends the user back to the previous page*/
+{% endif %}
+{% endif %}
 		$("#cancelbtn").click(function(){
 			$("#cancelbtn").data('clicked', true);
 				if($('#cancelbtn').data('clicked')) {

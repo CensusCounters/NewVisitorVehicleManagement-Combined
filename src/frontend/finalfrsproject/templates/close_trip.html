@@ -8,10 +8,10 @@
           <input type="hidden" id="trip_id" name="trip_id" value="{{ details.trip_id }}">
         {% endif %}
         <div class="form-group col-md-12">
-          <input id="exit_time" name="exit_time" id="exit_time" type="datetime-local" class="form-control required" placeholder="{{ _('Exit Time') }}">
+          <input id="exit_time" name="exit_time" id="exit_time" type="datetime-local" class="form-control required" placeholder="{% if template_profiles.close_trip.translate_labels %}{{ _('Exit Time') }}{% else %}Exit Time{% endif %}">
         </div>
         <div class="col-xs-12 buttons text-center">
-          <button type="submit" id = "exit_time_btn" class="btn btn-primary">{{ _('Submit') }}</button>
+          <button type="submit" id = "exit_time_btn" class="btn btn-primary">{% if template_profiles.close_trip.translate_labels %}{{ _('Submit') }}{% else %}Submit{% endif %}</button>
         </div>
       </form>
     </div>

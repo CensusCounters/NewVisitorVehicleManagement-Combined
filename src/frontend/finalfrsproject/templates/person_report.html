@@ -8,15 +8,15 @@
     <div id="img-vg-content2" style="text-align: center; margin-top: 50px">
         <div class="col-xs-6" >
             <div class="datatables-filter">
-                <input type="text" class="form-control" id="search" name="search" placeholder="{{ _('Search...') }}">
+                <input type="text" class="form-control" id="search" name="search" placeholder="{% if template_profiles.person_report.translate_labels %}{{ _('Search...') }}{% else %}Search...{% endif %}">
             </div>
         </div>
         <div class="col-xs-2"></div>
         <div class="col-xs-2">
-            <button id="xls_button" name="xls_button" class="datatables-btn">{{ _('Excel') }}</button>
+            <button id="xls_button" name="xls_button" class="datatables-btn">{% if template_profiles.person_report.translate_labels %}{{ _('Excel') }}{% else %}Excel{% endif %}</button>
         </div>
         <div class="col-xs-2">
-            <button id="pdf_button" name=pdf_button" class="datatables-btn">{{ _('PDF') }}</button>
+            <button id="pdf_button" name=pdf_button" class="datatables-btn">{% if template_profiles.person_report.translate_labels %}{{ _('PDF') }}{% else %}PDF{% endif %}</button>
         </div>
     </div>
     <div id="img-vg-content3">
@@ -24,26 +24,47 @@
             <table class="table table-striped dataTables-example dataTable" style="width: 90%; margin:0 auto">
                 <thead>
                     <tr>
-                        <th>{{ _('SNo') }}</th>
-                        <th>{{ _('Person Name') }}</th>
-                        <th>{{ _('Person Image') }}</th>
-                        <th>{{ _('Vehicle Number') }}</th>
-                        <th>{{ _('Vehicle Image') }}</th>
-                        <th>{{ _('Traveler Type') }}</th>
-                        <th>{{ _('ID') }}</th>
-                        <th>{{ _('ID Image') }}</th>
-                        <th>{{ _('Permit') }}</th>
-                        <th>{{ _('Permit Image Location') }}</th>
-                        <th>{{ _('Entry Time') }}</th>
-                        <th>{{ _('Exit Time') }}</th>
-                        <th>{{ _('Expected Stay Hrs') }}</th>
-                        <th>{{ _('Overstay Hrs') }}</th>
-                        <th>{{ _('Purpose') }}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('SNo') }}{% else %}SNo{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Person Name') }}{% else %}Person Name{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Person Image') }}{% else %}Person Image{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Vehicle Number') }}{% else %}Vehicle Number{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Vehicle Image') }}{% else %}Vehicle Image{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Traveler Type') }}{% else %}Traveler Type{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('ID') }}{% else %}ID{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('ID Image') }}{% else %}ID Image{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Permit') }}{% else %}Permit{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Permit Image Location') }}{% else %}Permit Image Location{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Entry Time') }}{% else %}Entry Time{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Exit Time') }}{% else %}Exit Time{% endif %}</th>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                        <th>Expected Stay</th>
+                        <th>Overstay</th>
+{% else %}
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Expected Stay Hrs') }}{% else %}Expected Stay Hrs{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Overstay Hrs') }}{% else %}Overstay Hrs{% endif %}</th>
+{% endif %}
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Purpose') }}{% else %}Purpose{% endif %}</th>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                        <th>Going To</th>
+{% else %}
+{% if template_profiles.person_report.destination_gate_columns %}
+                        <th>To Meet</th>
+{% else %}
                         <th>{{ _('Remarks') }}</th>
-                        <th>{{ _('Total Persons') }}</th>
-                        <th>{{ _('Phone') }}</th>
+{% endif %}
+{% endif %}
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Total Persons') }}{% else %}Total Persons{% endif %}</th>
+                        <th>{% if template_profiles.person_report.translate_labels %}{{ _('Phone') }}{% else %}Phone{% endif %}</th>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                        <th>Counter</th>
+{% else %}
+{% if template_profiles.person_report.destination_gate_columns %}
+                        <th>Gate</th>
+{% else %}
                         <th>{{ _('Entry') }}</th>
                         <th>{{ _('Exit') }}</th>
+{% endif %}
+{% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -53,133 +74,282 @@
 
                             <!--<td>{{ loop.index0 + 1 }}</td>-->
                             <td></td>
-                            {% if trip.person_name %}
+{% if ((trip.person_name and trip.person_name != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.person_name)) %}
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>
+                                    <a class="report-link-with-thumb" href="javascript:show_modal('{{ trip.person_name }}','{{ trip.person_image_location }}')">
+                                        {% if trip.person_image_location and trip.person_image_location != 'None' %}
+                                            <img class="report-link-thumb" src="{{ trip.person_image_location }}" alt="Person thumbnail">
+                                        {% endif %}
+                                        <span>{{ trip.person_name }}</span>
+                                    </a>
+                                </td>
+{% else %}
                                 <td><a href="javascript:show_modal('{{ trip.person_name }}','{{ trip.person_image_location }}')">{{ trip.person_name }}</a></td>
+{% endif %}
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.person_image_path_for_download %}
+{% if ((trip.person_image_path_for_download and trip.person_image_path_for_download != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.person_image_path_for_download)) %}
                                 <td>{{ trip.person_image_path_for_download }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.vehicle_number_plate %}
+{% if ((trip.vehicle_number_plate and trip.vehicle_number_plate != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.vehicle_number_plate)) %}
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>
+                                    <a class="report-link-with-thumb" href="javascript:show_modal('{{ trip.vehicle_number_plate }}','{{ trip.vehicle_image_location }}')">
+                                        {% if trip.vehicle_image_location and trip.vehicle_image_location != 'None' %}
+                                            <img class="report-link-thumb" src="{{ trip.vehicle_image_location }}" alt="Vehicle thumbnail">
+                                        {% endif %}
+                                        <span>{{ trip.vehicle_number_plate }}</span>
+                                    </a>
+                                </td>
+{% else %}
                                 {% if trip.vehicle_number_plate =='None' %}
-                                    <td>{{ _('Pedestrian') }}</td>
+                                    <td>{% if template_profiles.person_report.translate_labels %}{{ _('Pedestrian') }}{% else %}Pedestrian{% endif %}</td>
                                 {% else %}
                                 <td><a href="javascript:show_modal('{{ trip.vehicle_number_plate }}','{{ trip.vehicle_image_location }}')">{{ trip.vehicle_number_plate }}</a></td>
                                 {% endif %}
+{% endif %}
                             {% else %}
-                                <td>{{ _('Pedestrian') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                    <td>{% if template_profiles.person_report.translate_labels %}{{ _('Pedestrian') }}{% else %}Pedestrian{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.vehicle_image_path_for_download %}
+{% if ((trip.vehicle_image_path_for_download and trip.vehicle_image_path_for_download != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.vehicle_image_path_for_download)) %}
                                 <td>{{ trip.vehicle_image_path_for_download }}</td>
                             {% else %}
-                                <td>{{ _('Pedestrian') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                    <td>{% if template_profiles.person_report.translate_labels %}{{ _('Pedestrian') }}{% else %}Pedestrian{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.traveler_type %}
+{% if ((trip.traveler_type and trip.traveler_type != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.traveler_type)) %}
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>
+                                    {% if trip.traveler_type == 'DRIVER' and trip.drivers_license_image and trip.drivers_license_image != 'None' %}
+                                        <a id="drivers_license_image"
+                                           name="drivers_license_image"
+                                           href="javascript:show_modal('{% if trip.drivers_license_number %}{{ trip.drivers_license_number }}
+                                                    {% else %}Drivers License{% endif %}','{{ trip.drivers_license_image }}')">
+                                            {{ trip.traveler_type }}
+                                        </a>
+                                    {% elif trip.traveler_type == 'DRIVER' %}
+                                        DRIVER (Image Not Available)
+                                    {% else %}
+                                        {{ trip.traveler_type }}
+                                    {% endif %}
+                                </td>
+{% else %}
                                 <td>{{ trip.traveler_type }}</td>
+{% endif %}
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.primary_id_number %}
+{% if ((trip.primary_id_number and trip.primary_id_number != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.primary_id_number)) %}
                                 <td><a href="javascript:show_modal('{{ trip.primary_id_number }}', '{{ trip.primary_id_image }}')">{{ trip.primary_id_number }}</a></td>
                             {% else %}
-                                <td>{{ _('Not Applicable') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.id_image_path_for_download  %}
+{% if ((trip.id_image_path_for_download and trip.id_image_path_for_download != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.id_image_path_for_download)) %}
                                 <td>{{ trip.id_image_path_for_download }}</td>
                             {% else %}
-                                <td>{{ _('Not Applicable') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.trip_permit_image_location %}
-                                <td><a href="javascript:show_modal('Perm','{{ trip.trip_permit_image_location }}')">{{ _('Yes') }}</a></td>
+{% if ((trip.trip_permit_image_location and trip.trip_permit_image_location != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.trip_permit_image_location)) %}
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td><a href="javascript:show_modal('Permit','{{ trip.trip_permit_image_location }}')">Yes</a></td>
+{% else %}
+                                <td><a href="javascript:show_modal('Perm','{{ trip.trip_permit_image_location }}')">{% if template_profiles.person_report.translate_labels %}{{ _('Yes') }}{% else %}Yes{% endif %}</a></td>
+{% endif %}
                             {% else %}
-                                <td>{{ _('Not Applicable') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.permit_image_path_for_download %}
+{% if ((trip.permit_image_path_for_download and trip.permit_image_path_for_download != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.permit_image_path_for_download)) %}
                                 <td>{{ trip.permit_image_path_for_download }}</td>
                             {% else %}
-                                <td>{{ _('Not Applicable') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.entry_time %}
+{% if ((trip.entry_time and trip.entry_time != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.entry_time)) %}
                                 <td>{{ trip.entry_time }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.exit_time %}
+{% if ((trip.exit_time and trip.exit_time != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.exit_time)) %}
                                 <td {% if trip.exit_time == 'Not Closed' %} style="background-color: red;" {% endif %}>{{ trip.exit_time }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.visit_duration is not none %}
+{% if ((trip.visit_duration is number and trip.visit_duration > 0) if template_profiles.person_report.extended_vehicle_details else (trip.visit_duration is not none)) %}
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>{{ (trip.visit_duration|int // 1440) }} days {{ (((trip.visit_duration|int) % 1440) // 60) }} hours</td>
+{% else %}
                                 <td>{{ trip.visit_duration }}</td>
+{% endif %}
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
                             {% if trip.overstay_minutes is not none %}
                                 <td {% if trip.overstay_minutes > 0 %} style="background-color: red;" {% endif %}>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                    {{ (trip.overstay_minutes // 1440) }} days {{ ((trip.overstay_minutes % 1440) // 60) }} hours
+{% else %}
                                     {{ '%02d:%02d' % (trip.overstay_minutes // 60, trip.overstay_minutes % 60) }}
+{% endif %}
                                 </td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.purpose %}
+{% if ((trip.purpose and trip.purpose != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.purpose)) %}
                                 <td>{{ trip.purpose }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.trip_reason %}
+{% if ((trip.going_to and trip.going_to != 'None') if template_profiles.person_report.extended_vehicle_details else (((trip.going_to) if template_profiles.person_report.destination_gate_columns else (trip.trip_reason)))) %}
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>{{ trip.going_to }}</td>
+{% else %}
+{% if template_profiles.person_report.destination_gate_columns %}
+                                <td>{{ trip.going_to }}</td>
+{% else %}
                                 <td>{{ trip.trip_reason }}</td>
+{% endif %}
+{% endif %}
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
                             {% if trip.total_passengers is not none %}
                                 <td>{{ trip.total_passengers }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
-                            {% if trip.mobile_number %}
+{% if ((trip.mobile_number and trip.mobile_number != 'None') if template_profiles.person_report.extended_vehicle_details else (trip.mobile_number)) %}
                                 <td>{{ trip.mobile_number }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                                <td>Not Available</td>
+{% else %}
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
+{% endif %}
                             {% endif %}
 
+{% if template_profiles.person_report.extended_vehicle_details %}
+                            {% if trip.user_name and trip.user_name != 'None' %}
+                                <td>{{ trip.user_name }}</td>
+                            {% else %}
+                                <td>Not Available</td>
+                            {% endif %}
+{% else %}
                             {% if trip.user_name %}
                                 <td>{{ trip.user_name }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
                             {% endif %}
+{% if not (template_profiles.person_report.destination_gate_columns) %}
 
                             {% if trip.driver_user_name %}
                                 <td>{{ trip.driver_user_name }}</td>
                             {% else %}
-                                <td>{{ _('No records found') }}</td>
+                                <td>{% if template_profiles.person_report.translate_labels %}{{ _('No records found') }}{% else %}No records found{% endif %}</td>
                             {% endif %}
 
+{% endif %}
+{% endif %}
                         </tr>
                     {% endfor %}
                 {% else %}
                     <tr class="update-status-link" style="cursor: default;">
-                        {% for i in range(20) %}
-                            <td>{{ _('No Data') }}</td>
+{% if template_profiles.person_report.extended_vehicle_details %}
+                        {% for i in range(19) %}
+                            <td>{% if template_profiles.person_report.translate_labels %}{{ _('No Data') }}{% else %}No Data{% endif %}</td>
                         {% endfor %}
+{% else %}
+{% if template_profiles.person_report.destination_gate_columns %}
+                        {% for i in range(19) %}
+                            <td>{% if template_profiles.person_report.translate_labels %}{{ _('No Data') }}{% else %}No Data{% endif %}</td>
+                        {% endfor %}
+{% else %}
+                        {% for i in range(20) %}
+                            <td>{% if template_profiles.person_report.translate_labels %}{{ _('No Data') }}{% else %}No Data{% endif %}</td>
+                        {% endfor %}
+{% endif %}
+{% endif %}
                     </tr>
                 {% endif %}
                 </tbody>
@@ -187,15 +357,31 @@
         </div>
 
         <!-- The Modal -->
+{% if template_profiles.person_report.extended_vehicle_details %}
+        <div id="myModal" class="modal image-preview-modal">
+{% else %}
         <div id="myModal" class="modal">
+{% endif %}
             <!-- The Close Button -->
-            <span class="close">{{ _('&times;') }}</span>
+{% if template_profiles.person_report.extended_vehicle_details %}
+            <span id="personReportImageModalClose" class="close">&times;</span>
+{% else %}
+            <span class="close">{% if template_profiles.person_report.translate_labels %}{{ _('&times;') }}{% else %}&times;{% endif %}</span>
+{% endif %}
 
             <!-- Modal Content (The Image) -->
+{% if template_profiles.person_report.extended_vehicle_details %}
+            <img class="modal-content image-preview-modal-content" id="personReportImageModalImg">
+{% else %}
             <img class="modal-content" id="img01">
+{% endif %}
 
             <!-- Modal Caption (Image Text) -->
+{% if template_profiles.person_report.extended_vehicle_details %}
+            <div id="personReportImageModalCaption" class="image-preview-modal-caption"></div>
+{% else %}
             <div id="caption"></div>
+{% endif %}
         </div>
     </div>
 </section>
@@ -206,8 +392,21 @@
     console.log("Person Trip Report List:", person_trip_list);
     length = {{ details.person_trip_list | length }}
     console.log("Length: ",  length);
+{% if template_profiles.person_report.extended_vehicle_details %}
+	var personReportImageModal = document.getElementById("myModal");
+	var personReportImageModalImg = document.getElementById("personReportImageModalImg");
+	var personReportImageModalCaption = document.getElementById("personReportImageModalCaption");
+	var personReportImageModalClose = document.getElementById("personReportImageModalClose");
+{% else %}
     function show_modal(vehicle_plate_number, vehicle_image) {
+{% endif %}
 
+{% if template_profiles.person_report.extended_vehicle_details %}
+    function show_modal(vehicle_plate_number, vehicle_image) {
+		personReportImageModalImg.src = vehicle_image;
+		personReportImageModalCaption.innerHTML = vehicle_plate_number;
+		personReportImageModal.style.display = "block";
+{% else %}
        // Get the modal
         var modal = document.getElementById("myModal");
 
@@ -228,8 +427,22 @@
         // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
             modal.style.display = "none";
-        }
+{% endif %}
     }
+{% if template_profiles.person_report.extended_vehicle_details %}
+
+	personReportImageModalClose.onclick = function() {
+		personReportImageModal.style.display = "none";
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === personReportImageModal) {
+			personReportImageModal.style.display = "none";
+{% endif %}
+		}
+{% if template_profiles.person_report.extended_vehicle_details %}
+	});
+{% endif %}
 
 $(document).ready(function(){
        var table = $('.dataTables-example').DataTable({
@@ -383,7 +596,7 @@ $(document).ready(function(){
     function show_alert_model(title, message, pdfUrl = null, csvUrl = null, isError = false) {
         Swal.fire({
             title: title,
-            html: `<span style="font-size: 18px;">{{ _('${message}') }}</span>`,
+            html: `<span style="font-size: 18px;">{% if template_profiles.person_report.translate_labels %}{{ _('${message}') }}{% else %}${message}{% endif %}</span>`,
             showCancelButton: true,
             confirmButtonText: isError ? 'OK' : 'Open PDF',
             cancelButtonText: isError ? 'Cancel' : 'Open Excel',

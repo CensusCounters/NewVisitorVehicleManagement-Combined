@@ -1,1 +1,0 @@
-"""Ganganagar workflow variants."""

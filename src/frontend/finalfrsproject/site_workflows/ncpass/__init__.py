@@ -1,1 +1,0 @@
-"""NCPass workflow variants."""

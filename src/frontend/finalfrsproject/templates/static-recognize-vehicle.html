@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>{{ _('Automatic Visitor and Vehicle Recognition System') }}</title>
+    <title>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Automatic Visitor and Vehicle Recognition System') }}{% else %}Automatic Visitor and Vehicle Recognition System{% endif %}</title>
 
     <meta charset="UTF-8">
 		<meta name="description" content="Census smart counter">
@@ -42,16 +42,16 @@
 	      <div class="col-md-4">
 	        <div class="display-date" style="margin-top:30px; text-align: center;">
 	            
-	              <span id="details_entered_by">{{ _('Logged In User: Tushar Khichariya') }}</span>
+	              <span id="details_entered_by">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Logged In User: Tushar Khichariya') }}{% else %}Logged In User: Tushar Khichariya{% endif %}</span>
 	            
 	        </div>
 	      </div>
 	      <div class="col-md-4">
 	      	<div class="display-date" style="margin-top:30px;">  
 	     			<span class="display-time"></span>, 
-  				  <span id="day">{{ _('day') }}</span>,
+  				  <span id="day">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('day') }}{% else %}day{% endif %}</span>,
 					  <span id="daynum">00</span>
-					  <span id="month">{{ _('month') }}</span>
+					  <span id="month">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('month') }}{% else %}month{% endif %}</span>
 					  <span id="year">0000</span>
       		</div>
       	</div>
@@ -59,14 +59,14 @@
 	      <div class="col-md-1">
 	        <div style="margin-top:30px;text-align:center;font-size:2rem;font-weight: 200;">
 	          
-	            <a href="/home" style="text-decoration: underline;">{{ _('Home') }}</a>  
+	            <a href="/home" style="text-decoration: underline;">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Home') }}{% else %}Home{% endif %}</a>  
 	          
 	        </div>
 	      </div>
 	      <div class="col-md-1">
 	        <div style="margin-top:30px;text-align:center;font-size:2rem;font-weight: 200;">
 	          
-	            <a href="/logout" style="text-decoration: underline;">{{ _('Logout') }}</a>  
+	            <a href="/logout" style="text-decoration: underline;">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Logout') }}{% else %}Logout{% endif %}</a>  
 	          
 	        </div>
 	      </div>
@@ -80,8 +80,8 @@
     		<div class="col-md-1"></div>
 				<div class="col-md-10" style="margin-top:15px; margin-bottom: 15px; text-align: center">
     			<div class="title-message-header">
-	    			<h3 id="title" style="color: #ffd868">{{ _('Unknown Vehicle:') }} </h3>
-	    			<h3 id="message" style="color: #dddddd">{{ _('Please identify the vehicle from the list below.') }}</h3>
+	    			<h3 id="title" style="color: #ffd868">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Unknown Vehicle:') }}{% else %}Unknown Vehicle:{% endif %} </h3>
+	    			<h3 id="message" style="color: #dddddd">{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Please identify the vehicle from the list below.') }}{% else %}Please identify the vehicle from the list below.{% endif %}</h3>
 	    		</div>
      		</div>
      		<div class="col-md-1"></div>	
@@ -95,7 +95,7 @@
         <div id="img-vg-content">
             <form id="search_form" method="GET" action="/">
                 <div class="form-group col-xs-12">
-                    <input type="text" class="form-control" id="searchInput" name="search" placeholder="{{ _('Search by plate number') }}" value="">
+                    <input type="text" class="form-control" id="searchInput" name="search" placeholder="{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Search by plate number') }}{% else %}Search by plate number{% endif %}" value="">
                 </div>  
             </form>
         </div>
@@ -106,9 +106,9 @@
                     <table class="table table-striped dataTables-example dataTable">
                         <thead>
                             <tr>
-                                <th>{{ _('Image') }}</th>
-                                <th>{{ _('Plate Number') }}</th>
-                                <th>{{ _('Date Time') }}</th>
+                                <th>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Image') }}{% else %}Image{% endif %}</th>
+                                <th>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Plate Number') }}{% else %}Plate Number{% endif %}</th>
+                                <th>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('Date Time') }}{% else %}Date Time{% endif %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,7 +119,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620230.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ap05bm6068') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ap05bm6068') }}{% else %}ap05bm6068{% endif %}</td>
                                 <td>2022-12-08 03:21:17</td>
                             </tr>
                             
@@ -128,7 +128,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620231.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka05nd8105') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka05nd8105') }}{% else %}ka05nd8105{% endif %}</td>
                                 <td>2022-12-08 03:22:22</td>
                             </tr>
                             
@@ -137,7 +137,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620232.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka02al3752') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka02al3752') }}{% else %}ka02al3752{% endif %}</td>
                                 <td>2022-12-08 03:27:49</td>
                             </tr>
                             
@@ -146,7 +146,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620233.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka02af2093') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka02af2093') }}{% else %}ka02af2093{% endif %}</td>
                                 <td>2022-12-08 03:29:54</td>
                             </tr>
                             
@@ -155,7 +155,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620234.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka507902') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka507902') }}{% else %}ka507902{% endif %}</td>
                                 <td>2022-12-08 03:35:02</td>
                             </tr>
                             
@@ -164,7 +164,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620235.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('sq7002') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('sq7002') }}{% else %}sq7002{% endif %}</td>
                                 <td>2022-12-08 03:35:24</td>
                             </tr>
                             
@@ -173,7 +173,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620237.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka04mv7806') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka04mv7806') }}{% else %}ka04mv7806{% endif %}</td>
                                 <td>2022-12-08 03:36:05</td>
                             </tr>
                             
@@ -182,7 +182,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620238.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka01hn0294') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka01hn0294') }}{% else %}ka01hn0294{% endif %}</td>
                                 <td>2022-12-08 03:37:37</td>
                             </tr>
                             
@@ -191,7 +191,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620239.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka05m676') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka05m676') }}{% else %}ka05m676{% endif %}</td>
                                 <td>2022-12-08 03:40:35</td>
                             </tr>
                             
@@ -200,7 +200,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620240.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka03af4813') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka03af4813') }}{% else %}ka03af4813{% endif %}</td>
                                 <td>2022-12-08 03:41:51</td>
                             </tr>
                             
@@ -209,7 +209,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620241.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('exi1gaic22') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('exi1gaic22') }}{% else %}exi1gaic22{% endif %}</td>
                                 <td>2022-12-08 03:42:17</td>
                             </tr>
                             
@@ -218,7 +218,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620242.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('exi1gatb') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('exi1gatb') }}{% else %}exi1gatb{% endif %}</td>
                                 <td>2022-12-08 03:42:18</td>
                             </tr>
                             
@@ -227,7 +227,7 @@
                                 <td class="image-container inner-img">
                                     <img src="/static/images/camera-2_screenshots/22-12-08/03-09-54.620243.jpg" alt="Vehicle Image" class="img_main"></img>
                                 </td>
-                                <td>{{ _('ka03xk6788') }}</td>
+                                <td>{% if template_profiles.static_recognize_vehicle.translate_labels %}{{ _('ka03xk6788') }}{% else %}ka03xk6788{% endif %}</td>
                                 <td>2022-12-08 03:44:22</td>
                             </tr>
                             

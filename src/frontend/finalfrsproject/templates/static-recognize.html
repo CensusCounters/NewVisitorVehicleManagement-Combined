@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>{{ _('Automatic Visitor and Vehicle Recognition System') }}</title>
+    <title>{% if template_profiles.static_recognize.translate_labels %}{{ _('Automatic Visitor and Vehicle Recognition System') }}{% else %}Automatic Visitor and Vehicle Recognition System{% endif %}</title>
 
     <meta charset="UTF-8">
 		<meta name="description" content="Census smart counter">
@@ -42,16 +42,16 @@
 	      <div class="col-md-4">
 	        <div class="display-date" style="margin-top:30px; text-align: center;">
 	            
-	              <span id="details_entered_by">{{ _('Logged In User: Tushar Khichariya') }}</span>
+	              <span id="details_entered_by">{% if template_profiles.static_recognize.translate_labels %}{{ _('Logged In User: Tushar Khichariya') }}{% else %}Logged In User: Tushar Khichariya{% endif %}</span>
 	            
 	        </div>
 	      </div>
 	      <div class="col-md-4">
 	      	<div class="display-date" style="margin-top:30px;">  
 	     			<span class="display-time"></span>, 
-  				  <span id="day">{{ _('day') }}</span>,
+  				  <span id="day">{% if template_profiles.static_recognize.translate_labels %}{{ _('day') }}{% else %}day{% endif %}</span>,
 					  <span id="daynum">00</span>
-					  <span id="month">{{ _('month') }}</span>
+					  <span id="month">{% if template_profiles.static_recognize.translate_labels %}{{ _('month') }}{% else %}month{% endif %}</span>
 					  <span id="year">0000</span>
       		</div>
       	</div>
@@ -59,14 +59,14 @@
 	      <div class="col-md-1">
 	        <div style="margin-top:30px;text-align:center;font-size:2rem;font-weight: 200;">
 	          
-	            <a href="/home" style="text-decoration: underline;">{{ _('Home') }}</a>  
+	            <a href="/home" style="text-decoration: underline;">{% if template_profiles.static_recognize.translate_labels %}{{ _('Home') }}{% else %}Home{% endif %}</a>  
 	          
 	        </div>
 	      </div>
 	      <div class="col-md-1">
 	        <div style="margin-top:30px;text-align:center;font-size:2rem;font-weight: 200;">
 	          
-	            <a href="/logout" style="text-decoration: underline;">{{ _('Logout') }}</a>  
+	            <a href="/logout" style="text-decoration: underline;">{% if template_profiles.static_recognize.translate_labels %}{{ _('Logout') }}{% else %}Logout{% endif %}</a>  
 	          
 	        </div>
 	      </div>
@@ -80,8 +80,8 @@
     		<div class="col-md-1"></div>
 				<div class="col-md-10" style="margin-top:15px; margin-bottom: 15px; text-align: center">
     			<div class="title-message-header">
-	    			<h3 id="title" style="color: #ffd868">{{ _('Recognize Face:') }} </h3>
-	    			<h3 id="message" style="color: #dddddd">{{ _('Hello') }}</h3>
+	    			<h3 id="title" style="color: #ffd868">{% if template_profiles.static_recognize.translate_labels %}{{ _('Recognize Face:') }}{% else %}Recognize Face:{% endif %} </h3>
+	    			<h3 id="message" style="color: #dddddd">{% if template_profiles.static_recognize.translate_labels %}{{ _('Hello') }}{% else %}Hello{% endif %}</h3>
 	    		</div>
      		</div>
      		<div class="col-md-1"></div>	
@@ -98,14 +98,14 @@
 				<video id="video" width="720" height="560" autoplay muted></video>
 			</div>
 		    <div class="col-xs-12 buttons faceapi-button">
-		        <button type="button" id="capture_image" class="c-btn">{{ _('Take a Picture') }}</button>
+		        <button type="button" id="capture_image" class="c-btn">{% if template_profiles.static_recognize.translate_labels %}{{ _('Take a Picture') }}{% else %}Take a Picture{% endif %}</button>
         	</div>
 			<div class="sps_show d-none">
 				<div class="canvas_img">
 					<canvas id="canvas_picture"></canvas>
 				</div>
 				<div class="col-xs-12 buttons faceapi-button">
-		        	<button type="button" id="recognize_image" class="c-btn">{{ _('Submit For Recognition') }}</button>
+		        	<button type="button" id="recognize_image" class="c-btn">{% if template_profiles.static_recognize.translate_labels %}{{ _('Submit For Recognition') }}{% else %}Submit For Recognition{% endif %}</button>
         		</div>
 			</div>
 		</div>

@@ -99,13 +99,18 @@
             var $theadRow = $table.find('thead tr');
             var $tbody = $table.find('tbody');
             var countsByType = {};
+{% if not (template_profiles.trip_report_summary_script.separate_other_column) %}
             var configuredCategoryKeys = tripReportVisitorCategories.map(function (category) {
                 return String(category).toUpperCase();
             });
             var catchAllKey = configuredCategoryKeys.indexOf('OTHERS') !== -1
                 ? 'OTHERS'
                 : (configuredCategoryKeys.indexOf('OTHER') !== -1 ? 'OTHER' : null);
+{% endif %}
             types.forEach(function (item) {
+{% if template_profiles.trip_report_summary_script.separate_other_column %}
+                countsByType[String(item.type || '').toUpperCase()] = summaryNumericValue(item.trips);
+{% else %}
                 var typeKey = String(item.type || '').toUpperCase();
                 var count = summaryNumericValue(item.trips);
                 if (configuredCategoryKeys.indexOf(typeKey) !== -1) {
@@ -113,11 +118,22 @@
                 } else if (catchAllKey) {
                     countsByType[catchAllKey] = (countsByType[catchAllKey] || 0) + count;
                 }
+{% endif %}
             });
 
             var totalTrips = summaryNumericValue(summary.total_trips);
+{% if template_profiles.trip_report_summary_script.separate_other_column %}
+            var configuredTotal = 0;
+            tripReportVisitorCategories.forEach(function (category) {
+                configuredTotal += countsByType[String(category).toUpperCase()] || 0;
+            });
+            var otherCount = Math.max(0, totalTrips - configuredTotal);
+{% endif %}
 
             if (!types.length && totalTrips === 0) {
+{% if template_profiles.trip_report_summary_script.separate_other_column %}
+                $theadRow.find('.trip-summary-other-col').remove();
+{% endif %}
                 $tbody.html(
                     '<tr><td colspan="' + (tripReportVisitorCategories.length + 2) + '">' +
                     escapeSummaryHtml(tableConfig.empty_message) + '</td></tr>'
@@ -125,14 +141,29 @@
                 return;
             }
 
+{% if template_profiles.trip_report_summary_script.separate_other_column %}
+            $theadRow.find('.trip-summary-other-col').remove();
+            if (otherCount > 0) {
+                $theadRow.find('th:last').before('<th class="trip-summary-other-col">Other</th>');
+            }
+
+{% endif %}
             var cells = tripReportVisitorCategories.map(function (category) {
                 var count = countsByType[String(category).toUpperCase()] || 0;
                 return '<td>' + escapeSummaryHtml(count) + '</td>';
             }).join('');
+{% if template_profiles.trip_report_summary_script.separate_other_column %}
+            var otherCell = otherCount > 0
+                ? '<td>' + escapeSummaryHtml(otherCount) + '</td>'
+                : '';
+{% endif %}
 
             $tbody.html(
                 '<tr><td>' + escapeSummaryHtml(tableConfig.row_label) + '</td>' +
                 cells +
+{% if template_profiles.trip_report_summary_script.separate_other_column %}
+                otherCell +
+{% endif %}
                 '<td>' + escapeSummaryHtml(totalTrips) + '</td></tr>'
             );
         }

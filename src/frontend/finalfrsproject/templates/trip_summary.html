@@ -7,26 +7,31 @@
       <input type="hidden" id="trip_summary_report" name="trip_summary_report" value="trip_summary_report">
 
       <div class="col-xs-12 buttons text-center">
-        <button type="submit" id ="end_trip_registration" name= "end_trip_registration" value="end_trip_registration" class="btn btn-primary">{{ _('Continue') }}</button>
+        <button type="submit" id ="end_trip_registration" name= "end_trip_registration" value="end_trip_registration" class="btn btn-primary">{% if template_profiles.trip_summary.translate_labels %}{{ _('Continue') }}{% else %}Continue{% endif %}</button>
       </div>
 
 			<div class="table-responsive" style="padding-top: 30px;">
       	<table class="table table-striped dataTables-example dataTable" cellspacing="20px">
         	<thead>
             <tr>
-              <th>{{ _('Traveler') }}</th>
-              <th>{{ _('Vehicle') }}</th>
-              <th>{{ _('ID') }}</th>
-              <th>{{ _('Traveler Type') }}</th>
-              <th>{{ _('Purpose') }}</th>
-              <th>{{ _('Address') }}</th>
-              <th>{{ _('To Meet') }}</th>
-              <th>{{ _('Entry Time') }}</th>
-              <th>{{ _('Est Duration') }}</th>
-              <th>{{ _('Mobile') }}</th>
-              <th>{{ _('Permit Image') }}</th>
-              <th>{{ _('Total Passengers') }}</th>
-              <th>{{ _('Remarks') }}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Traveler') }}{% else %}Traveler{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Vehicle') }}{% else %}Vehicle{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('ID') }}{% else %}ID{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Traveler Type') }}{% else %}Traveler Type{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Purpose') }}{% else %}Purpose{% endif %}</th>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+              <th>Coming From</th>
+              <th>Going To</th>
+{% else %}
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Address') }}{% else %}Address{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('To Meet') }}{% else %}To Meet{% endif %}</th>
+{% endif %}
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Entry Time') }}{% else %}Entry Time{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Est Duration') }}{% else %}Est Duration{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Mobile') }}{% else %}Mobile{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Permit Image') }}{% else %}Permit Image{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Total Passengers') }}{% else %}Total Passengers{% endif %}</th>
+              <th>{% if template_profiles.trip_summary.translate_labels %}{{ _('Remarks') }}{% else %}Remarks{% endif %}</th>
             </tr>
          	</thead>
           <tbody>
@@ -36,11 +41,44 @@
                   <tr style="cursor: default;">
                     <td>
                       <figure>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                            <img onclick="javascript:show_modal('{{ trip_traveler_detail.traveler_name if trip_traveler_detail.traveler_name and trip_traveler_detail.traveler_name != 'None' else 'Not Available' }}','{{ trip_traveler_detail.person_image }}')"
+                              src="{{ trip_traveler_detail.person_image }}" alt="Person Image" class="img_main report-image-thumb is-clickable">
+                        <figcaption id="traveler_name" name="traveler_name"> {{ trip_traveler_detail.traveler_name if trip_traveler_detail.traveler_name and trip_traveler_detail.traveler_name != 'None' else 'Not Available' }}</figcaption>
+{% else %}
                         <img style="cursor: pointer;" onclick="javascript:show_modal('{{ trip_traveler_detail.traveler_name }}','{{ trip_traveler_detail.person_image }}')"
                              src="{{ trip_traveler_detail.person_image }}" alt="Person Image" class="img_main">
                         <figcaption id="traveler_name" name="traveler_name"> {{ trip_traveler_detail.traveler_name }}</figcaption>
+{% endif %}
                       </figure>
                     </td>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                    {% if trip_traveler_detail.vehicle_image and trip_traveler_detail.vehicle_image != 'None' %}
+                      <td>
+                        <figure>
+                           <img onclick="javascript:show_modal('{{ trip_traveler_detail.vehicle_number if trip_traveler_detail.vehicle_number and trip_traveler_detail.vehicle_number != 'None' else 'Not Available' }}','{{ trip_traveler_detail.vehicle_image }}')"
+                             src="{{ trip_traveler_detail.vehicle_image}}" alt="Vehicle Image" class="img_main report-image-thumb is-clickable">
+                          <figcaption id="vehicle" name="vehicle"> {{ trip_traveler_detail.vehicle_number if trip_traveler_detail.vehicle_number and trip_traveler_detail.vehicle_number != 'None' else 'Not Available' }}</figcaption>
+                        </figure>
+                      </td>
+                      {% else %}
+                        <td>Not Available</td>
+                      {% endif %}
+                     {% if trip_traveler_detail.primary_id_image and trip_traveler_detail.primary_id_image != 'None' %}
+                      <td>
+                        <figure>
+                           <img onclick="javascript:show_modal('{{ trip_traveler_detail.primary_id_number if trip_traveler_detail.primary_id_number and trip_traveler_detail.primary_id_number != 'None' else 'Not Available' }}','{{ trip_traveler_detail.primary_id_image }}')"
+                             src="{{ trip_traveler_detail.primary_id_image}}" alt="ID Image" class="img_main report-image-thumb is-clickable">
+                          <figcaption id="ID" name="ID"> {{ trip_traveler_detail.primary_id_number if trip_traveler_detail.primary_id_number and trip_traveler_detail.primary_id_number != 'None' else 'Not Available' }}</figcaption>
+                        </figure>
+                      </td>
+                      {% else %}
+                        <td>Not Available</td>
+                      {% endif %}
+                    <td>{{ trip_traveler_detail.traveler_type if trip_traveler_detail.traveler_type and trip_traveler_detail.traveler_type != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.visiting_person_name if trip_traveler_detail.visiting_person_name and trip_traveler_detail.visiting_person_name != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.coming_from if trip_traveler_detail.coming_from and trip_traveler_detail.coming_from != 'None' else 'Not Available' }}</td>
+{% else %}
                     {% if trip_traveler_detail.vehicle_image %}
                       <td>
                         <figure>
@@ -50,7 +88,7 @@
                         </figure>
                       </td>
                       {% else %}
-                        <td>{{ _('Not Applicable') }}</td>
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
                       {% endif %}
                      {% if trip_traveler_detail.primary_id_image %}
                       <td>
@@ -61,43 +99,83 @@
                         </figure>
                       </td>
                       {% else %}
-                        <td>{{ _('Not Applicable') }}</td>
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
                       {% endif %}
                     <td>{{ trip_traveler_detail.traveler_type }}</td>
                     <td>{{ trip_traveler_detail.visiting_person_name }}</td>
                     <td>{{ trip_traveler_detail.coming_from }}</td>
+{% endif %}
                     {% if trip_traveler_detail.traveler_type in ['TEACHER', 'PASS HOLDER']  %}
-                        <td>{{ _('Not Applicable') }}</td>
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
                     {% else %}
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                         <td>{{ trip_traveler_detail.going_to if trip_traveler_detail.going_to and trip_traveler_detail.going_to != 'None' else 'Not Available' }}</td>
+{% else %}
+{% if template_profiles.trip_summary.show_missing_value_labels %}
+                         <td>{{ trip_traveler_detail.going_to or _('No records found') }}</td>
+{% else %}
                          <td>{{ trip_traveler_detail.going_to }}</td>
+{% endif %}
+{% endif %}
                     {% endif %}
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                    <td>{{ trip_traveler_detail.entry_time if trip_traveler_detail.entry_time and trip_traveler_detail.entry_time != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.expected_visit_duration if trip_traveler_detail.expected_visit_duration and trip_traveler_detail.expected_visit_duration != 'None' else 'Not Available' }}</td>
+                    <td>{{ trip_traveler_detail.mobile_number if trip_traveler_detail.mobile_number and trip_traveler_detail.mobile_number != 'None' else 'Not Available' }}</td>
+{% else %}
                     <td>{{ trip_traveler_detail.entry_time }}</td>
                     <td>{{ trip_traveler_detail.expected_visit_duration }}</td>
                     <td>{{ trip_traveler_detail.mobile_number }}</td>
+{% endif %}
                     {% if trip_traveler_detail.traveler_type in ['TEACHER', 'PASS HOLDER']  %}
-                        <td>{{ _('Not Applicable') }}</td>
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
                     {% else %}
-                    {% if trip_traveler_detail.permit_image %}
+{% if ((trip_traveler_detail.permit_image and trip_traveler_detail.permit_image != 'None') if template_profiles.trip_summary.enhanced_image_preview else (trip_traveler_detail.permit_image)) %}
                         <td>
                             <figure>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                                <img onclick="javascript:show_modal('Permit','{{ trip_traveler_detail.permit_image }}')"
+                                  src="{{ trip_traveler_detail.permit_image }}" alt="Permit Image" class="img_main report-image-thumb is-clickable">
+{% else %}
                                 <img style="cursor: pointer;" onclick="javascript:show_modal('Permit','{{ trip_traveler_detail.permit_image }}')"
                                     src="{{ trip_traveler_detail.permit_image }}" alt="Permit Image" class="img_main">
-                                <figcaption id="permit_image" name="permit_image"> {{ _('Permit') }}</figcaption>
+{% endif %}
+                                <figcaption id="permit_image" name="permit_image"> {% if template_profiles.trip_summary.translate_labels %}{{ _('Permit') }}{% else %}Permit{% endif %}</figcaption>
                             </figure>
                         </td>
                     {% else %}
-                        <td>{{ _('None') }}</td>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                      <td>Not Available</td>
+{% else %}
+{% if template_profiles.trip_summary.show_missing_value_labels %}
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
+{% else %}
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('None') }}{% else %}None{% endif %}</td>
+{% endif %}
+{% endif %}
                     {% endif %}
                     {% endif %}
                     {% if trip_traveler_detail.traveler_type in ['TEACHER', 'PASS HOLDER']  %}
-                        <td>{{ _('Not Applicable') }}</td>
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('Not Applicable') }}{% else %}Not Applicable{% endif %}</td>
                     {% else %}
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                      <td>{{ trip_traveler_detail.total_passengers if trip_traveler_detail.total_passengers is not none and trip_traveler_detail.total_passengers != 'None' else 'Not Available' }}</td>
+{% else %}
                         <td>{{ trip_traveler_detail.total_passengers }}</td>
+{% endif %}
                     {% endif %}
-                    {% if trip_traveler_detail.trip_reason %}
+{% if ((trip_traveler_detail.trip_reason and trip_traveler_detail.trip_reason != 'None') if template_profiles.trip_summary.enhanced_image_preview else (trip_traveler_detail.trip_reason)) %}
                         <td>{{ trip_traveler_detail.trip_reason }}</td>
                     {% else %}
-                       <td>{{ _('None') }}</td>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+                       <td>Not Available</td>
+{% else %}
+{% if template_profiles.trip_summary.show_missing_value_labels %}
+                       <td>{{ _('No records found') }}</td>
+{% else %}
+                        <td>{% if template_profiles.trip_summary.translate_labels %}{{ _('None') }}{% else %}None{% endif %}</td>
+{% endif %}
+{% endif %}
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -108,16 +186,32 @@
       </div>
       <!--
         <input type="hidden" id="csv_data" name="csv_data" value="{{ trip_traveler_detail }}">
-        <div style="text-align: center; margin-top: 100px" ><button type="submit" id = "download" name="download" value="download" class="c-btn">{{ _('Download CSV') }}</button></div>
+        <div style="text-align: center; margin-top: 100px" ><button type="submit" id = "download" name="download" value="download" class="c-btn">{% if template_profiles.trip_summary.translate_labels %}{{ _('Download CSV') }}{% else %}Download CSV{% endif %}</button></div>
       -->
     </form>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+    <div id="myModal" class="modal image-preview-modal">
+{% else %}
     <div id="myModal" class="modal">
+{% endif %}
       <!-- The Close Button -->
-      <span class="close">{{ _('&times;') }}</span>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+      <span id="tripSummaryImageModalClose" class="close">&times;</span>
+{% else %}
+      <span class="close">{% if template_profiles.trip_summary.translate_labels %}{{ _('&times;') }}{% else %}&times;{% endif %}</span>
+{% endif %}
         <!-- Modal Content (The Image) -->
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+      <img class="modal-content image-preview-modal-content" id="tripSummaryImageModalImg">
+{% else %}
       <img class="modal-content" id="img01">
+{% endif %}
         <!-- Modal Caption (Image Text) -->
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+      <div id="tripSummaryImageModalCaption" class="image-preview-modal-caption"></div>
+{% else %}
       <div id="caption"></div>
+{% endif %}
     </div>
       
     
@@ -125,9 +219,20 @@
 </section>
 	
 <script>
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+	var tripSummaryImageModal = document.getElementById("myModal");
+	var tripSummaryImageModalImg = document.getElementById("tripSummaryImageModalImg");
+	var tripSummaryImageModalCaption = document.getElementById("tripSummaryImageModalCaption");
+	var tripSummaryImageModalClose = document.getElementById("tripSummaryImageModalClose");
+{% endif %}
 
   
     function show_modal(label, image) {
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+		tripSummaryImageModalImg.src = image;
+		tripSummaryImageModalCaption.innerHTML = label;
+		tripSummaryImageModal.style.display = "block";
+{% else %}
         
        var modal = document.getElementById("myModal");
 
@@ -143,8 +248,22 @@
         // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
             modal.style.display = "none";
-        }
+{% endif %}
     }
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+
+	tripSummaryImageModalClose.onclick = function() {
+		tripSummaryImageModal.style.display = "none";
+	};
+
+	window.addEventListener('click', function(event) {
+		if (event.target === tripSummaryImageModal) {
+			tripSummaryImageModal.style.display = "none";
+{% endif %}
+		}
+{% if template_profiles.trip_summary.enhanced_image_preview %}
+	});
+{% endif %}
 
 
 

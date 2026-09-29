@@ -6,7 +6,7 @@
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="row show-mood">
         <div class="col-xs-12 buttons text-center">
-          <button type="submit" id ="500" name="500" value="500" class="btn btn-primary">{{ _('Continue') }}</button>
+          <button type="submit" id ="500" name="500" value="500" class="btn btn-primary">{% if template_profiles.500.translate_labels %}{{ _('Continue') }}{% else %}Continue{% endif %}</button>
         </div>
      </div>
     </form>

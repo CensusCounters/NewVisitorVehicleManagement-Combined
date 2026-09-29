@@ -7,19 +7,19 @@
 
       <!-- Custom File Input -->
       <div class="row" id="img-vg-content1">
-        <div id="previewImg">{{ _('Image preview will appear here') }}</div>
+        <div id="previewImg">{% if template_profiles.person_lookup.translate_labels %}{{ _('Image preview will appear here') }}{% else %}Image preview will appear here{% endif %}</div>
       </div>
       <div class="row" id="img-vg-content2">
         <span id="fileName" style="display: flex; align-items: center; justify-content: center; padding-left: 50px;
-         font-size: 20px; margin-top: 30px; color: red">{{ _('No file chosen') }}</span>
+         font-size: 20px; margin-top: 30px; color: red">{% if template_profiles.person_lookup.translate_labels %}{{ _('No file chosen') }}{% else %}No file chosen{% endif %}</span>
       </div>
       <div class="row" id="img-vg-content3">
           <input type="file" id="imageInput" name="image" accept="image/*" required style="display: none;">
-          <button type="button" id="customFileBtn" class="btn btn-primary" style="width:40%">{{ _('Choose Image') }}</button>
+          <button type="button" id="customFileBtn" class="btn btn-primary" style="width:40%">{% if template_profiles.person_lookup.translate_labels %}{{ _('Choose Image') }}{% else %}Choose Image{% endif %}</button>
       </div>
       <!-- Submit Button & Spinner -->
       <div class="row" id="img-vg-content4">
-        <button type="submit" id="sbmt" class="btn btn-primary" style="display: none;">{{ _('Submit') }}</button>
+        <button type="submit" id="sbmt" class="btn btn-primary" style="display: none;">{% if template_profiles.person_lookup.translate_labels %}{{ _('Submit') }}{% else %}Submit{% endif %}</button>
         <div id="spinner" class="spinner-overlay" style="display:none;">
           <div class="spinner"></div>
         </div>
@@ -44,18 +44,18 @@ $(document).ready(function () {
   imageInput.addEventListener('change', function () {
     const file = this.files[0];
     if (!file) {
-      fileNameSpan.textContent = "{{ _('No file chosen') }}";
-      previewImg.innerHTML = "{{ _('Image preview will appear here') }}";
+      fileNameSpan.textContent = "{% if template_profiles.person_lookup.translate_labels %}{{ _('No file chosen') }}{% else %}No file chosen{% endif %}";
+      previewImg.innerHTML = "{% if template_profiles.person_lookup.translate_labels %}{{ _('Image preview will appear here') }}{% else %}Image preview will appear here{% endif %}";
       $("#sbmt").hide();
       return;
     }
 
     const MAX_MB = 8;
     if (file.size / 1024 / 1024 > MAX_MB) {
-      alert("{{ _('Image is too large. Please upload an image smaller than') }} " + MAX_MB + "MB.");
+      alert("{% if template_profiles.person_lookup.translate_labels %}{{ _('Image is too large. Please upload an image smaller than') }}{% else %}Image is too large. Please upload an image smaller than{% endif %} " + MAX_MB + "MB.");
       this.value = '';
-      fileNameSpan.textContent = "{{ _('No file chosen') }}";
-      previewImg.innerHTML = "{{ _('Image preview will appear here') }}";
+      fileNameSpan.textContent = "{% if template_profiles.person_lookup.translate_labels %}{{ _('No file chosen') }}{% else %}No file chosen{% endif %}";
+      previewImg.innerHTML = "{% if template_profiles.person_lookup.translate_labels %}{{ _('Image preview will appear here') }}{% else %}Image preview will appear here{% endif %}";
       $("#sbmt").hide();
       return;
     }
@@ -75,7 +75,7 @@ $(document).ready(function () {
   // Submit button logic
   $("#form").on('submit', function() {
     $("#spinner").show();
-  });
+});
 
 });
 </script>

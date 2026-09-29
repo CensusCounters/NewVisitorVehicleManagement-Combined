@@ -1,62 +1,163 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+<section class="user vehicle_detail_section ncpass-vehicle-form">
+{% else %}
 <section class="user vehicle_detail_section">
+{% endif %}
 	<div class="container">
 		<div class="row d-flex align-items-stretch" id="img-vg-content">
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+			<div class="col-md-5 d-flex">
+{% else %}
 			<div class="col-md-4 d-flex">
+{% endif %}
 				<div class="user_left_portion preview-panel minimal-preview-panel known-vehicle-tall-panel" id="capturedImageRow"
 					style="flex: 1; background: linear-gradient(to right, #900C3F 0%, #C70039 41%, #581845 100%); padding: 20px;">
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+
+{% endif %}
 					{% if details.vehicle_image_url %}
-					<h1 class="preview-panel-title">{{ _('Vehicle Picture') }}</h1>
+					<h1 class="preview-panel-title">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Vehicle Picture') }}{% else %}Vehicle Picture{% endif %}</h1>
 					<div class="preview-image-frame preview-image-frame--compact preview-image-frame--clickable minimal-preview-frame known-vehicle-tall-frame">
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<img src="{{ details.vehicle_image_url }}" name="vehicle_image" id="vehicle_image"
+							class="is-clickable"
+							onclick="javascript:showVehicleImageModal('Vehicle Picture', '{{ details.vehicle_image_url }}')">
+{% else %}
 						<img src="{{ details.vehicle_image_url }}" name="vehicle_image" id="vehicle_image" class="is-clickable"
+{% if not template_profiles.unknown_vehicle.translate_labels %}
+							onclick='javascript:showVehicleImageModal("Vehicle Picture", {{ details.vehicle_image_url|tojson }})'>
+{% else %}
 							onclick='javascript:showVehicleImageModal({{ _("Vehicle Picture")|tojson }}, {{ details.vehicle_image_url|tojson }})'>
+{% endif %}
+{% endif %}
 					</div>
 					{% endif %}
-			  </div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+
+{% endif %}
+				</div>
 			</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+			<div class="col-md-7">
+{% else %}
 			<div class="col-md-8">
+{% endif %}
 				<div class="user-form row">
-					<h1 style="margin-bottom: 30px;">{{ _('Vehicle Details') }}</h1>
+					<h1 style="margin-bottom: 30px;">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Vehicle Details') }}{% else %}Vehicle Details{% endif %}</h1>
 					<form id="vehicle_details" action="{{ url_for('unknown_vehicle') }}" method="post" enctype="multipart/form-data" class="login">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<input type="hidden" name="person_id" id="person_id" value="{{ details.person_id or '' }}">
+{% else %}
 						<input type="hidden" name="person_id" id="person_id" value="{{ details.person_id }}">
+{% endif %}
 						{% if details.vehicle_image_url %}
 						<input type="hidden" name="vehicle_image" value="{{ details.vehicle_image_url }}">
 						{% endif %}
 						{% if details.vehicle_id is not none %}
 						<input type="hidden" id="vehicle_id" name="vehicle_id" value="{{ details.vehicle_id | trim }}">
 						{% endif %}
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+{% else %}
 						<div class="col-xs-2">
-							<label class="label">{{ _('Vehicle Number') }}</label>
+{% endif %}
+							<label class="label">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Vehicle Number') }}{% else %}Vehicle Number{% endif %}</label>
 						</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<div class="form-group col-xs-9">
+{% else %}
 						<div class="form-group col-xs-10">
+{% endif %}
 							<input id="vehicle_number" name="vehicle_number" type="text" maxlength="30" class="form-control required"
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+								   value="{{ details.vehicle_number or '' }}">
+{% else %}
 								   value="{{ details.vehicle_number.strip() }}">
+{% endif %}
 					  	</div>
-						<div class="col-xs-2">
-							<label class="label">{{ _('Owner') }}</label>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+							<label class="label">Vehicle Type</label>
 						</div>
+						<div class="form-group col-xs-9">
+							<select name="vehicle_type" id="vehicle_type" class="form-control">
+								{% for value in details.vehicle_types %}
+              						<option value="{{ value }}">{{ value.replace('_', ' ') }}</option>
+          						{% endfor %}
+							</select>
+				  		</div>
+
+						<div class="col-xs-3">
+							<label class="label">Vehicle Category</label>
+						</div>
+						<div class="form-group col-xs-9">
+							<select name="vehicle_model" id="vehicle_model" class="form-control">
+								{% for value in details.vehicle_categories %}
+              						<option value="{{ value }}">{{ value.replace('_', ' ') }}</option>
+          						{% endfor %}
+							</select>
+				  		</div>
+
+						<div class="col-xs-3">
+{% else %}
+						<div class="col-xs-2">
+{% endif %}
+							<label class="label">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Owner') }}{% else %}Owner{% endif %}</label>
+						</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<div class="form-group col-xs-9">
+							<input id="vehicle_owner_name" name="vehicle_owner_name" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_owner_name or '' }}">
+{% else %}
 						<div class="form-group col-xs-10">
 							<input id="vehicle_owner_name" name="vehicle_owner_name" type="text" maxlength="30" class="form-control required" value="{{ details.vehicle_owner_name }}">
+{% endif %}
 						</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+
+						<div class="col-xs-3">
+							<label class="label">RC</label>
+{% else %}
 						<div class="col-xs-2">
-							<label class="label">{{ _('M/T') }}</label>
+							<label class="label">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('M/T') }}{% else %}M/T{% endif %}</label>
+{% endif %}
 						</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<div class="form-group col-xs-9">
+							<input id="vehicle_registration_number" name="vehicle_registration_number" type="text" maxlength="30"
+								   class="form-control" value="" >
+						</div>
+
+						<div class="col-xs-3">
+							<label class="label">Make</label>
+						</div>
+					  	<div class="form-group col-xs-9">
+{% else %}
 					  	<div class="form-group col-xs-10">
+{% endif %}
 							<input id="vehicle_make" name="vehicle_make" type="text" maxlength="30" class="form-control" value="{{ details.vehicle_make if details.vehicle_make else '' }}">
 					  	</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+						<div class="col-xs-3">
+{% else %}
 						<div class="col-xs-2">
-							<label class="label">{{ _('Color') }}</label>
+{% endif %}
+							<label class="label">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Color') }}{% else %}Color{% endif %}</label>
 						</div>
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+					  	<div class="form-group col-xs-9">
+{% else %}
 					  	<div class="form-group col-xs-10">
+{% endif %}
 							<input id="vehicle_color" name="vehicle_color" type="text" maxlength="30" class="form-control" value="{{ details.vehicle_color if details.vehicle_color else '' }}">
 					  	</div>
 						<div class="col-xs-6 buttons text-center" style="margin-top:10px">
-						   <button type="submit" id = "sbmt_button" name="sbmt_button" value="back_to_select" class="btn btn-primary">{{ _('Submit to Add Vehicle') }}</button>
+						   <button type="submit" id = "sbmt_button" name="sbmt_button" value="back_to_select" class="btn btn-primary">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Submit to Add Vehicle') }}{% else %}Submit to Add Vehicle{% endif %}</button>
 						</div>
 						<div class="col-xs-6 buttons text-center" style="margin-top:10px">
-						  <button type="button" id ="cancelbtn" name="cancelbtn" class="btn btn-primary" style="color:#dddddd">{{ _('Go Back') }}</button>
+						  <button type="button" id ="cancelbtn" name="cancelbtn" class="btn btn-primary" style="color:#dddddd">{% if template_profiles.unknown_vehicle.translate_labels %}{{ _('Go Back') }}{% else %}Go Back{% endif %}</button>
 						</div>
 						<div id="spinner" class="spinner-overlay" style="display:none;">
 							<div class="spinner"></div>
@@ -78,13 +179,27 @@
 
 	function showVehicleImageModal(label, image) {
 		var imageModal = document.getElementById('unknownVehicleImageModal');
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+		var imageModalImg = document.getElementById('unknownVehicleImageModalImg');
+		var imageModalCaption = document.getElementById('unknownVehicleImageModalCaption');
+
+		imageModalImg.src = image;
+		imageModalCaption.innerHTML = label;
+{% else %}
 		document.getElementById('unknownVehicleImageModalImg').src = image;
 		document.getElementById('unknownVehicleImageModalCaption').textContent = label;
+{% endif %}
 		imageModal.style.display = 'block';
 	}
 
 	var unknownVehicleImageModal = document.getElementById('unknownVehicleImageModal');
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+	var unknownVehicleImageModalClose = document.getElementById('unknownVehicleImageModalClose');
+
+	unknownVehicleImageModalClose.onclick = function() {
+{% else %}
 	document.getElementById('unknownVehicleImageModalClose').onclick = function() {
+{% endif %}
 		unknownVehicleImageModal.style.display = 'none';
 	};
 
@@ -106,7 +221,15 @@
 					        	window.location.href = "/recognize_vehicle"
 					    	},
 					    	error: function(e) {
+{% if template_profiles.unknown_vehicle.extended_vehicle_details %}
+					       		alert('Error: '+e);
+{% else %}
+{% if not template_profiles.unknown_vehicle.translate_labels %}
+					       		alert('Error: '+e);
+{% else %}
 					       		alert("{{ _('Error:') }}" + ' ' + e);
+{% endif %}
+{% endif %}
 					    	}  
 					});
 			}

@@ -65,6 +65,7 @@
         table-layout: auto;
         min-width: 1800px;
     }
+{% if not (template_profiles.trip_report_details_styles.compact_link_styles) %}
 
     .trip-report-details .report-link-with-thumb {
         display: inline-flex;
@@ -92,4 +93,5 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.30);
         flex-shrink: 0;
     }
+{% endif %}
 </style>
