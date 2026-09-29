@@ -16,3 +16,4 @@ compreface-sdk
 wheel
 gunicorn
 psycopg2
+pydantic>=2.5
