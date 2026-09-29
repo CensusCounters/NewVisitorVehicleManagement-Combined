@@ -20,6 +20,14 @@ SITE_PROFILE=ncpass docker compose \
   --profile visitor_vehicle up -d
 ```
 
+
+```
+docker compose \
+  -f docker-compose-census-counters-visitor-vehicle.yml \
+  --profile bundled_infra \
+  --profile visitor_vehicle down
+```
+
 Or use `./run_all_containers.sh` with `SITE_PROFILE` set in the environment. That script defaults to `SITE_PROFILE=ncpass` if unset, and syncs ANPR images before start.
 
 **Note:** Postgres and Redis use the `bundled_infra` profile. Starting with `visitor_vehicle` alone will cause a 500 error because the app cannot reach `census_counters_postgres_db`.

@@ -173,6 +173,59 @@ COMMON_TRIP_REPORT_SUMMARY = {
 
 SINGLE_ACTIVE_LOGIN = True
 
+# Per-profile differences for the Aadhaar / ID-lookup feature. Kept here (not in the
+# handler) so all site configuration lives in one place. tangdhar reuses kupwara's
+# settings because its id_lookup_workflow is "kupwara".
+_AADHAAR_LOOKUP_KUPWARA = {
+    "custom_dropdown": False,
+    "support_male_passenger_skip": True,
+    "default_message_key": "id_type",
+    "lookup_strategy": "multi",
+    "force_id_type": None,
+    "require_input_validation": False,
+    "pass_holder_teacher_uses_pass_image": False,
+    "exception_template_post": "500.html",
+    "show_id_type_first": ["PASS HOLDER", "PERMISSION", "CIVILIAN", "GUEST", "OTHERS"],
+    "show_id_number_only": ["TEACHER"],
+}
+_AADHAAR_LOOKUP_NCPASS = {
+    "custom_dropdown": True,
+    "support_male_passenger_skip": False,
+    "default_message_key": "visitor_type",
+    "lookup_strategy": "aadhar_only",
+    "force_id_type": "AADHAR",
+    "require_input_validation": True,
+    "pass_holder_teacher_uses_pass_image": False,
+    "exception_template_post": "home.html",
+    "show_id_type_first": [],
+    "show_id_number_only": [],
+}
+_AADHAAR_LOOKUP_GANGANAGAR = {
+    "custom_dropdown": False,
+    "support_male_passenger_skip": True,
+    "default_message_key": "id_type",
+    "lookup_strategy": "multi",
+    "force_id_type": None,
+    "require_input_validation": False,
+    "pass_holder_teacher_uses_pass_image": True,
+    "exception_template_post": "500.html",
+    "show_id_type_first": ["PASS HOLDER", "PERMISSION", "CIVILIAN", "GUEST", "OTHERS", "MES", "LABOUR"],
+    "show_id_number_only": ["TEACHER"],
+}
+
+_AADHAAR_LOOKUP_TANGDHAR = {
+    "custom_dropdown": False,
+    "support_male_passenger_skip": True,
+    "default_message_key": "id_type",
+    "lookup_strategy": "multi",
+    "force_id_type": None,
+    "require_input_validation": False,
+    "pass_holder_teacher_uses_pass_image": False,
+    "exception_template_post": "500.html",
+    "show_id_type_first": ["PASS HOLDER", "PERMISSION", "CIVILIAN", "GUEST", "OTHERS"],
+    "show_id_number_only": ["TEACHER"],
+}
+
 SITE_PROFILES = {
     "kupwara": {
         "id_lookup_workflow": "kupwara",
@@ -208,6 +261,7 @@ SITE_PROFILES = {
                 "required_fields": ["vehicle_number", "vehicle_owner_name"],
             },
         },
+        "aadhaar_lookup": _AADHAAR_LOOKUP_KUPWARA,
     },
     "ncpass": {
         "id_lookup_workflow": "ncpass",
@@ -250,6 +304,7 @@ SITE_PROFILES = {
                 "required_fields": ["vehicle_number", "vehicle_owner_name"],
             },
         },
+        "aadhaar_lookup": _AADHAAR_LOOKUP_NCPASS,
     },
     "ganganagar": {
         "id_lookup_workflow": "ganganagar",
@@ -291,6 +346,7 @@ SITE_PROFILES = {
                 "required_fields": ["vehicle_number", "vehicle_owner_name"],
             },
         },
+        "aadhaar_lookup": _AADHAAR_LOOKUP_GANGANAGAR,
     },
     "tangdhar": {
         "id_lookup_workflow": "kupwara",
@@ -326,6 +382,7 @@ SITE_PROFILES = {
                 "required_fields": ["vehicle_number", "vehicle_owner_name"],
             },
         },
+        "aadhaar_lookup": _AADHAAR_LOOKUP_TANGDHAR,
     },
 }
 
@@ -475,6 +532,7 @@ app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
 app.config["APP_TITLE"] = site_profile["app_title"]
 app.config["ID_LOOKUP_WORKFLOW"] = site_profile["id_lookup_workflow"]
+app.config["AADHAAR_LOOKUP_PROFILE"] = site_profile["aadhaar_lookup"]
 app.config["APP_LOGO_PATH"] = site_profile["logo_path"]
 app.config["ASSET_URL_VERSION"] = os.environ.get("ASSET_URL_VERSION", site_profile_name + "-1")
 app.config['SECRET_KEY'] = os.environ.get(
