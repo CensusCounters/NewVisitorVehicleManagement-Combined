@@ -88,7 +88,9 @@ def post_handler(jwt_details, redis_conn, request):
             if form.get('destination') == 'recognize_vehicle':
                 print("trip_registration: recognize_vehicle")
                 session_values_json_redis.update({"traveler_type": form.get('traveler_type')})
-                session_values_json_redis.update({"message": (_(_cfg()["vehicle_selection_message"]) if _cfg()["translate_messages"] else _cfg()["vehicle_selection_message"])})
+                session_values_json_redis.update({"message": (
+                    _(app.config["VEHICLE_SELECTION_MESSAGE"]) if _cfg()["translate_messages"]
+                    else app.config["VEHICLE_SELECTION_MESSAGE"])})
                 session_values_json_redis.update({"ticket_status": "recognize_vehicle"})
                 redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis)) 
                 print("redis in trip_registration before vehicle recognition: ", session_values_json_redis)
