@@ -1,13 +1,10 @@
 import json, os, base64
-from flask import render_template
+from flask import render_template, current_app
 from finalfrsproject import routeMethods, app, redisCommands, sqlCommands, ALLOWED_PHOTO_EXTENSIONS
 import requests
 from flask_babel import _
 from datetime import datetime
 import time
-
-def _cfg():
-    return app.config["PERSON_LOOKUP_PROFILE"]
 
 
 def get_handler(jwt_details, redis_conn):
@@ -38,7 +35,7 @@ def get_handler(jwt_details, redis_conn):
     except Exception as e:
         print(f"Error occurred: {e}", flush=True)
         send_to_html_json = {
-            'message': (_("Error in person look up. Please try again.") if _cfg()["translate_messages"] else "Error in person look up. Please try again."),
+            'message': (_("Error in person look up. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Error in person look up. Please try again."),
             'logged_in_user': jwt_details.get("logged_in_user_name"),
             'logged_in_user_type': jwt_details.get("logged_in_user_type"),
             'page_title': _('Person Lookup')
@@ -68,8 +65,8 @@ def post_handler(jwt_details, redis_conn, request):
         if (not lookup_image or lookup_image.filename == '' or
                     not routeMethods.allowed_file(lookup_image.filename, ALLOWED_PHOTO_EXTENSIONS)):
             send_to_html_json = {
-                'message': (_("Please upload a valid image file for person lookup.") if _cfg()["translate_messages"] else "Please upload a valid image file for person lookup."),
-                'page_title': (_("Person Look Up") if _cfg()["translate_messages"] else "Person Look Up"),
+                'message': (_("Please upload a valid image file for person lookup.") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Please upload a valid image file for person lookup."),
+                'page_title': (_("Person Look Up") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Person Look Up"),
                 'logged_in_user': jwt_details.get("logged_in_user_name"),
                 'logged_in_user_type': jwt_details.get("logged_in_user_type")
             }
@@ -95,8 +92,8 @@ def post_handler(jwt_details, redis_conn, request):
                     # Then call it before each render_template:
                     image_base64, image_mime_type = prepare_image_for_display(lookup_image)
                     send_to_html_json = {
-                        'message': (_("No matches found for the uploaded picture.") if _cfg()["translate_messages"] else "No matches found for the uploaded picture."),
-                        'page_title': (_("Person Look Up Result") if _cfg()["translate_messages"] else "Person Look Up Result"),
+                        'message': (_("No matches found for the uploaded picture.") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "No matches found for the uploaded picture."),
+                        'page_title': (_("Person Look Up Result") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Person Look Up Result"),
                         'lookup_image_base64': image_base64,
                         'lookup_image_mime_type': image_mime_type,
                         'logged_in_user': jwt_details.get("logged_in_user_name"),
@@ -166,9 +163,9 @@ def post_handler(jwt_details, redis_conn, request):
                           flush=True)
 
                     return render_template('person_lookup_result_list.html', details={
-                        'message': (_("Following matches were found for the upload picture.") if _cfg()["translate_messages"] else "Following matches were found for the upload picture."),
+                        'message': (_("Following matches were found for the upload picture.") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Following matches were found for the upload picture."),
                         'matches': matches,
-                        'page_title': (_("Person Look Up Result") if _cfg()["translate_messages"] else "Person Look Up Result"),
+                        'page_title': (_("Person Look Up Result") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Person Look Up Result"),
                         'lookup_image_base64': image_base64,
                         'lookup_image_mime_type': image_mime_type,
                         'logged_in_user': jwt_details.get("logged_in_user_name"),
@@ -183,8 +180,8 @@ def post_handler(jwt_details, redis_conn, request):
                       flush=True)
 
                 return render_template('person_lookup.html', details={
-                    'message': (_("Error in person look up. Please try again") if _cfg()["translate_messages"] else "Error in person look up. Please try again"),
-                    'page_title': (_("Person Look Up") if _cfg()["translate_messages"] else "Person Look Up"),
+                    'message': (_("Error in person look up. Please try again") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Error in person look up. Please try again"),
+                    'page_title': (_("Person Look Up") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Person Look Up"),
                     'logged_in_user': jwt_details.get("logged_in_user_name"),
                     'logged_in_user_type': jwt_details.get("logged_in_user_type")
                 })
@@ -192,8 +189,8 @@ def post_handler(jwt_details, redis_conn, request):
     except Exception as e:
         print("Error in person look up: ", e, flush=True)
         send_to_html_json = {
-            'message': (_("Error in person look up. Please try again") if _cfg()["translate_messages"] else "Error in person look up. Please try again"),
-            'page_title': (_("Person Look Up") if _cfg()["translate_messages"] else "Person Look Up"),
+            'message': (_("Error in person look up. Please try again") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Error in person look up. Please try again"),
+            'page_title': (_("Person Look Up") if current_app.config["SITE_PROFILE_CONFIG"].person_lookup.translate_messages else "Person Look Up"),
             'logged_in_user': jwt_details.get("logged_in_user_name"),
             'logged_in_user_type': jwt_details.get("logged_in_user_type")
         }

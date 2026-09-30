@@ -1,14 +1,11 @@
 from finalfrsproject import app
 import json
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, current_app
 from finalfrsproject import redisCommands
 from flask_babel import _
 import traceback
 import time
 from datetime import datetime
-
-def _cfg():
-    return app.config["MAKE_TRIP_SUMMARY_PROFILE"]
 
 
 def get_handler(jwt_details, redis_conn):
@@ -22,12 +19,12 @@ def get_handler(jwt_details, redis_conn):
     traveler_type = session_values_json_redis.get('traveler_type')
     print("traveler_type: ", traveler_type)
 
-    if _cfg()["passenger_registration_loop"] and traveler_type == 'Pedestrian':
+    if current_app.config["SITE_PROFILE_CONFIG"].make_trip_summary.passenger_registration_loop and traveler_type == 'Pedestrian':
         print('trip registration: Pedestrian')
         session_values_json_redis = redisCommands.create_json_for_trip_registration_post_from_redis_object(session_values_json_redis)
         redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
 
-    elif _cfg()["passenger_registration_loop"] and traveler_type == 'Driver':
+    elif current_app.config["SITE_PROFILE_CONFIG"].make_trip_summary.passenger_registration_loop and traveler_type == 'Driver':
         print('trip registration: Driver')
         if session_values_json_redis.get("trip_and_traveler_details") is None:
             session_values_json_redis = redisCommands.create_json_for_trip_registration_post_from_redis_object(session_values_json_redis)
@@ -47,7 +44,7 @@ def get_handler(jwt_details, redis_conn):
             if(is_passenger_entry == 'yes'):
                 return redirect(url_for('aadhar_lookup'))
 
-    elif _cfg()["passenger_registration_loop"] and traveler_type == 'Male_Passenger':
+    elif current_app.config["SITE_PROFILE_CONFIG"].make_trip_summary.passenger_registration_loop and traveler_type == 'Male_Passenger':
         print('trip registration: Male Passenger', flush=True)
         if session_values_json_redis.get('person_id'):
             session_values_json_redis = redisCommands.create_json_for_trip_registration_post_from_redis_object(session_values_json_redis)
@@ -93,7 +90,7 @@ def post_handler(jwt_details, redis_conn, form):
         print("form: ", form)
 
         if form.get('end_trip_registration'):
-            session_values_json_redis.update({"message": (_("Trip registration completed") if _cfg()["translate_messages"] else "Trip registration completed")})
+            session_values_json_redis.update({"message": (_("Trip registration completed") if current_app.config["SITE_PROFILE_CONFIG"].make_trip_summary.translate_messages else "Trip registration completed")})
             session_values_json_redis.update({"ticket_status": "home"})
             redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
             print('redis in make_trip_summary after trip has ended: ', session_values_json_redis)
@@ -113,7 +110,7 @@ def post_handler(jwt_details, redis_conn, form):
         print(f"[ERROR] post_handler failed: {e}")
         send_to_html_json = {
             'message': _("Error in the trip summary page. Please go to the home page."),
-            'page_title': (_('Error') if _cfg()["translate_messages"] else 'Error')
+            'page_title': (_('Error') if current_app.config["SITE_PROFILE_CONFIG"].make_trip_summary.translate_messages else 'Error')
         }
         print("404 error details: ", send_to_html_json)
 

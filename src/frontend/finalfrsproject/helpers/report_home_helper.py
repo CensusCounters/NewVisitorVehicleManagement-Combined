@@ -1,17 +1,14 @@
 from finalfrsproject import app
 import json
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, current_app
 from flask_babel import _
 from datetime import datetime
 import time
 
-def _cfg():
-    return app.config["REPORT_HOME_PROFILE"]
-
 
 def _session_key(jwt_details):
     key = jwt_details.get('logged_in_user_id')
-    return str(key) if _cfg()["string_session_key"] else key
+    return str(key) if current_app.config["SITE_PROFILE_CONFIG"].report_home.string_session_key else key
 
 
 def get_handler(jwt_details, redis_conn):
@@ -20,7 +17,7 @@ def get_handler(jwt_details, redis_conn):
     print(f"[{start_timestamp}] Starting report_home_helper_get", flush=True)
 
     raw_session = redis_conn.get(_session_key(jwt_details))
-    if raw_session is None and _cfg()["redirect_missing_session"]:
+    if raw_session is None and current_app.config["SITE_PROFILE_CONFIG"].report_home.redirect_missing_session:
         return redirect(url_for("home"))
     session_values_json_redis = json.loads(raw_session)
     session_values_json_redis.update({"ticket_status":"report_home"})
@@ -46,7 +43,7 @@ def post_handler(jwt_details, redis_conn, form):
     print(f"[{start_timestamp}] Starting report_home_helper_post", flush=True)
 
     raw_session = redis_conn.get(_session_key(jwt_details))
-    if raw_session is None and _cfg()["redirect_missing_session"]:
+    if raw_session is None and current_app.config["SITE_PROFILE_CONFIG"].report_home.redirect_missing_session:
         return redirect(url_for("home"))
     session_values_json_redis = json.loads(raw_session)
 

@@ -1,13 +1,10 @@
 import json
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, current_app
 from finalfrsproject import routeMethods, redisCommands,  app, sqlCommands, jwt
 import os, shutil
 from flask_babel import _
 import time
 from datetime import datetime
-
-def _cfg():
-    return app.config["RECOGNIZE_VEHICLE_PROFILE"]
 
 
 def get_handler(jwt_details, redis_conn):
@@ -33,7 +30,7 @@ def get_handler(jwt_details, redis_conn):
 def post_handler(jwt_details, redis_conn, form):
     start_time = time.time()
     start_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    print(f"[{start_timestamp}] Starting {_cfg()['post_log_name']}", flush=True)
+    print(f"[{start_timestamp}] Starting {current_app.config['SITE_PROFILE_CONFIG'].recognize_vehicle.post_log_name}", flush=True)
 
     user_type = jwt_details.get('logged_in_user_type')
     user_name = jwt_details.get('logged_in_user_name')
@@ -44,12 +41,12 @@ def post_handler(jwt_details, redis_conn, form):
     vehicle_id = form.get('vehicle_id')
 
     # A manually entered search value is also a valid plate selection.
-    if _cfg()["manual_plate_search"] and not vehicle_plate_number and form.get('searchText'):
+    if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.manual_plate_search and not vehicle_plate_number and form.get('searchText'):
         vehicle_plate_number = form.get('searchText').replace(" ", "")
         vehicle_image_url = None
         vehicle_id = None
 
-    if _cfg()["strict_lookup_result"] and not vehicle_plate_number:
+    if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.strict_lookup_result and not vehicle_plate_number:
         raise UnboundLocalError("local variable 'result' referenced before assignment")
     result = None
     url = None
@@ -60,30 +57,30 @@ def post_handler(jwt_details, redis_conn, form):
             vehicle_id,
             session_values_json_redis,
         )
-        if _cfg()["strict_lookup_result"] or isinstance(lookup_result, tuple):
+        if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.strict_lookup_result or isinstance(lookup_result, tuple):
             result, url = lookup_result
         else:
             result = lookup_result
 
-    if not result or result.get('Status') == "Fail" or (_cfg()["require_vehicle_url"] and url is None):
+    if not result or result.get('Status') == "Fail" or (current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.require_vehicle_url and url is None):
         send_to_html_json = {
             'status': 'Success',
             'unregistered_vehicles': session_values_json_redis.get('unregistered_vehicles'),
             'traveler_type': session_values_json_redis.get('traveler_type'),
             'logged_in_user': user_name,
             'logged_in_user_type': user_type,
-            'page_title': (_("Recognize Vehicle") if _cfg()["translate_messages"] else "Recognize Vehicle"),
-            'message': (_("Error while checking if the vehicle is in the system. Please try again.") if _cfg()["translate_messages"] else "Error while checking if the vehicle is in the system. Please try again.")
+            'page_title': (_("Recognize Vehicle") if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.translate_messages else "Recognize Vehicle"),
+            'message': (_("Error while checking if the vehicle is in the system. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.translate_messages else "Error while checking if the vehicle is in the system. Please try again.")
         }
         return render_template('recognize_vehicle.html', details=send_to_html_json)
 
-    if _cfg()["require_cached_vehicle_list"]:
+    if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.require_cached_vehicle_list:
         session_values_json_redis.pop("unregistered_vehicles")
     else:
         session_values_json_redis.pop("unregistered_vehicles", None)
     if url == 'unknown_vehicle':
         print("URL is Unknown Vehicle", flush=True)
-        session_values_json_redis.update({"message": (_("Please review and click submit to save the vehicle data.") if _cfg()["translate_messages"] else "Please review and click submit to save the vehicle data.")})
+        session_values_json_redis.update({"message": (_("Please review and click submit to save the vehicle data.") if current_app.config["SITE_PROFILE_CONFIG"].recognize_vehicle.translate_messages else "Please review and click submit to save the vehicle data.")})
         session_values_json_redis.update({"ticket_status": "unknown_vehicle"})
     else:
         print("URL is known Vehicle", flush=True)

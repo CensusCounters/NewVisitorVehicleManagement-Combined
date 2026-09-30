@@ -1,12 +1,9 @@
 from finalfrsproject import app
 import json
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, current_app
 from finalfrsproject import routeMethods, redisCommands
 import time
 from datetime import datetime
-
-def _cfg():
-    return app.config["KNOWN_VEHICLE_PROFILE"]
 
 
 def get_handler(jwt_details, redis_conn):
@@ -41,7 +38,7 @@ def post_handler(jwt_details, redis_conn, request):
     try:
         session_values_json_redis = json.loads(redis_conn.get(jwt_details.get('logged_in_user_id')))
         new_vehicle_owner = session_values_json_redis.get('person_id')
-        print(_cfg()["person_log_label"], new_vehicle_owner, flush=True)
+        print(current_app.config["SITE_PROFILE_CONFIG"].known_vehicle.person_log_label, new_vehicle_owner, flush=True)
         print("known_vehicle_helper_post owner-association context: has_vehicle_association=%s, existing_vehicle_plate=%s, existing_vehicle_owner=%s" % (
             session_values_json_redis.get('has_vehicle_association'),
             session_values_json_redis.get('vehicle_plate_number'),

@@ -1,12 +1,9 @@
 import json, os
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, current_app
 from finalfrsproject import routeMethods, redisCommands, app
 from flask_babel import _
 import time
 from datetime import datetime
-
-def _cfg():
-    return app.config["UNKNOWN_VEHICLE_PROFILE"]
 
 
 def get_handler(jwt_details, redis_conn):
@@ -22,12 +19,12 @@ def get_handler(jwt_details, redis_conn):
         #print("result from anpr: ", result, flush=True)
         #if there is no information on the match, send it back to unknown_vehicle
         if not result or result.get('Status') == "Fail":
-            session_values_json_redis.update({"message": (_("System was unable to retrieve vehicle list from ANPR. Please try again.") if _cfg()["translate_messages"] else "System was unable to retrieve vehicle list from ANPR. Please try again.")})
+            session_values_json_redis.update({"message": (_("System was unable to retrieve vehicle list from ANPR. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "System was unable to retrieve vehicle list from ANPR. Please try again.")})
             session_values_json_redis.update({"ticket_status": "recognize_vehicle"})
             redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
             send_to_html_json = {
-                'message': (_("System was unable to retrieve vehicle list from ANPR. Please try again.") if _cfg()["translate_messages"] else "System was unable to retrieve vehicle list from ANPR. Please try again."),
-                'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+                'message': (_("System was unable to retrieve vehicle list from ANPR. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "System was unable to retrieve vehicle list from ANPR. Please try again."),
+                'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Error")
             }
 
             end_time = time.time()
@@ -49,10 +46,10 @@ def get_handler(jwt_details, redis_conn):
                 'vehicle_owner_name': vehicle_owner_name,
                 'logged_in_user': user_name,
                 'logged_in_user_type': user_type,
-                'page_title' : (_('Unregistered Vehicle') if _cfg()["translate_messages"] else 'Unregistered Vehicle'),
-                'message': (_('Please fill the vehicle details and click submit.') if _cfg()["translate_messages"] else 'Please fill the vehicle details and click submit.')
+                'page_title' : (_('Unregistered Vehicle') if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else 'Unregistered Vehicle'),
+                'message': (_('Please fill the vehicle details and click submit.') if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else 'Please fill the vehicle details and click submit.')
             }
-            if _cfg()["include_vehicle_choices"]:
+            if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.include_vehicle_choices:
                 send_to_html_json.update({
                     "vehicle_types": app.config["VEHICLE_TYPES"],
                     "vehicle_categories": app.config["VEHICLE_CATEGORIES"],
@@ -83,12 +80,12 @@ def get_handler(jwt_details, redis_conn):
     except Exception as e:
         print(f'Error in unknown_vehicle_helper_get_exception: {str(e)} ')
         session_values_json_redis.update(
-            {"message": (_("Unexpected error in Unknown Vehicle get method. Please try again.") if _cfg()["translate_messages"] else "Unexpected error in Unknown Vehicle get method. Please try again.")})
+            {"message": (_("Unexpected error in Unknown Vehicle get method. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Unexpected error in Unknown Vehicle get method. Please try again.")})
         session_values_json_redis.update({"ticket_status": "recognize_vehicle"})
         redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values_json_redis))
         send_to_html_json = {
-            'message': (_("Unexpected error in Unknown Vehicle get method. Please try again.") if _cfg()["translate_messages"] else "Unexpected error in Unknown Vehicle get method. Please try again."),
-            'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+            'message': (_("Unexpected error in Unknown Vehicle get method. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Unexpected error in Unknown Vehicle get method. Please try again."),
+            'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Error")
         }
         end_time = time.time()
         execution_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
@@ -114,14 +111,14 @@ def post_handler(jwt_details, redis_conn, form):
         result = routeMethods.insert_new_vehicle_record(jwt_details.get("logged_in_user_id"), form)
 
         if not result or result.get('Status') == "Fail" or result.get("Insert_Count") == 0:
-            session_values_json_redis.update({"message": (_("System was unable to insert a vehicle record. Please try again.") if _cfg()["translate_messages"] else "System was unable to insert a vehicle record. Please try again.")})
+            session_values_json_redis.update({"message": (_("System was unable to insert a vehicle record. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "System was unable to insert a vehicle record. Please try again.")})
             session_values_json_redis.update({"ticket_status": "unknown_vehicle"})
             redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
             print("insert a vehicle record failed in unknown_vehicle")
             print("redis in unknown_vehicle on insert new vehicle fail: ", session_values_json_redis)
             send_to_html_json = {
-                'message': (_("System was unable to insert a vehicle record. Please try again") if _cfg()["translate_messages"] else "System was unable to insert a vehicle record. Please try again"),
-                'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+                'message': (_("System was unable to insert a vehicle record. Please try again") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "System was unable to insert a vehicle record. Please try again"),
+                'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Error")
             }
 
             end_time = time.time()
@@ -138,7 +135,7 @@ def post_handler(jwt_details, redis_conn, form):
             session_values_json_redis.update({"vehicle_model": details.get('vehicle_model')})
             session_values_json_redis.update({"vehicle_color": details.get('vehicle_color')})
             session_values_json_redis.update({"vehicle_type": details.get('vehicle_type')})
-            session_values_json_redis.update({"vehicle_owner": details.get(_cfg()["owner_result_key"])})
+            session_values_json_redis.update({"vehicle_owner": details.get(current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.owner_result_key)})
             session_values_json_redis.update({"vehicle_registration_number": details.get('vehicle_registration_number')})
             session_values_json_redis.update({"ticket_status": "trip_registration", "cancel_to": "unknown_vehicle"})
             session_values_json_redis.update({"page_title": "trip_registration"})
@@ -154,13 +151,13 @@ def post_handler(jwt_details, redis_conn, form):
 
     except Exception as e:
         print(f'Error in unknown_vehicle_helper_post: {str(e)} ')
-        session_values_json_redis.update({"message": (_("Unexpected error while handling Unknown Vehicle. Please try again.") if _cfg()["translate_messages"] else "Unexpected error while handling Unknown Vehicle. Please try again.")})
+        session_values_json_redis.update({"message": (_("Unexpected error while handling Unknown Vehicle. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Unexpected error while handling Unknown Vehicle. Please try again.")})
         session_values_json_redis.update({"ticket_status": "unknown_vehicle"})
         redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values_json_redis))
         print("redis in unknown_vehicle_helper_post_exception: ", session_values_json_redis)
         send_to_html_json = {
-            'message': (_("Unexpected error while handling Unknown Vehicle. Please try again") if _cfg()["translate_messages"] else "Unexpected error while handling Unknown Vehicle. Please try again"),
-            'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+            'message': (_("Unexpected error while handling Unknown Vehicle. Please try again") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Unexpected error while handling Unknown Vehicle. Please try again"),
+            'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].unknown_vehicle.translate_messages else "Error")
         }
         end_time = time.time()
         execution_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds

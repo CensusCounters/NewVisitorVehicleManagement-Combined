@@ -254,17 +254,7 @@ app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
 app.config["TEMPLATE_PROFILES"] = active_profile.templates
 app.config["APP_TITLE"] = active_profile.app_title
-app.config["ID_LOOKUP_WORKFLOW"] = active_profile.id_lookup_workflow
-app.config["AADHAAR_LOOKUP_PROFILE"] = active_profile.aadhaar_lookup.model_dump()
-app.config["KNOWN_VEHICLE_PROFILE"] = active_profile.known_vehicle.model_dump()
-app.config["UNKNOWN_VEHICLE_PROFILE"] = active_profile.unknown_vehicle.model_dump()
-app.config["PERSON_LOOKUP_PROFILE"] = active_profile.person_lookup.model_dump()
-app.config["PERSON_REPORT_PROFILE"] = active_profile.person_report.model_dump()
-app.config["MAKE_TRIP_SUMMARY_PROFILE"] = active_profile.make_trip_summary.model_dump()
-app.config["TRIP_REGISTRATION_PROFILE"] = active_profile.trip_registration.model_dump()
-app.config["RECOGNIZE_VEHICLE_PROFILE"] = active_profile.recognize_vehicle.model_dump()
-app.config["REPORT_HOME_PROFILE"] = active_profile.report_home.model_dump()
-app.config["VEHICLE_REPORT_PROFILE"] = active_profile.vehicle_report.model_dump()
+
 app.config["APP_LOGO_PATH"] = active_profile.logo_path
 app.config["ASSET_URL_VERSION"] = os.environ.get(
     "ASSET_URL_VERSION", site_profile_name + "-1"

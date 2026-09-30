@@ -1,13 +1,9 @@
 import json
 import traceback
 from datetime import datetime, time as dt_time
-from flask import render_template
+from flask import render_template, current_app
 from flask_babel import _
 from finalfrsproject import app, sqlCommands
-
-
-def _cfg():
-    return app.config["VEHICLE_REPORT_PROFILE"]
 
 
 def _build_too_many_records_response(user_name, user_type, start_date, end_date, row_count, max_rows):
@@ -48,7 +44,7 @@ def _render_report(jwt_details, redis_conn, form=None, *, submitted=False):
         if submitted:
             start_date = form.get('start_date') if form else None
             end_date = form.get('end_date') if form else None
-            if _cfg()["load_initial_records"]:
+            if current_app.config["SITE_PROFILE_CONFIG"].vehicle_report.load_initial_records:
                 start_date = start_date or None
                 end_date = end_date or None
         else:
@@ -57,7 +53,7 @@ def _render_report(jwt_details, redis_conn, form=None, *, submitted=False):
             end_date = datetime.combine(datetime.now(), dt_time.max)
         records = []
         message = _('Report for the selected dates.')
-        if _cfg()["load_initial_records"]:
+        if current_app.config["SITE_PROFILE_CONFIG"].vehicle_report.load_initial_records:
             count_result = sqlCommands.count_all_vehicles_from_anpr_by_date(start_date, end_date)
             if not count_result or count_result.get('Status') == 'Fail':
                 return _report_error(jwt_details, redis_conn, session_values, error_message, session_error)
@@ -72,7 +68,7 @@ def _render_report(jwt_details, redis_conn, form=None, *, submitted=False):
                 return render_template('vehicle_report.html', details=details)
             result = sqlCommands.get_all_vehicles_from_anpr_by_date(start_date, end_date)
             if not result or result.get('Status') == 'Fail':
-                query_error = _cfg()["post_query_failure_session_message"] if submitted else session_error
+                query_error = current_app.config["SITE_PROFILE_CONFIG"].vehicle_report.post_query_failure_session_message if submitted else session_error
                 return _report_error(jwt_details, redis_conn, session_values, error_message, query_error)
             records = result.get('Details')
             message = _('Following records were found for the selected dates. Please try again with different dates.')
@@ -91,9 +87,9 @@ def _render_report(jwt_details, redis_conn, form=None, *, submitted=False):
         return render_template('vehicle_report.html', details=details)
     except Exception as error:
         print("Error in vehicle report helper: ", str(error), flush=True)
-        if _cfg()["log_traceback"]:
+        if current_app.config["SITE_PROFILE_CONFIG"].vehicle_report.log_traceback:
             print(f"Stack Trace:\n{traceback.format_exc()}", flush=True)
-        message = _cfg()["post_exception_message"] if submitted else error_message
+        message = current_app.config["SITE_PROFILE_CONFIG"].vehicle_report.post_exception_message if submitted else error_message
         return _report_error(jwt_details, redis_conn, session_values, message, session_error)
 
 

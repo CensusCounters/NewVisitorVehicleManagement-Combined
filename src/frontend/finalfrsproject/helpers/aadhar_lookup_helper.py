@@ -6,8 +6,7 @@ logic is now in ONE module with ONE get_handler and ONE post_handler.
 
 Every per-profile difference is configured centrally in config.py as a typed
 SiteProfile (kupwara, ncpass, ganganagar and tangdhar are all explicit). At
-runtime the active profile is exposed via app.config["SITE_PROFILE_CONFIG"] and
-its aadhaar_lookup block is read through _cfg().
+runtime the active profile is exposed via app.config["SITE_PROFILE_CONFIG"].
 """
 
 import json
@@ -29,10 +28,6 @@ _DEFAULT_MESSAGES = {
     "id_type": "Please select the ID type and the ID number to verify identity.",
     "visitor_type": "Please select the Visitor type and the ID number to verify identity.",
 }
-
-
-def _cfg():
-    return current_app.config["SITE_PROFILE_CONFIG"].aadhaar_lookup
 
 
 def _ts():
@@ -122,7 +117,7 @@ def _write_session(session, ids, id_type, id_number, traveler_type, message, tic
 def get_handler(jwt_details, redis_conn):
     start_time = time.time()
     print(f"[{_ts()}] Starting aadhar_lookup_get", flush=True)
-    cfg = _cfg()
+    cfg = current_app.config["SITE_PROFILE_CONFIG"].aadhaar_lookup
     template = "aadhar_lookup.html"
     try:
         session_values_json_redis = json.loads(redis_conn.get(jwt_details.get("logged_in_user_id")))
@@ -180,7 +175,7 @@ def post_handler(jwt_details, redis_conn, form):
     start_time = time.time()
     print(f"[{_ts()}] Starting aadhar_lookup_post", flush=True)
     try:
-        cfg = _cfg()
+        cfg = current_app.config["SITE_PROFILE_CONFIG"].aadhaar_lookup
         session_values_json_redis = json.loads(redis_conn.get(jwt_details.get("logged_in_user_id")))
         print("form: ", form, flush=True)
         traveler_type = form.get("traveler_type")

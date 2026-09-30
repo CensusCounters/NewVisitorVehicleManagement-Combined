@@ -1,14 +1,11 @@
 import json, os
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, current_app
 from datetime import datetime, timedelta, timezone
 from finalfrsproject import routeMethods, app, redisCommands, sqlCommands
 from werkzeug.utils import secure_filename
 import base64
 from flask_babel import _
 import time
-
-def _cfg():
-    return app.config["TRIP_REGISTRATION_PROFILE"]
 
 
 def get_handler(jwt_details, redis_conn):
@@ -33,7 +30,7 @@ def get_handler(jwt_details, redis_conn):
 
         session_values_json_redis.update({"ticket_status":"trip_registration"})
         session_values_json_redis.update({"page_title": "trip_registration"})
-        if _cfg()["reset_driver_trip_id"]:
+        if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.reset_driver_trip_id:
             session_values_json_redis.update({"driver_trip_id": ""})
         redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
         IST = timezone(timedelta(hours=5, minutes=30))
@@ -54,8 +51,8 @@ def get_handler(jwt_details, redis_conn):
     except Exception as e:
         print(f"Error occurred: {e}", flush=True)
         send_to_html_json = {
-            'message': (_("Unexpected error while generating add trip form. Please try again.") if _cfg()["translate_messages"] else "Unexpected error while generating add trip form. Please try again."),
-            'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+            'message': (_("Unexpected error while generating add trip form. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "Unexpected error while generating add trip form. Please try again."),
+            'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "Error")
         }
         print(f"No form received in trip_registration_helper send_to_html_json: {send_to_html_json}")
 
@@ -89,7 +86,7 @@ def post_handler(jwt_details, redis_conn, request):
                 print("trip_registration: recognize_vehicle")
                 session_values_json_redis.update({"traveler_type": form.get('traveler_type')})
                 session_values_json_redis.update({"message": (
-                    _(app.config["VEHICLE_SELECTION_MESSAGE"]) if _cfg()["translate_messages"]
+                    _(app.config["VEHICLE_SELECTION_MESSAGE"]) if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages
                     else app.config["VEHICLE_SELECTION_MESSAGE"])})
                 session_values_json_redis.update({"ticket_status": "recognize_vehicle"})
                 redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis)) 
@@ -109,7 +106,7 @@ def post_handler(jwt_details, redis_conn, request):
             entry_time = datetime.strptime(form.get('entry_time'), "%Y-%m-%dT%H:%M")
             print("entry_time: ", entry_time)
             visit_time_in_hrs = int(form.get('visit_hrs', 0)) if form.get('visit_hrs', '').isdigit() else 0
-            if _cfg()["duration_in_days"]:
+            if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.duration_in_days:
                 visit_time_in_days = int(form.get('visit_days', 0)) if form.get('visit_days', '').isdigit() else 0
                 expected_visit_duration = f"{visit_time_in_days} days {visit_time_in_hrs} hours"
             else:
@@ -193,14 +190,14 @@ def post_handler(jwt_details, redis_conn, request):
             result = routeMethods.insert_new_trip_record(jwt_details.get("logged_in_user_id"), session_values_json_redis)
 
             if not result or result.get('Status') == "Fail" or result.get("Insert_Count") == 0:
-                session_values_json_redis.update({"message": (_("System was unable to insert a trip record. Please try again.") if _cfg()["translate_messages"] else "System was unable to insert a trip record. Please try again.")})
+                session_values_json_redis.update({"message": (_("System was unable to insert a trip record. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "System was unable to insert a trip record. Please try again.")})
                 session_values_json_redis.update({"ticket_status": "trip_registration"})
                 redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
                 print("insert new trip failed in trip registration in routes.py", flush=True)
                 print("redis in trip_registration when insert new trip failed: ", session_values_json_redis)
                 send_to_html_json = {
-                    'message': (_("System was unable to insert a trip record. Please try again") if _cfg()["translate_messages"] else "System was unable to insert a trip record. Please try again"),
-                    'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+                    'message': (_("System was unable to insert a trip record. Please try again") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "System was unable to insert a trip record. Please try again"),
+                    'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "Error")
                 }
 
                 end_time = time.time()
@@ -212,10 +209,10 @@ def post_handler(jwt_details, redis_conn, request):
                 return render_template('500.html', details=send_to_html_json), 500
 
             else:
-                session_values_json_redis.update({"message": (_("Trip updated Successfully. Click Continue for trip summary.") if _cfg()["translate_messages"] else "Trip updated Successfully. Click Continue for trip summary.")})
+                session_values_json_redis.update({"message": (_("Trip updated Successfully. Click Continue for trip summary.") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "Trip updated Successfully. Click Continue for trip summary.")})
                 session_values_json_redis.update({"ticket_status": "make_trip_summary"})
                 session_values_json_redis.update({"page_title": "make_trip_summary"})
-                session_values_json_redis.update({"message": (_("Trip Successfully Added") if _cfg()["translate_messages"] else "Trip Successfully Added")})
+                session_values_json_redis.update({"message": (_("Trip Successfully Added") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "Trip Successfully Added")})
                 redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
                 print("redis in trip_registration when insert new trip succeeded: ", session_values_json_redis)
 
@@ -229,8 +226,8 @@ def post_handler(jwt_details, redis_conn, request):
 
     else:
         send_to_html_json = {
-            'message': (_("No form received for creating new trip. Please try again.") if _cfg()["translate_messages"] else "No form received for creating new trip. Please try again."),
-            'page_title': (_("Error") if _cfg()["translate_messages"] else "Error")
+            'message': (_("No form received for creating new trip. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "No form received for creating new trip. Please try again."),
+            'page_title': (_("Error") if current_app.config["SITE_PROFILE_CONFIG"].trip_registration.translate_messages else "Error")
         }
         print(f"No form received in trip_registration_helper send_to_html_json: {send_to_html_json}")
 

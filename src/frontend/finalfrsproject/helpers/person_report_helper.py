@@ -1,14 +1,11 @@
 from finalfrsproject import app
 import json
-from flask import render_template
+from flask import render_template, current_app
 from datetime import datetime
 import time
 from finalfrsproject import sqlCommands
 from flask_babel import _
 import traceback
-
-def _cfg():
-    return app.config["PERSON_REPORT_PROFILE"]
 
 
 def post_handler(jwt_details, redis_conn, form):
@@ -30,11 +27,11 @@ def post_handler(jwt_details, redis_conn, form):
             send_to_html_json = {
                 'logged_in_user': jwt_details.get("logged_in_user_name"),
                 'logged_in_user_type': jwt_details.get("logged_in_user_type"),
-                'message': (_('Error while retrieving trips for uploaded picture. Please try again.') if _cfg()["translate_messages"] else 'Error while retrieving trips for uploaded picture. Please try again.'),
+                'message': (_('Error while retrieving trips for uploaded picture. Please try again.') if current_app.config["SITE_PROFILE_CONFIG"].person_report.translate_messages else 'Error while retrieving trips for uploaded picture. Please try again.'),
                 'page_title': _('Person Lookup')
             }
             session_values_json_redis.update(
-                {"message": (_("Error while retrieving trips for uploaded picture. Please try again.") if _cfg()["translate_messages"] else "Error while retrieving trips for uploaded picture. Please try again.")})
+                {"message": (_("Error while retrieving trips for uploaded picture. Please try again.") if current_app.config["SITE_PROFILE_CONFIG"].person_report.translate_messages else "Error while retrieving trips for uploaded picture. Please try again.")})
             session_values_json_redis.update({"ticket_status": "person_lookup"})
             redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values_json_redis))
 
@@ -51,7 +48,7 @@ def post_handler(jwt_details, redis_conn, form):
                 'person_report_list': person_trip_list,
                 'logged_in_user': user_name,
                 'logged_in_user_type': user_type,
-                'message': (_('No records found for the selected person.') if _cfg()["translate_messages"] else 'No records found for the selected person.'),
+                'message': (_('No records found for the selected person.') if current_app.config["SITE_PROFILE_CONFIG"].person_report.translate_messages else 'No records found for the selected person.'),
                 'page_title': _('Person Trip Report')
             }
 
@@ -84,7 +81,7 @@ def post_handler(jwt_details, redis_conn, form):
         print(f"[ERROR] post_handler failed: {e}")
         send_to_html_json = {
             'message': _("Error in the person trip report page. Please try again."),
-            'page_title': (_('Person Lookup') if _cfg()["translate_messages"] else 'Person Lookup')
+            'page_title': (_('Person Lookup') if current_app.config["SITE_PROFILE_CONFIG"].person_report.translate_messages else 'Person Lookup')
         }
         print("404 error details: ", send_to_html_json)
 
@@ -101,7 +98,7 @@ def get_handler(jwt_details, redis_conn):
     print(f"[{start_timestamp}] Starting person_report_helper_get", flush=True)
     send_to_html_json = {
         'message': _("Error in the person trip report page. Please try again."),
-        'page_title': (_('Person Lookup') if _cfg()["translate_messages"] else 'Person Lookup')
+        'page_title': (_('Person Lookup') if current_app.config["SITE_PROFILE_CONFIG"].person_report.translate_messages else 'Person Lookup')
     }
     print("person report helper get: ", send_to_html_json)
 
