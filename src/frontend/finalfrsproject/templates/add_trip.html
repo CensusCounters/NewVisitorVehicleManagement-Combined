@@ -487,18 +487,28 @@
 			vehicle: {
 				label: displayValue($('#vehicle_number').val()),
 				src: ($('#vehicle_image').attr('src') || '').trim()
+			},
+			permit: {
+				label: 'Permit',
+				src: ($('#permit_image').val() || '').trim()
 			}
 		};
 	}
 
-	function buildConfirmPreviewImagesHtml() {
-		var previews = getConfirmPreviewSources();
-		var blocks = [];
+		function buildConfirmPreviewImagesHtml() {
+			var previews = getConfirmPreviewSources();
+			var blocks = [];
 
-		[
-			{ key: 'person', caption: 'Visitor photo' },
-			{ key: 'vehicle', caption: 'Vehicle plate' }
-		].forEach(function(item) {
+			var previewItems = [
+				{ key: 'person', caption: 'Visitor photo' },
+				{ key: 'vehicle', caption: 'Vehicle plate' }
+			];
+
+			if (previews.permit && previews.permit.src) {
+				previewItems.push({ key: 'permit', caption: 'Permit' });
+			}
+
+			previewItems.forEach(function(item) {
 			var preview = previews[item.key];
 			var thumbHtml;
 

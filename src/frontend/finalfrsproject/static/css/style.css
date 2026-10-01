@@ -2430,6 +2430,27 @@ a:hover {
     }
 }
 
+.vehicle_detail_section .col-xs-2 {
+    width: 25%;
+}
+
+.vehicle_detail_section .col-xs-10 {
+    width: 75%;
+}
+
+.vehicle_detail_section .label {
+    text-align: left;
+    padding-left: 15px;
+    padding-right: 5px;
+}
+
+@media (max-width: 767px) {
+    .vehicle_detail_section .col-xs-2,
+    .vehicle_detail_section .col-xs-10 {
+        width: 100%;
+    }
+}
+
 .known_driver_adhar_images .modal-dialog{
     height: 100vh;
     width: 39% !important;
@@ -3349,6 +3370,10 @@ a:hover {
     cursor: pointer;
 }
 
+.user_register_section table img[onclick] {
+    cursor: pointer;
+}
+
 .preview-panel-title {
     margin: 0;
     color: #fff;
@@ -3759,6 +3784,37 @@ a:hover {
     cursor: not-allowed;
   }
 
+  .user .user-form .trip-action-bar .trip-btn-cancel,
+  .user .user-form .trip-action-bar .trip-btn-submit {
+    background: var(--button-color);
+    border-color: var(--button-color);
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .user .user-form .trip-action-bar .trip-btn-cancel {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+  }
+
+  .user .user-form .trip-action-bar .trip-btn-cancel:hover,
+  .user .user-form .trip-action-bar .trip-btn-cancel:focus,
+  .user .user-form .trip-action-bar .trip-btn-submit:hover,
+  .user .user-form .trip-action-bar .trip-btn-submit:focus {
+    background: transparent !important;
+    color: #fff !important;
+    border-color: var(--button-color);
+  }
+
+  .user .user-form .trip-action-bar .trip-btn-cancel:hover,
+  .user .user-form .trip-action-bar .trip-btn-cancel:focus {
+    border-color: #ffffff;
+  }
+
   .trip-confirm-modal .swal2-popup {
     padding: 44px 48px 40px !important;
   }
@@ -3773,7 +3829,7 @@ a:hover {
 
   .trip-confirm-modal--danger .swal2-html-container {
     text-align: center !important;
-    font-size: 20px !important;
+    font-size: 16px !important;
     font-weight: 700 !important;
     color: rgba(255, 255, 255, 0.92) !important;
     line-height: 1.6 !important;
@@ -3821,6 +3877,7 @@ a:hover {
   .trip-confirm-previews {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 18px;
     margin: 0 0 14px;
   }
@@ -3928,7 +3985,7 @@ a:hover {
 
   .trip-confirm-label {
     color: #ffd868;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -3937,7 +3994,7 @@ a:hover {
 
   .trip-confirm-value {
     color: #ffffff;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     word-break: break-word;
     line-height: 1.4;
@@ -3945,7 +4002,7 @@ a:hover {
 
   .trip-confirm-value.is-missing {
     color: #ffb64d;
-    font-size: 18px;
+    font-size: 16px;
     font-style: italic;
     font-weight: 500;
   }
@@ -3974,14 +4031,17 @@ a:hover {
     width: auto !important;
     min-width: 190px;
     height: 46px !important;
-    background-color: #28a745 !important;
-    border: 1px solid #28a745 !important;
-    color: #ffffff !important;
+    background-color: var(--button-color) !important;
+    border: 1px solid var(--button-color) !important;
+    color: #000 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    box-shadow: none !important;
   }
 
   .trip-confirm-modal .swal2-styled.swal2-confirm:hover {
-    background-color: #218838 !important;
-    border-color: #1e7e34 !important;
+    background-color: transparent !important;
+    border-color: var(--button-color) !important;
     color: #ffffff !important;
   }
 
@@ -3990,13 +4050,15 @@ a:hover {
     min-width: 150px;
     height: 46px !important;
     background-color: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.40) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
     color: #ffffff !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
   }
 
   .trip-confirm-modal .swal2-styled.swal2-cancel:hover {
-    background-color: rgba(255, 255, 255, 0.10) !important;
-    border-color: rgba(255, 255, 255, 0.65) !important;
+    background-color: transparent !important;
+    border-color: #ffffff !important;
     color: #ffffff !important;
   }
 
