@@ -255,7 +255,6 @@ def process_request():
 
                 result = cursor.execute(sql, (arg))
                 print("result: ", result)
-                print("sql insert stmt: ", (cursor.mogrify(sql, (arg)).decode('utf=8')))
                 #print("sql insert stmt returning id: ", )
                 #inserted_data = cursor.fetchone()
                 #postgres_conn.commit()

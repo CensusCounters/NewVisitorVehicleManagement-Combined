@@ -83,8 +83,6 @@ def login(user_name, password):
     cursor = None
     result = None
 
-    print(f"Pool status BEFORE login: Available={len(g.connection_pool._pool)}")
-
     try:
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
@@ -92,7 +90,6 @@ def login(user_name, password):
         sql = '''SELECT user_name, user_type, id from Users where user_name = %s and password = crypt(%s,password);'''
         arg = [user_name,password]
         cursor.execute(sql,arg)
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         result = cursor.fetchone()
         result = {"Status": "Success", "Details": result}
      
@@ -156,7 +153,6 @@ def update_person_record(person_id, form):
                      RETURNING *;'''
             arg = (name, gender, mobile, guardians_name, address, visiting_person_name,
                    aadhar_img_file_path, person_id)
-            print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
             cursor.execute(sql, arg)
             updated_row = cursor.fetchone()
             if updated_row is None:
@@ -228,7 +224,6 @@ def insert_new_person_record(user_id, form):
                 other_id_type, other_id_number, other_id_img_file_path,
                enrollment_id, gender, dob, mobile, visiting_person_name]
 
-        print(cursor.mogrify(sql, (arg)).decode('utf=8'), flush=True)
         cursor.execute(sql,(arg))
 
         # Extract column headers
@@ -248,7 +243,6 @@ def insert_new_person_record(user_id, form):
             sql = '''INSERT INTO passes (created_by, number, assigned_to, pass_image_location) 
                 VALUES (%s, %s, %s, %s) returning *;'''
             arg = [user_id, pass_number, person_id, pass_img_file_path]
-            print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
             cursor.execute(sql,arg)
             inserted_pass = cursor.fetchone()
             column_headers_pass = [desc[0] for desc in cursor.description]
@@ -302,7 +296,6 @@ def get_pass_details_for_person(person_id):
         arg = (person_id,)
 
         # Debugging: Print the SQL Query
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
 
         cursor.execute(sql, arg)
         result = cursor.fetchone()  # Fetch a single row
@@ -355,7 +348,6 @@ def get_person_details_with_enrollment_id(enrollment_id):
             where p.enrollment_id = %s;'''
 
         arg = (enrollment_id,)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
 
         result = cursor.fetchone()
@@ -410,7 +402,6 @@ def get_person_details_with_other_id(other_id_number, other_id_type):
                 where other_id_type = %s and other_id_number = %s;'''
 
         arg = (other_id_type, other_id_number)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql, arg)
         result = cursor.fetchone()
         if result is not None:
@@ -462,7 +453,6 @@ def get_person_details_with_drivers_license(drivers_license_number):
                 other_id_type, other_id_number, other_id_image_location from persons where drivers_license_number = %s;'''
 
         arg = (drivers_license_number, )
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql, arg)
         result = cursor.fetchone()
         if result is not None:
@@ -513,7 +503,6 @@ def get_person_details_with_aadhar(aadhar_number):
                 other_id_type, other_id_number, other_id_image_location from persons where aadhar_number = %s;'''
 
         arg = (aadhar_number, )
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql, arg)
         result = cursor.fetchone()
         if result is not None:
@@ -573,7 +562,6 @@ def get_person_details_with_pass(id_number):
         WHERE p.number = %s;
         """
         arg = (id_number, )
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql, arg)
         result = cursor.fetchone()
         if result is not None:
@@ -630,7 +618,6 @@ def get_person_details_with_person_id(person_id):
         WHERE pr.id = %s;
         """
         arg = (person_id, )
-        print(cursor.mogrify(sql, arg).decode('utf8'), flush=True)
         cursor.execute(sql, arg)
         result = cursor.fetchone()
         if result is not None:
@@ -681,7 +668,6 @@ def get_all_persons_details():
             INNER JOIN users u ON pr.created_by = u.id 
             """
         arg = ()
-        print(cursor.mogrify(sql, arg).decode('utf8'), flush=True)
         cursor.execute(sql, arg)
         rows = cursor.fetchall()  # Fetch all rows
         column_names = [desc[0] for desc in cursor.description]
@@ -783,7 +769,6 @@ def get_person_details_by_date(start_date, end_date):
             order by t.entry_time desc; '''
                 
         arg = [start_date, end_date]
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         column_names = [desc[0] for desc in cursor.description]
         result = cursor.fetchall()
@@ -885,7 +870,6 @@ def get_known_person_trips(person_id):
         sql = '''SELECT entry_time FROM trips WHERE person_id = %s ORDER BY entry_time DESC LIMIT 3;'''
 
         arg = [person_id, ]
-        print(cursor.mogrify(sql, arg).decode('utf-8'),flush=True)
         cursor.execute(sql, arg)
         result = cursor.fetchall()
         print("known person trips: ", result, flush=True)
@@ -948,7 +932,6 @@ def insert_manual_vehicle_entry(user_id, vNumber, vMake, vImage, person_id):
 
         arg = (user_id, vehicle_number, vehicle_image_actual_location, vehicle_make, vehicle_model, vehicle_color, vehicle_type, registered_to, registration_number, vehicle_owner)
 
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         inserted_data = cursor.fetchone()
         db_connection.commit()
@@ -1026,7 +1009,6 @@ def insert_new_vehicle_record(user_id, form):
 
             sql = ''' UPDATE anpr_vehicle_readings set status = 'Processed' where id = %s; '''
             arg = [vehicle_id,]
-            print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
             cursor.execute(sql,arg)
             db_connection.commit()
             count = cursor.rowcount
@@ -1038,7 +1020,6 @@ def insert_new_vehicle_record(user_id, form):
         arg = (user_id, vehicle_number, vehicle_image_actual_location, vehicle_make, vehicle_color, registered_to,
                person_id, vehicle_type, rc_number, vehicle_model,)
         print("about to insert new vehicle")
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         inserted_data = cursor.fetchone()
 
@@ -1140,7 +1121,6 @@ def update_existing_vehicle_record(form, new_vehicle_owner, user_id):
         arg = (vehicle_image_actual_location, vehicle_make, vehicle_model, vehicle_color, vehicle_type,
                registered_to, rc_number, vehicle_number, vehicle_owner_id)
         print("about to update existing owner-vehicle association", flush=True)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql, arg)
         updated_data = cursor.fetchone()
         print("update_existing_vehicle_record update result for plate-owner pair (%s, %s): %s" % (
@@ -1165,7 +1145,6 @@ def update_existing_vehicle_record(form, new_vehicle_owner, user_id):
             arg = (user_id, vehicle_number, vehicle_image_actual_location, vehicle_make, vehicle_color, registered_to,
                    vehicle_owner_id, vehicle_type, rc_number, vehicle_model,)
             print("about to insert new vehicle rider association", flush=True)
-            print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
             cursor.execute(sql, arg)
             inserted_data = cursor.fetchone()
             print("update_existing_vehicle_record insert result for new plate-owner pair (%s, %s): %s" % (
@@ -1226,7 +1205,6 @@ def check_if_vehicle_is_in_our_system(vehicle_plate_number, owner_id=None):
                      ORDER BY date_created DESC LIMIT 1;'''
             arg = (vehicle_plate_number, owner_id)
             cursor.execute(sql,arg)
-            print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
             result = cursor.fetchone()
 
         if result is None:
@@ -1234,7 +1212,6 @@ def check_if_vehicle_is_in_our_system(vehicle_plate_number, owner_id=None):
             sql = '''select * from vehicles where vehicle_number_plate = %s ORDER BY date_created DESC LIMIT 1;'''
             arg = (vehicle_plate_number,)
             cursor.execute(sql,arg)
-            print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
             result = cursor.fetchone()
 
         print("result: ", result, flush=True)
@@ -1334,7 +1311,6 @@ def get_vehicle_details_from_anpr_by_id(vehicle_id):
         cursor = db_connection.cursor()
         sql = '''SELECT id, file, plate,timestamp FROM anpr_vehicle_readings WHERE id = %s;'''
         arg = (vehicle_id,)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         result = cursor.fetchone()
         column_names = [desc[0] for desc in cursor.description]
@@ -1383,7 +1359,6 @@ def get_primary_vehicle_for_person(person_id):
         arg = (person_id, )
 
         cursor.execute(sql, arg)
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
 
         result = cursor.fetchone()
         column_names = [desc[0] for desc in cursor.description]
@@ -1431,7 +1406,6 @@ def get_vehicle_details_from_vehicles(vehicle_plate_number):
         sql = '''select vehicle_number_plate, make, model, color, vehicle_type, vehicle_image_location, vehicle_registered_to, vehicle_registration_number from 
                     vehicles where vehicle_number_plate = %s;'''
         arg = (vehicle_plate_number,)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
 
         result = cursor.fetchone()
@@ -1488,7 +1462,6 @@ def get_vehicle_details_from_vehicles_by_date(start_date, end_date):
                     order by t.entry_time desc, v.vehicle_number_plate; '''
                 
         arg = (start_date, end_date)
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         column_names = [desc[0] for desc in cursor.description]
         result = cursor.fetchall()
@@ -1713,7 +1686,6 @@ def get_all_vehicles_from_anpr_by_date(start_date, end_date):
                 WHERE DATE(timestamp) BETWEEN %s AND %s ORDER BY timestamp desc;'''
         args = (start_date, end_date)
         cursor.execute(sql, args)
-        print(cursor.mogrify(sql, args).decode('utf-8'), flush=True)
         rows = cursor.fetchall()  # Fetch all rows
         column_names = [desc[0] for desc in cursor.description]
         # Convert rows into a list of dictionaries
@@ -1792,7 +1764,6 @@ def count_all_vehicles_from_anpr_by_date(start_date, end_date):
                 WHERE DATE(timestamp) BETWEEN %s AND %s;'''
         args = (start_date, end_date)
         cursor.execute(sql, args)
-        print(cursor.mogrify(sql, args).decode('utf-8'), flush=True)
         result = {"Status": "Success", "Details": cursor.fetchone()[0]}
 
     except (Exception, psycopg2.Error) as error:
@@ -1830,7 +1801,6 @@ def get_all_vehicles_from_anpr():
 
         sql = '''SELECT id, file, plate, timestamp, camera_id FROM anpr_vehicle_readings WHERE "timestamp"::timestamptz >= NOW() - INTERVAL '1 hour' ORDER BY "timestamp"::timestamptz desc;'''
         arg = ()
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         result = cursor.fetchall()
         result = {"Status": "Success", "Details": result}
@@ -1867,7 +1837,6 @@ def get_all_trips_for_autocomplete(term):
     try:
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
-        # print(cursor.mogrify(sql,(arg)).decode('utf=8'))
         cursor.execute("SELECT t.id, t.vehicle_number_plate FROM trips t WHERE t.vehicle_number_plate ILIKE %s AND t.is_finished = 'f' and t.traveler_type in ('Driver','Pedestrian') ORDER BY id", ('%' + term + '%',))
         result = cursor.fetchall()
         #print("all_vehicles: ", result)
@@ -1905,7 +1874,6 @@ def get_all_vehicles_details_for_autocomplete(term):
     try:
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
-        # print(cursor.mogrify(sql,(arg)).decode('utf=8'))
         cursor.execute("SELECT id, plate FROM anpr_vehicle_readings WHERE plate ILIKE %s AND status = 'new' ORDER BY id", ('%' + term + '%',))
         result = cursor.fetchall()
         #print("all_vehicles: ", result)
@@ -1948,7 +1916,6 @@ def get_all_open_trips_for_autocomplete(term):
         sql = '''Select t.id, t.date_created, p.person_name, p.person_image_location, t.traveler_type, t.vehicle_number_plate from trips t, persons p 
             where t.is_finished = 'f' and t.traveler_type = 'Driver' and t.person_id = p.id ORDER BY t.date_created; '''
         arg = ()
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         result = cursor.fetchall()
         #print("all_vehicles: ", result)
@@ -2033,7 +2000,6 @@ def insert_new_trip_record(user_id, session_values_json_redis):
             arg = [user_id, person_id, vehicle_plate_number, entry_time, coming_from, going_to, traveler_type, number_of_male_passengers, number_of_female_passengers, number_of_child_passengers, trip_reason, 
                 permit_type, driver_trip_id, expected_visit_duration, token_number]
 
-        print("insert new trip record: ", cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         inserted_data = cursor.fetchone()
         count = cursor.rowcount
@@ -2420,7 +2386,6 @@ def get_unfinished_trips(person_id=None):
             arg = ()
 
         sql += " order by t.entry_time desc;"
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         rows = cursor.fetchall()  # Fetch all rows
         column_names = [desc[0] for desc in cursor.description]
@@ -2567,7 +2532,6 @@ def get_unfinished_trips_for_autocomplete(trip_id):
             from persons p, trips t, vehicles v where t.id = %s and t.person_id = p.id 
             and v.vehicle_number_plate = t.vehicle_number_plate;''' 
         arg = (trip_id,)
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         result = cursor.fetchall()
         result = {"Status": "Success", "Details": result}
@@ -2609,7 +2573,6 @@ def close_trip(trip_id, exit_time):
 
         sql = '''UPDATE trips set is_finished = TRUE, exit_time = %s where id = %s RETURNING id; '''
         arg = (exit_time, trip_id)
-        print(cursor.mogrify(sql,arg).decode('utf-8'), flush=True)
         cursor.execute(sql,arg)
         result = cursor.fetchall()
         updated_id = result[0]
@@ -2672,7 +2635,6 @@ def get_trip_details_by_date(start_date, end_date):
         where t.entry_time between %s and %s order by t.entry_time desc, t.id desc;
         '''
         arg = (start_date, end_date)
-        print(cursor.mogrify(sql, arg).decode('utf=8'), flush=True)
         cursor.execute(sql,arg)
         rows = cursor.fetchall()  # Fetch all rows
         column_names = [desc[0] for desc in cursor.description]
@@ -3195,7 +3157,6 @@ def count_trip_details_by_date(start_date, end_date):
         '''
         arg = (start_date, end_date)
         cursor.execute(sql, arg)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         result = {"Status": "Success", "Details": cursor.fetchone()[0]}
 
     except (Exception, psycopg2.Error) as error:
@@ -3252,7 +3213,6 @@ def get_trip_details_by_person_id(person_id):
         order by t.entry_time desc;'''
 
         arg = (person_id,)
-        print(cursor.mogrify(sql, arg).decode('utf-8'), flush=True)
         cursor.execute(sql, arg)
         rows = cursor.fetchall()  # Fetch all rows
         column_names = [desc[0] for desc in cursor.description]
