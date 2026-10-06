@@ -76,7 +76,12 @@ docker cp DB_Files/table_schema_May172025.sql census_counters_postgres_db:/table
 docker exec census_counters_postgres_db psql -U postgres -d postgres_visitor_vehicle -f /table_schema_May172025.sql
 ```
 
-## Select configuration
+## Set up configuration
+
+Do 
+```bash
+cp docker-compose-census-counters-visitor-vehicle.yml.example docker-compose-census-counters-visitor-vehicle.yml
+```
 
 Define `SITE_PROFILE` in the docker-compose file 
 
