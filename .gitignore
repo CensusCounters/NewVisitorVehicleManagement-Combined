@@ -55,3 +55,5 @@ build_all_containers.sh
 /src/logs/TopReport.txt
 /84%-Conf-Contra-Light-FRS.png
 src/ANPR/anpr_webhook/images/
+
+*.yml
