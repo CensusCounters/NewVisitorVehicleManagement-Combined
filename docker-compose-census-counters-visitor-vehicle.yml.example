@@ -43,7 +43,7 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     ports:
       - "9001:9001"
-      - "9000:9000"
+      - "19000:9000"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -52,7 +52,7 @@ services:
       - census_counters_network
     command: minio server /minio_data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:19000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
@@ -66,7 +66,7 @@ services:
       - seccomp:unconfined
     environment:
       ETCD_ENDPOINTS: census_counters_etcd:2379
-      MINIO_ADDRESS: censuscountersminio:9000
+      MINIO_ADDRESS: censuscountersminio:19000
     deploy:
       resources:
         reservations:
@@ -157,15 +157,10 @@ services:
       - './src/frontend:/project'
       - './src/ANPR/anpr_webhook/images:/project/finalfrsproject/static/anpr_vehicles/'
     environment:
-      SITE_PROFILE: ${SITE_PROFILE:-kupwara}
-      ASSET_URL_VERSION: ${ASSET_URL_VERSION:-combined-2}
-      FACE_RECOGNITION_SERVICE: ${FACE_RECOGNITION_SERVICE:-http://172.17.0.1:18081/}
-      FACE_MATCH_CONFIDENCE: ${FACE_MATCH_CONFIDENCE:-0.70}
-      POSTGRESQL_URL: ${POSTGRESQL_URL:-census_counters_postgres_db}
-      REDIS_URL: ${REDIS_URL:-redis://census_counters_redis:6379/0}
-      SECRET_KEY: ${SECRET_KEY:-development-only-change-this-secret}
+      SITE_PROFILE: kupwara
+      SECRET_KEY: development-only-change-this-secret
     ports:
-      - ${WEBSERVICE_HOST_PORT:-4001}:4001
+      - 4001:4001
     depends_on:
       - census_counters_fr_engine
     networks:
@@ -189,9 +184,9 @@ services:
     networks:
       - census_counters_network
     environment:
-      CLEANUP_POLL_SECONDS: ${CLEANUP_POLL_SECONDS:-600}
-      ANPR_RETENTION_SECONDS: ${ANPR_RETENTION_SECONDS:-1296000}
-      UPLOAD_RETENTION_SECONDS: ${UPLOAD_RETENTION_SECONDS:-86400}
+      CLEANUP_POLL_SECONDS: 600
+      ANPR_RETENTION_SECONDS: 1296000
+      UPLOAD_RETENTION_SECONDS: 86400
     entrypoint:
       - /bin/bash
       - -c
@@ -217,13 +212,8 @@ services:
     environment:
       SITE_PROFILE: ganganagar
       TRIP_CLOSURE_MODE: manual_and_anpr
-      POSTGRESQL_URL: ${POSTGRESQL_URL:-census_counters_postgres_db}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_NAME: ${DB_NAME:-postgres_visitor_vehicle}
-      DB_USER_NAME: ${DB_USER_NAME:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      AUTO_CLOSE_POLL_SECONDS: ${AUTO_CLOSE_POLL_SECONDS:-600}
-      AUTO_CLOSE_READING_WINDOW_SECONDS: ${AUTO_CLOSE_READING_WINDOW_SECONDS:-60}
+      AUTO_CLOSE_POLL_SECONDS: 600
+      AUTO_CLOSE_READING_WINDOW_SECONDS: 60
     networks:
       - census_counters_network
     command: ["python3", "auto_close.py"]
@@ -234,11 +224,11 @@ services:
     image: nginx:alpine
     container_name: census_counters_nginx
     restart: always
-    ports:
-      - "${PUBLIC_HTTPS_PORT:-4443}:4001"
+#    ports:
+#      - "4443:4001"
     volumes:
       - './nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
-      - '${NGINX_SSL_DIR:-./nginx/ssl}:/etc/nginx/ssl:ro'
+      - './nginx/ssl:/etc/nginx/ssl:ro'
       - './src/frontend/finalfrsproject/static:/var/www/static:ro'
       - './src/ANPR/anpr_webhook/images:/var/www/static/anpr_vehicles:ro'
       - /etc/timezone:/etc/timezone:ro
