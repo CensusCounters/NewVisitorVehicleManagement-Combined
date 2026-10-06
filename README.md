@@ -307,8 +307,12 @@ docker exec -it census_counters_postgres_db /bin/bash
 psql -U postgres -d template1 -c "CREATE DATABASE postgres_visitor_vehicle;"
 psql -U postgres -d postgres_visitor_vehicle -f table_schema_May172025.sql
 
-8. Move the onnx file - adaface_ir101_webface12m.onnx, mask_detector.onnx, scrfd_10g_gnkps.onnx to fr_engine/models/onnx folder 
-and inside their own sub folders 
+8. Copy the AuraFace-v1 models (https://huggingface.co/fal/AuraFace-v1) into src/fr_engine/models/onnx, each in its own
+sub folder and renamed after the model name used in models.json:
+   - scrfd_10g_bnkps.onnx -> src/fr_engine/models/onnx/auraface_scrfd_10g_bnkps/auraface_scrfd_10g_bnkps.onnx
+   - glintr100.onnx       -> src/fr_engine/models/onnx/auraface_glintr100/auraface_glintr100.onnx
+   The engine checks their md5 on start-up and builds the TensorRT engines into src/fr_engine/models/trt-engines
+   on the first run, which takes a few minutes.
 9. To use it, go to https://localhost:4001/ 
 
 4:07 @manish

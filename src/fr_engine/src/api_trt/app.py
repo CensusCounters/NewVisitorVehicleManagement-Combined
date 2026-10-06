@@ -209,7 +209,8 @@ async def startup():
                                 force_fp16=settings.models.force_fp16,
                                 triton_uri=settings.models.triton_uri,
                                 root_dir='/models',
-                                dl_client=dl_client
+                                dl_client=dl_client,
+                                det_retry_scale=settings.models.det_retry_scale
                                 )
         logger.info(f"Processing module ready!")
     except Exception as e:
@@ -331,7 +332,7 @@ async def enroll(
     with timer("extract_vector"):
         output = await processing.extract(images, max_size=[640, 640], return_face_data=False,
                                       embed_only=False, extract_embedding=True,
-                                      threshold=0.6, extract_ga=False,
+                                      threshold=settings.defaults.det_thresh, extract_ga=False,
                                       limit_faces=0, min_face_size=0,
                                       return_landmarks=False,
                                       detect_masks=False,
@@ -434,7 +435,7 @@ async def recognize(file: UploadFile = File(...), conn=Depends(get_milvus_connec
     # logger.info(images)
     output = await processing.extract(images, max_size=[640, 640], return_face_data=False,
                                       embed_only=False, extract_embedding=True,
-                                      threshold=0.6, extract_ga=False,
+                                      threshold=settings.defaults.det_thresh, extract_ga=False,
                                       limit_faces=0, min_face_size=0,
                                       return_landmarks=False,
                                       detect_masks=False,
@@ -549,6 +550,7 @@ async def redirect_to_docs():
 async def check_image_quality(file: UploadFile = File(...)):
     """
     Validate an image for enrollment:
+    - Image must not be blurry
     - Exactly ONE face must be present
     - No enrollment or DB interaction
 
@@ -592,12 +594,12 @@ async def check_image_quality(file: UploadFile = File(...)):
             embed_only=False,
             extract_embedding=False,   # IMPORTANT: detection only
             extract_ga=False,
-            return_face_data=True,
-            threshold=0.6,
+            return_face_data=False,
+            threshold=settings.defaults.det_thresh,
             limit_faces=0,
             min_face_size=0,
             return_landmarks=False,
-            detect_masks=True,
+            detect_masks=False,
             verbose_timings=False
         )
 
@@ -619,26 +621,7 @@ async def check_image_quality(file: UploadFile = File(...)):
                 "face_count": face_count
             }
 
-        # 5.Check Mask
-        face = faces[0]
-        import pprint
-        pprint.pprint(face)
-        #mask_info = face.get("mask_detected", face.get("mask", False))
-
-        mask_info = (
-                face.get("mask_detected") is True
-                or face.get("mask") is True
-                or face.get("attributes", {}).get("mask") is True
-                or face.get("attributes", {}).get("mask_detected") is True
-        )
-
-        if mask_info is True:
-            return {
-                "status": "reject",
-                "reason": "Face mask detected. Please upload an image without a mask."
-            }
-
-        # 6. Accept validation passed
+        # 5. Accept validation passed
         return {
             "status": "accept",
             "reason": "Image quality checks passed.",

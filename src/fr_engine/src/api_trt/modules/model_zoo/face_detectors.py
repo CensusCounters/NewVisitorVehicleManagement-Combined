@@ -48,6 +48,13 @@ def scrfd(model_path, backend, outputs, **kwargs):
     model = SCRFD(inference_backend=inference_backend)
     return model
 
+# Stock InsightFace SCRFD export (e.g. AuraFace-v1 pack): outputs are reshaped to [-1, C],
+# so the batch axis is merged into the anchor axis and must not be sliced by the backend.
+def scrfd_flat(model_path, backend, outputs, **kwargs):
+    inference_backend = backend.DetectorInfer(model=model_path, output_order=outputs, flat_outputs=True, **kwargs)
+    model = SCRFD(inference_backend=inference_backend)
+    return model
+
 def scrfd_v2(model_path, backend, outputs, **kwargs):
     inference_backend = backend.DetectorInfer(model=model_path, output_order=outputs, **kwargs)
     model = SCRFD(inference_backend=inference_backend, ver=2)

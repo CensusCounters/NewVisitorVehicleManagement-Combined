@@ -34,6 +34,7 @@ class Processing:
                  triton_uri=None,
                  root_dir: str = '/models',
                  dl_client: aiohttp.ClientSession = None,
+                 det_retry_scale: float = 0.0,
                  **kwargs):
         """
         Processing class for detecting faces, extracting embeddings and drawing faces from images.
@@ -51,6 +52,8 @@ class Processing:
             triton_uri (str): The URI for Triton server. Defaults to None.
             root_dir (str): The root directory for models. Defaults to '/models'.
             dl_client (aiohttp.ClientSession): An asynchronous HTTP client session. Defaults to None.
+            det_retry_scale (float): Canvas fraction for re-detecting images without faces, 0 disables.
+                Defaults to 0.
         """
 
         if max_size is None:
@@ -70,7 +73,8 @@ class Processing:
                                   backend_name=backend_name,
                                   force_fp16=force_fp16,
                                   triton_uri=triton_uri,
-                                  root_dir=root_dir
+                                  root_dir=root_dir,
+                                  det_retry_scale=det_retry_scale
                                   )
         self.dl_client = dl_client
         logger.info(f"Mask detector configured as: {mask_detector}")

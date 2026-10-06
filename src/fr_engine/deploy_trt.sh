@@ -39,22 +39,26 @@ force_fp16=False
 ## scrfd_500m_bnkps, scrfd_2.5g_bnkps, scrfd_10g_bnkps
 ## scrfd_500m_gnkps, scrfd_2.5g_gnkps, scrfd_10g_gnkps
 ## yolov5l-face, yolov5m-face, yolov5s-face, yolov5n-face, yolov5n-0.5
+## auraface_scrfd_10g_bnkps (AuraFace-v1 pack, batch size 1 only)
 ## Note: SCRFD family models requires input image shape dividable by 32, i.e 640x640, 1024x768.
-det_model=scrfd_10g_gnkps
+det_model=auraface_scrfd_10g_bnkps
 
 ## Maximum batch size for detection model
 det_batch_size=1
 
+## Re-detect images without faces at this fraction of the detector canvas (0 disables)
+det_retry_scale=0.5
+
 # REC MODELS:
-## None, arcface_r100_v1, glintr100, w600k_r50, w600k_mbf
-rec_model=adaface_ir101_webface12m
+## None, arcface_r100_v1, glintr100, w600k_r50, w600k_mbf, auraface_glintr100
+rec_model=auraface_glintr100
 
 ## Maximum batch size for recognition model (this value also applies for GA and mask detection models)
 rec_batch_size=1
 
 
 # Mask detection models
-## None, mask_detector, mask_detector112
+## None
 mask_detector=None
 
 # GENDER/AGE MODELS:
@@ -111,7 +115,8 @@ for i in $(seq 0 $(($n_gpu - 1)) ); do
         -e INFERENCE_BACKEND=trt\
         -e FORCE_FP16=$force_fp16\
         -e DET_NAME=$det_model\
-        -e DET_THRESH=$det_thresh\
+        -e DEF_DET_THRESH=$det_thresh\
+        -e DET_RETRY_SCALE=$det_retry_scale\
         -e REC_NAME=$rec_model\
         -e MASK_DETECTOR=$mask_detector\
         -e REC_BATCH_SIZE=$rec_batch_size\

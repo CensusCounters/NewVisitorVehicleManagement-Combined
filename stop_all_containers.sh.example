@@ -1,1 +1,1 @@
-docker compose -f docker-compose-census-counters-visitor-vehicle.yml --profile visitor_vehicle down
+docker compose -f docker-compose-census-counters-visitor-vehicle.yml down

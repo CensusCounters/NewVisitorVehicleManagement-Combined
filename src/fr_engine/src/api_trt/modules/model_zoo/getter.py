@@ -37,9 +37,11 @@ func_map = {
     'dbface': dbface,
     'scrfd': scrfd,
     'scrfd_v2': scrfd_v2,
+    'scrfd_flat': scrfd_flat,
     'arcface_mxnet': arcface_mxnet,
     'arcface_torch': arcface_torch,
     'adaface': adaface,
+    'auraface': auraface,
     'mask_detector': mask_detector,
     'yolov5_face': yolov5_face
 }
@@ -256,6 +258,10 @@ def get_model(model_name: str, backend_name: str, im_size: List[int] = None, max
         exit(1)
 
     backend = backends[backend_name]
+
+    if config.models[model_name].get('allow_batching') is False and max_batch_size != 1:
+        logger.warning(f"Model '{model_name}' doesn't support batching, forcing max_batch_size=1.")
+        max_batch_size = 1
 
     model_path = prepare_backend(model_name, backend_name, im_size=im_size, max_batch_size=max_batch_size,
                                  config=config, force_fp16=force_fp16,

@@ -184,7 +184,8 @@ class TrtModel(object):
         if hasattr(self, 'engine'):
             del self.engine
 
-    def run(self, input=None, deflatten: bool = True, as_dict=False, from_device=False, infer_shape=None):
+    def run(self, input=None, deflatten: bool = True, as_dict=False, from_device=False, infer_shape=None,
+            slice_batch: bool = True):
         """
         Runs inference on the model with given input data.
 
@@ -194,6 +195,8 @@ class TrtModel(object):
             as_dict (bool): Whether to return the outputs as a dictionary with names as keys. Defaults to False.
             from_device (bool): Whether the input data is already on the device. Defaults to False.
             infer_shape (tuple): The shape of the input data if it's different from the default one.
+            slice_batch (bool): Whether to trim outputs to the input batch size along axis 0. Must be False
+                for models whose outputs have no batch axis. Defaults to True.
 
         Returns:
             list or dict: A list of output tensors or a dictionary with names as keys, depending on the value of `as_dict`.
@@ -235,6 +238,10 @@ class TrtModel(object):
 
         if deflatten:
             trt_outputs = [output.reshape(shape) for output, shape in zip(trt_outputs, self.out_shapes)]
+        if not slice_batch:
+            if as_dict:
+                return {name: trt_outputs[i] for i, name in enumerate(self.out_names)}
+            return trt_outputs
         if as_dict:
             return {name: trt_outputs[i][:infer_shape[0]] for i, name in enumerate(self.out_names)}
 

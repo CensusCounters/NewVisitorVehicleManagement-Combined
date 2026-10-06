@@ -206,8 +206,7 @@ def validate_enrollment_image(files):
 
     Current checks:
     1. Exactly one face must be detected
-    2. There is no mask on the face
-    3. Image should not be blurry
+    2. Image should not be blurry
     """
     start_time = time.time()
     start_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]

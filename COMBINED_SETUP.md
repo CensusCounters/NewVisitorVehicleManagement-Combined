@@ -1,3 +1,5 @@
+#TODO: rework this completely and merge with README.md
+
 # Combined four-site project
 
 This directory is a separate project assembled from the current four branches. The original `Kupwara`, `NCPass`, `ganganagar` and `tangdhar` directories are not modified by this combined-project work.

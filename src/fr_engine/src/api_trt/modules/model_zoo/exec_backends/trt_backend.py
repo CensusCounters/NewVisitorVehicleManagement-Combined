@@ -277,6 +277,8 @@ class DetectorInfer:
     Args:
         model (str): The file path to the TensorRT engine for the detector model.
         output_order (list, optional): The order of output tensors as they appear in the model. Defaults to None.
+        flat_outputs (bool, optional): Whether model outputs have no batch axis (e.g. shape [anchors, C]).
+            Defaults to False.
 
     Attributes:
         rec_model (TrtModel): The TensorRT model instance.
@@ -291,7 +293,7 @@ class DetectorInfer:
         run(input=None, from_device=False, infer_shape=None): Run the detector on input images and return the results.
     """
     def __init__(self, model='/models/trt-engines/centerface/centerface.plan',
-                 output_order=None, **kwargs):
+                 output_order=None, flat_outputs: bool = False, **kwargs):
 
         self.rec_model = TrtModel(model)
         self.model_name = os.path.basename(model)
@@ -299,6 +301,7 @@ class DetectorInfer:
         self.input_ptr = None
         self.input_shape = None
         self.output_order = output_order
+        self.flat_outputs = flat_outputs
 
     # warmup
     def prepare(self, **kwargs):
@@ -336,6 +339,6 @@ class DetectorInfer:
             list: A list containing the results of the detector inference.
         """
         net_out = self.rec_model.run(input, deflatten=True, as_dict=True, from_device=from_device,
-                                     infer_shape=infer_shape)
+                                     infer_shape=infer_shape, slice_batch=not self.flat_outputs)
         net_out = [net_out[e] for e in self.output_order]
         return net_out

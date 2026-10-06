@@ -11,6 +11,7 @@ import numpy as np
 from numpy.linalg import norm
 
 from api_trt.logger import logger
+from api_trt.modules.configs import config
 from api_trt.modules.utils.image_provider import resize_image
 from api_trt.modules.model_zoo.getter import get_model
 from api_trt.modules.utils import fast_face_align as face_align
@@ -117,6 +118,25 @@ def reproject_points(dets, scale: float):
     return dets
 
 
+def shrink_to_canvas(image, max_size, factor: float):
+    """
+    Resize image to `factor` of the detector canvas and pad it back to full canvas size.
+
+    Args:
+        image (np.ndarray): Original image.
+        max_size (List[int]): Detector canvas size in W, H form.
+        factor (float): Fraction of the canvas the image should occupy.
+
+    Returns:
+        tuple: Padded image of canvas size and its scale relative to the original image.
+    """
+    inner = [max(1, int(e * factor)) for e in max_size]
+    shrunk, scale = resize_image(image, max_size=inner)
+    h, w = shrunk.shape[:2]
+    canvas = cv2.copyMakeBorder(shrunk, 0, max_size[1] - h, 0, max_size[0] - w, cv2.BORDER_CONSTANT)
+    return canvas, scale
+
+
 class FaceAnalysis:
     def __init__(self,
                  det_name: str = 'retinaface_r50_v1',
@@ -130,6 +150,7 @@ class FaceAnalysis:
                  force_fp16: bool = False,
                  triton_uri=None,
                  root_dir: str = '/models',
+                 det_retry_scale: float = 0.0,
                  **kwargs):
 
         """
@@ -147,6 +168,8 @@ class FaceAnalysis:
             force_fp16 (bool): Whether to force float16 precision.
             triton_uri (str): The URI of the Triton server.
             root_dir (str): The directory where the models are stored.
+            det_retry_scale (float): If > 0, images without detected faces are shrunk to this fraction of
+                the detector canvas and detected again. Helps detectors that miss faces filling the frame.
         """
 
         if max_size is None:
@@ -161,6 +184,12 @@ class FaceAnalysis:
         if backend_name not in ('trt', 'triton') and max_rec_batch_size != 1:
             logger.warning('Batch processing supported only for TensorRT & Triton backend. Fallback to 1.')
             self.max_rec_batch_size = 1
+
+        if config.models.get(det_name, {}).get('allow_batching') is False and self.max_det_batch_size != 1:
+            logger.warning(f"Detector '{det_name}' doesn't support batching. Fallback to 1.")
+            self.max_det_batch_size = 1
+
+        self.det_retry_scale = det_retry_scale
 
         assert det_name is not None
 
@@ -359,6 +388,20 @@ class FaceAnalysis:
             t1 = time.perf_counter()
 
             logger.debug(f'Detection took: {(t1 - t0) * 1000:.3f} ms.')
+
+            if self.det_retry_scale > 0:
+                scales = list(scales)
+                for idx, pred in enumerate(det_results):
+                    if len(pred[0]) > 0:
+                        continue
+                    orig_id = (bid * self.max_det_batch_size) + idx
+                    retry_img, retry_scale = shrink_to_canvas(images[orig_id], max_size or self.max_size,
+                                                              self.det_retry_scale)
+                    retry_pred = list(zip(*_partial_detect([retry_img])))[0]
+                    if len(retry_pred[0]) > 0:
+                        logger.debug(f'Retry at scale {self.det_retry_scale} found {len(retry_pred[0])} face(s).')
+                        det_results[idx] = retry_pred
+                        scales[idx] = retry_scale
 
             for idx, pred in enumerate(det_results):
                 await asyncio.sleep(0)

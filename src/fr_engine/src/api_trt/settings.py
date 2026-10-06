@@ -57,6 +57,7 @@ class Models(BaseSettings):
     mask_detector: Union[EmptyStrToNone, None, str] = None
     rec_batch_size: int = 1
     det_batch_size: int = 1
+    det_retry_scale: float = 0.5
     force_fp16: bool = False
     triton_uri: str = None
 

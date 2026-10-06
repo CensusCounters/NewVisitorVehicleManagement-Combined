@@ -341,6 +341,8 @@ class SCRFD:
 
 
         batch_size = self.infer_shape[0]
+        # Outputs are either [N, anchors, C] or, for stock exports, [N * anchors, C]
+        net_outs = [out.reshape(batch_size, -1, out.shape[-1]) for out in net_outs]
         bboxes_by_img = []
         kpss_by_img = []
         scores_by_img = []
