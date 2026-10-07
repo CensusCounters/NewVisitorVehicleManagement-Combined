@@ -280,6 +280,16 @@ app.config["ALLOWED_ID_TYPES_BY_VISITOR"] = active_profile.allowed_id_types_by_v
 app.config["KNOWN_PERSON_SCHEMA"] = COMMON_KNOWN_PERSON_SCHEMA
 app.config["UNKNOWN_PERSON_PAGE_FIELDS"] = active_profile.unknown_person_page_fields.model_dump()
 app.config["TRIP_REPORT_SUMMARY_FIELDS"] = COMMON_TRIP_REPORT_SUMMARY["trip_report_summary_fields"]
+if site_profile_name == "kupwara":
+    import copy
+    _summary = copy.deepcopy(app.config["TRIP_REPORT_SUMMARY_FIELDS"])
+    _gt = _summary.get("grouped_table") or {}
+    _gt["title"] = "Summary by To Meet"
+    _gt["empty_message"] = "No to meet data for current filters."
+    for _col in _gt.get("columns", []):
+        if _col.get("key") == "going_to":
+            _col["label"] = "To Meet"
+    app.config["TRIP_REPORT_SUMMARY_FIELDS"] = _summary
 app.config["SUMMARY_TABLE_BY_VISITOR_TYPE"] = active_profile.summary_table_by_visitor_type
 app.config["SUMMARY_TABLE_BY_MEN_WOMEN"] = active_profile.summary_table_by_men_women
 app.config["TRIP_DURATION_DEFAULT_HOURS"] = active_profile.trip_duration_default_hours
