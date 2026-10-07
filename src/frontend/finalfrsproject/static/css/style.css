@@ -361,6 +361,7 @@ border:1px solid #2f2f2f
 .daterangepicker:before,.daterangepicker:after {
 
     border-bottom:7px solid var(--main-color);
+    cursor: pointer;
 }
 
 .daterangepicker .calendar,
@@ -808,6 +809,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   div.dataTables_paginate ul.pagination li a {
       background: transparent;
       color: #878787;
+      cursor: pointer;
   }
   .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover,div.dataTables_paginate ul.pagination li a:hover{
    background-color:#18afa2 !important;
@@ -818,6 +820,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
      background-color:#181818;
       border-color:#181818;
       color:var(--main-font-color) !important;
+      cursor: pointer;
   }
   .dataTables_length {
     display: inline-block;
@@ -838,6 +841,7 @@ div.dataTables_paginate {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     margin: 0 5px;
+    cursor: pointer;
 }
 
 div.dataTables_filter label {
@@ -3750,6 +3754,14 @@ a:hover {
     font-weight: 600;
     border-radius: 8px;
     transition: all 200ms ease;
+  }
+
+  /* Keep .c-btn styling (radius/font/color) but restore the original
+     left/right layout in the action bar (auto width, side by side) */
+  .user .user-form .trip-action-bar .c-btn {
+    width: auto;
+    min-width: 180px;
+    margin: 0;
   }
 
   .user .user-form .trip-action-bar .trip-btn-cancel {

@@ -1,5 +1,6 @@
 import json
 from flask import render_template
+from finalfrsproject import app
 from datetime import datetime, time as dt_time
 from flask_babel import _
 import traceback
@@ -37,7 +38,8 @@ def get_handler(jwt_details, redis_conn):
         end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
         print(f"[{end_timestamp}] Completed trip_report_helper_get | Execution time: {execution_time}ms", flush=True)
 
-        return render_template('trip_report.html', details=send_to_html_json)
+        return render_template('trip_report.html', details=send_to_html_json,
+                                visitor_categories=app.config["VISITOR_CATEGORIES"])
 
     except Exception as e:
         print("Error in trip report helper: ", str(e), flush=True)
@@ -87,7 +89,8 @@ def post_handler(jwt_details, redis_conn, form):
         end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
         print(f"[{end_timestamp}] Completed trip_report_helper_post | Execution time: {execution_time}ms", flush=True)
 
-        return render_template('trip_report.html', details=send_to_html_json)
+        return render_template('trip_report.html', details=send_to_html_json,
+                                visitor_categories=app.config["VISITOR_CATEGORIES"])
 
     except Exception as e:
         print(f'Error in trip report post request: {str(e)}', flush=True)

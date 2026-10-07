@@ -7,6 +7,7 @@ import os, shutil
 from datetime import datetime, timedelta
 from collections import defaultdict
 import time
+import re
 from dateutil import parser
 
 
@@ -2079,7 +2080,37 @@ def _date_preset_sql(column_expr, preset):
     return None
 
 
-def _append_column_filter_sql(column_filters, column_filter_sql, date_filter_cols, search_sql, search_params):
+# Expected-stay duration expressed as whole minutes (used by duration filters).
+VISIT_DURATION_MINUTES_EXPR = "FLOOR(EXTRACT(EPOCH FROM COALESCE(t.visit_duration, interval '0')) / 60)"
+
+def _build_duration_clause(minutes_expr, token):
+    """Translate a duration filter token into SQL.
+
+    Token grammar (built by the frontend stepper):
+      D<days>        -> days component equals <days> (any hours)
+      H<hours>       -> hours component equals <hours> (any days)
+      D<days>H<hours>-> exact total duration
+
+    The hours component is the "remainder hours" shown in the displayed
+    "D days H hours" breakdown, so the filter matches what the user sees.
+    """
+    if not token:
+        return None, None
+    m = re.match(r'^D(\d+)H(\d+)$', token)
+    if m:
+        return f"({minutes_expr} = %s)", [int(m.group(1)) * 1440 + int(m.group(2)) * 60]
+    m = re.match(r'^D(\d+)$', token)
+    if m:
+        return f"(FLOOR({minutes_expr} / 1440) = %s)", [int(m.group(1))]
+    m = re.match(r'^H(\d+)$', token)
+    if m:
+        # Use MOD() instead of the % operator: psycopg2 treats a bare %
+        # in the SQL string as a parameter placeholder and raises an error.
+        return f"(FLOOR(MOD({minutes_expr}, 1440) / 60) = %s)", [int(m.group(1))]
+    return None, None
+
+
+def _append_column_filter_sql(column_filters, column_filter_sql, date_filter_cols, search_sql, search_params, duration_minutes_map=None):
     for col_idx, val in (column_filters or {}).items():
         col_idx = int(col_idx)
         val = (val or '').strip()
@@ -2096,6 +2127,13 @@ def _append_column_filter_sql(column_filters, column_filter_sql, date_filter_col
             # Date preset tokens must never fall through to ILIKE on formatted dates.
             if val.lower() in DATE_PRESET_VALUES:
                 continue
+
+        if duration_minutes_map and col_idx in duration_minutes_map:
+            clause, params = _build_duration_clause(duration_minutes_map[col_idx], val)
+            if clause:
+                search_sql += f" AND {clause}"
+                search_params.extend(params)
+            continue
 
         clause = column_filter_sql.get(col_idx)
         if clause and val:
@@ -2166,13 +2204,17 @@ def get_unfinished_trips_paginated(
         3: "COALESCE(t.traveler_type, '') ILIKE %s",
         4: f"COALESCE({primary_id_expr}, '') ILIKE %s",
         5: f"{permit_expr} ILIKE %s",
-        8: "CAST(EXTRACT(EPOCH FROM COALESCE(t.visit_duration, interval '0')) / 60 AS TEXT) ILIKE %s",
-        9: f"CAST({overstay_expr} AS TEXT) ILIKE %s",
         10: "COALESCE(p.visiting_person_name, '') ILIKE %s",
         11: "COALESCE(t.going_to, '') ILIKE %s",
         12: f"CAST({total_passengers_expr} AS TEXT) ILIKE %s",
         13: "COALESCE(p.mobile_number, '') ILIKE %s",
         14: "COALESCE(u.user_name, '') ILIKE %s",
+    }
+
+    # Duration columns (Expected Stay / Overstay) filter by component, not raw text.
+    duration_minutes_map = {
+        8: VISIT_DURATION_MINUTES_EXPR,
+        9: f"FLOOR({overstay_expr})",
     }
 
     order_col = order_map.get(int(order_col_idx), "t.entry_time")
@@ -2229,7 +2271,8 @@ def get_unfinished_trips_paginated(
 
     # per-column filters
     search_sql, search_params = _append_column_filter_sql(
-        column_filters, column_filter_sql, UNFINISHED_TRIPS_DATE_FILTER_COLS, search_sql, search_params
+        column_filters, column_filter_sql, UNFINISHED_TRIPS_DATE_FILTER_COLS, search_sql, search_params,
+        duration_minutes_map=duration_minutes_map
     )
 
     select_sql = (
@@ -2241,11 +2284,12 @@ def get_unfinished_trips_paginated(
             pa.number AS pass_number, pa.pass_image_location,
             """
         + TRIP_VEHICLE_SELECT_FIELDS
-        + """,
+        + f""",
             t.traveler_type, t.entry_time, t.exit_time, t.coming_from, t.going_to,
             t.number_of_male_passengers, t.number_of_female_passengers, t.number_of_child_passengers,
             t.id, t.visit_duration, t.token_number, t.driver_trip_id, t.trip_permit_type,
-            t.trip_permit_image_location, t.created_by, u.user_name
+            t.trip_permit_image_location, t.created_by, u.user_name,
+            CAST({overstay_expr} AS BIGINT) AS overstay_minutes
     """
     )
 
@@ -2296,7 +2340,10 @@ def get_unfinished_trips_paginated(
                 expected_minutes = 0.0
 
             trip["visit_duration"] = expected_minutes
-            trip["overstay_minutes"] = int(max(0, elapsed_minutes - expected_minutes))
+            # Overstay is computed once in SQL (CAST({overstay_expr} AS BIGINT)) so the
+            # displayed value matches the Overstay filter exactly, regardless of timezone skew
+            # between Python's datetime.now() and the server's NOW().
+            trip["overstay_minutes"] = int(trip.get("overstay_minutes") or 0)
 
             trip["entry_time"] = entry_time.strftime("%d/%m/%Y %H:%M") if entry_time else "Not Available"
             trip["exit_time"] = exit_time.strftime("%d/%m/%Y %H:%M") if exit_time else "Not Closed"
@@ -2867,13 +2914,17 @@ def get_trip_details_by_date_paginated(
         5: "COALESCE(t.traveler_type, '') ILIKE %s",
         6: f"COALESCE({primary_id_expr}, '') ILIKE %s",
         8: f"{permit_expr} ILIKE %s",
-        12: "CAST(EXTRACT(EPOCH FROM COALESCE(t.visit_duration, interval '0')) / 60 AS TEXT) ILIKE %s",
-        13: f"CAST({overstay_expr} AS TEXT) ILIKE %s",
         14: "COALESCE(p.visiting_person_name, '') ILIKE %s",
         15: "COALESCE(t.going_to, '') ILIKE %s",
         16: f"CAST({total_passengers_expr} AS TEXT) ILIKE %s",
         17: "COALESCE(p.mobile_number, '') ILIKE %s",
         18: "COALESCE(u.user_name, '') ILIKE %s",
+    }
+
+    # Duration columns (Expected Stay / Overstay) filter by component, not raw text.
+    duration_minutes_map = {
+        12: VISIT_DURATION_MINUTES_EXPR,
+        13: f"FLOOR({overstay_expr})",
     }
 
 
@@ -2924,7 +2975,8 @@ def get_trip_details_by_date_paginated(
         search_params = [like_term] * 8
     # per-column filters
     search_sql, search_params = _append_column_filter_sql(
-        column_filters, column_filter_sql, TRIP_REPORT_DATE_FILTER_COLS, search_sql, search_params
+        column_filters, column_filter_sql, TRIP_REPORT_DATE_FILTER_COLS, search_sql, search_params,
+        duration_minutes_map=duration_minutes_map
     )
     select_sql = (
         """
@@ -2935,11 +2987,12 @@ def get_trip_details_by_date_paginated(
             pa.number AS pass_number, pa.pass_image_location,
             """
         + TRIP_VEHICLE_SELECT_FIELDS
-        + """,
+        + f""",
             t.traveler_type, t.entry_time, t.exit_time, t.coming_from, t.going_to,
             t.number_of_male_passengers, t.number_of_female_passengers, t.number_of_child_passengers,
             t.id, t.visit_duration, t.token_number, t.driver_trip_id, t.trip_permit_type,
-            t.trip_permit_image_location, t.created_by, u.user_name
+            t.trip_permit_image_location, t.created_by, u.user_name,
+            CAST({overstay_expr} AS BIGINT) AS overstay_minutes
     """
     )
 
@@ -3067,7 +3120,10 @@ def get_trip_details_by_date_paginated(
                 expected_visit_duration = 0.0
 
             trip["visit_duration"] = expected_visit_duration
-            trip["overstay_minutes"] = int(max(0, elapsed_time_minutes - expected_visit_duration))
+            # Overstay is computed once in SQL (CAST({overstay_expr} AS BIGINT)) so the
+            # displayed value matches the Overstay filter exactly, regardless of timezone skew
+            # between Python's datetime.now() and the server's NOW().
+            trip["overstay_minutes"] = int(trip.get("overstay_minutes") or 0)
 
             trip["entry_time"] = entry_time.strftime("%d/%m/%Y %H:%M") if entry_time else "Not Available"
             trip["exit_time"] = exit_time.strftime("%d/%m/%Y %H:%M") if exit_time else "Not Closed"

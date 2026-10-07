@@ -43,4 +43,5 @@ def get_handler(jwt_details, trip_id):
             'page_title': _('End Trip')
         }
         print("detials in get_trip_details_by_id: ", send_to_html_json)
-        return render_template('unfinished_trips.html', details=send_to_html_json)  
+        return render_template('unfinished_trips.html', details=send_to_html_json,
+                                visitor_categories=app.config["VISITOR_CATEGORIES"])

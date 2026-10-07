@@ -41,10 +41,9 @@
                             <th>
                                 <select class="form-control column-filter" data-col="3">
                                     <option value="">Type</option>
-                                    <option value="DRIVER">DRIVER</option>
-                                    <option value="EMPLOYEE">EMPLOYEE</option>
-                                    <option value="VISITOR">VISITOR</option>
-                                    <option value="PASSENGER">PASSENGER</option>
+                                    {% for c in visitor_categories %}
+                                    <option value="{{ c }}">{{ c }}</option>
+                                    {% endfor %}
                                 </select>
                             </th>
                             <th><input class="form-control column-filter" data-col="4" placeholder="ID No"></th>
@@ -78,8 +77,20 @@
                                     <option value="not_closed">Not Closed</option>
                                 </select>
                             </th>
-                            <th><input class="form-control column-filter" data-col="8" placeholder="Stay"></th>
-                            <th><input class="form-control column-filter" data-col="9" placeholder="Overstay"></th>
+                            <th>
+                                <div class="duration-filter">
+                                    <input type="number" class="form-control dur-days" min="0" placeholder="Days">
+                                    <input type="number" class="form-control dur-hours" min="0" placeholder="Hrs">
+                                    <input type="hidden" class="column-filter" data-col="8">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="duration-filter">
+                                    <input type="number" class="form-control dur-days" min="0" placeholder="Days">
+                                    <input type="number" class="form-control dur-hours" min="0" placeholder="Hrs">
+                                    <input type="hidden" class="column-filter" data-col="9">
+                                </div>
+                            </th>
                             <th><input class="form-control column-filter" data-col="10" placeholder="Purpose"></th>
                             <th><input class="form-control column-filter" data-col="11" placeholder="Going To"></th>
                             <th><input class="form-control column-filter" data-col="12" placeholder="Persons"></th>
@@ -316,6 +327,28 @@
             table.column(colIdx).search(this.value, false, false, false).draw();
         });
 
+        // duration steppers (Expected Stay / Overstay) -> D/H/DH token (see sqlCommands._build_duration_clause)
+        $('.duration-filter .dur-days, .duration-filter .dur-hours').on('input change', function () {
+            var wrap  = $(this).closest('.duration-filter');
+            var dv = wrap.find('.dur-days').val();
+            var hv = wrap.find('.dur-hours').val();
+            var days  = (dv === '') ? null : (parseInt(dv, 10) || 0);
+            var hours = (hv === '') ? null : (parseInt(hv, 10) || 0);
+            var token = '';
+            if (days === null && hours === null) {
+                token = '';
+            } else if (hours === null) {
+                token = 'D' + days;
+            } else if (days === null) {
+                token = 'H' + hours;
+            } else {
+                token = 'D' + days + 'H' + hours;
+            }
+            var hidden = wrap.find('.column-filter');
+            hidden.val(token);
+            table.column(hidden.data('col')).search(token).draw();
+        });
+
         // global search box
         var filterTimer;
         $('#search').on('keyup', function () {
@@ -329,6 +362,7 @@
         $('#clear-filters-btn').on('click', function () {
             $('#search').val('');
             $('.column-filter').val('');
+            $('.dur-days, .dur-hours').val('');
             table.search('').columns().search('').draw();
         });
     });

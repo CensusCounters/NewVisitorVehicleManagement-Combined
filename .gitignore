@@ -16,6 +16,7 @@ src/frontend/finalfrsproject/helpers/__pycache__/
 src/frontend/finalfrsproject/static/images/uploads/
 src/frontend/finalfrsproject/static/aadhars/
 src/frontend/finalfrsproject/static/known_persons/
+src/frontend/finalfrsproject/static/blacklisted_persons/
 src/frontend/finalfrsproject/static/drivers_licenses/
 src/frontend/finalfrsproject/static/known_vehicles/
 src/frontend/finalfrsproject/static/permit_images/

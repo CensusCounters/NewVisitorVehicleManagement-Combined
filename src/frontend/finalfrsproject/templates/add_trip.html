@@ -315,8 +315,8 @@
 {% endif %}
 						<div class="col-xs-12 trip-verify-section">
 						<div class="trip-action-bar">
-							<button type="button" id="cancelbtn" name="cancelbtn" class="btn trip-btn-cancel">{% if template_profiles.add_trip.translate_labels %}{{ _('Cancel') }}{% else %}Cancel{% endif %}</button>
-							<button type="button" id="sbmt" name="sbmt" class="btn trip-btn-submit">{% if template_profiles.add_trip.translate_labels %}{{ _('Submit Trip') }}{% else %}Submit Trip{% endif %}</button>
+						<button type="button" id="cancelbtn" name="cancelbtn" class="c-btn" style="color:#dddddd;">{% if template_profiles.add_trip.translate_labels %}{{ _('Cancel') }}{% else %}Cancel{% endif %}</button>
+						<button type="button" id="sbmt" name="sbmt" class="c-btn">{% if template_profiles.add_trip.translate_labels %}{{ _('Submit Trip') }}{% else %}Submit Trip{% endif %}</button>
 							</div>
 						</div>
 {% if template_profiles.add_trip.extended_vehicle_details %}
@@ -723,7 +723,7 @@
 			'</div>';
 		}
 
-		return '<p class="trip-confirm-intro">Please verify all details before confirming. This trip record will be saved permanently.</p>' +
+		return '<p class="trip-confirm-label" style="margin: 0 0 18px; text-align: center;">Please verify all details before you press Submit.</p>' +
 			buildConfirmPreviewImagesHtml() +
 			'<div class="trip-confirm-summary">' + allRows + '</div>' +
 			warning;
@@ -886,7 +886,6 @@
 				renderTripReview();
 
 				Swal.fire({
-					title: 'Submit this trip?',
 					html: buildConfirmSummaryHtml(),
 					icon: 'warning',
 					showCancelButton: true,

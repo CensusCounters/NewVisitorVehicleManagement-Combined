@@ -122,7 +122,7 @@
         text-align: center !important;
         vertical-align: middle !important;
         white-space: normal;
-        padding: 12px 10px !important;
+        padding: 12px 30px 12px 10px !important;
         line-height: 1.3 !important;
         min-height: 48px;
         box-sizing: border-box;
@@ -161,7 +161,7 @@
     }
 
     .trip-report-page #trip-table.table tbody tr {
-        cursor: pointer;
+        cursor: default;
         transition: background-color 150ms ease;
     }
 
@@ -186,6 +186,29 @@
         background-color: #111;
         padding: 6px 4px;
         vertical-align: middle;
+    }
+
+    /* Phone column (14th) keeps its value on a single line */
+    .trip-report-page #trip-table tbody td:nth-child(14) {
+        white-space: nowrap;
+    }
+
+    /* Person Name (2nd) & Vehicle Number (3rd): cap the column to the
+       thumbnail size and truncate long text instead of shrinking images */
+    .trip-report-page #trip-table tbody td:nth-child(2),
+    .trip-report-page #trip-table tbody td:nth-child(3) {
+        width: 184px;
+        max-width: 184px;
+        overflow: hidden;
+    }
+
+    .trip-report-page #trip-table tbody td:nth-child(2) .report-link-with-thumb span,
+    .trip-report-page #trip-table tbody td:nth-child(3) .report-link-with-thumb span {
+        display: block;
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .trip-report-page #trip-table thead tr.column-filters input.column-filter,
@@ -220,6 +243,43 @@
         font-weight: 700;
         font-size: 13px;
         opacity: 1;
+    }
+
+    .trip-report-page #trip-table thead tr.column-filters .duration-filter {
+        display: flex;
+        gap: 4px;
+    }
+
+    .trip-report-page #trip-table thead tr.column-filters .duration-filter .form-control {
+        width: 50%;
+        min-width: 0;
+        height: 36px;
+        margin: 0;
+        padding: 6px 4px;
+        border: 1px solid #00ffe4;
+        border-radius: 0;
+        background: #000000;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .trip-report-page #trip-table thead tr.column-filters .duration-filter .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 700;
+        opacity: 1;
+    }
+
+    .trip-report-page #trip-table thead tr.column-filters .duration-filter .form-control:hover,
+    .trip-report-page #trip-table thead tr.column-filters .duration-filter .form-control:focus {
+        border-color: #00ffe4 !important;
+        background: #0a0a0a !important;
+        color: #00ffe4 !important;
+        box-shadow: 0 0 0 1px #00ffe4, 0 0 12px rgba(0, 255, 228, 0.45) !important;
+        outline: none !important;
     }
 
     .trip-report-page #trip-table thead tr.column-filters input.column-filter:hover,

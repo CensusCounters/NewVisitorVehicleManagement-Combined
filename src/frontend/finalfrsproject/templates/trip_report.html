@@ -63,10 +63,9 @@
                         <th>
                             <select class="form-control column-filter" data-col="5">
                                 <option value="">Type</option>
-                                <option value="DRIVER">DRIVER</option>
-                                <option value="EMPLOYEE">EMPLOYEE</option>
-                                <option value="VISITOR">VISITOR</option>
-                                <option value="PASSENGER">PASSENGER</option>
+                                {% for c in visitor_categories %}
+                                <option value="{{ c }}">{{ c }}</option>
+                                {% endfor %}
                             </select>
                         </th>
                         <th><input class="form-control column-filter" data-col="6" placeholder="ID No"></th>
@@ -102,8 +101,20 @@
                                 <option value="not_closed">Not Closed</option>
                             </select>
                         </th>
-                        <th><input class="form-control column-filter" data-col="12" placeholder="Stay"></th>
-                        <th><input class="form-control column-filter" data-col="13" placeholder="Overstay"></th>
+                        <th>
+                            <div class="duration-filter">
+                                <input type="number" class="form-control dur-days" min="0" placeholder="Days">
+                                <input type="number" class="form-control dur-hours" min="0" placeholder="Hrs">
+                                <input type="hidden" class="column-filter" data-col="12">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="duration-filter">
+                                <input type="number" class="form-control dur-days" min="0" placeholder="Days">
+                                <input type="number" class="form-control dur-hours" min="0" placeholder="Hrs">
+                                <input type="hidden" class="column-filter" data-col="13">
+                            </div>
+                        </th>
                         <th><input class="form-control column-filter" data-col="14" placeholder="Purpose"></th>
                         <th><input class="form-control column-filter" data-col="15" placeholder="Going To"></th>
                         <th><input class="form-control column-filter" data-col="16" placeholder="Persons"></th>
@@ -198,6 +209,39 @@
         font-weight: 700;
         font-size: 13px;
         opacity: 1;
+    }
+    #trip-report-table thead tr.column-filters .duration-filter {
+        display: flex;
+        gap: 4px;
+    }
+    #trip-report-table thead tr.column-filters .duration-filter .form-control {
+        width: 50%;
+        min-width: 0;
+        height: 36px;
+        margin: 0;
+        padding: 6px 4px;
+        border: 1px solid #00ffe4;
+        border-radius: 0;
+        background: #000000;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    #trip-report-table thead tr.column-filters .duration-filter .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 700;
+        opacity: 1;
+    }
+    #trip-report-table thead tr.column-filters .duration-filter .form-control:hover,
+    #trip-report-table thead tr.column-filters .duration-filter .form-control:focus {
+        border-color: #00ffe4 !important;
+        background: #0a0a0a !important;
+        color: #00ffe4 !important;
+        box-shadow: 0 0 0 1px #00ffe4, 0 0 12px rgba(0, 255, 228, 0.45) !important;
+        outline: none !important;
     }
     #trip-report-table thead tr.column-filters input.column-filter:hover,
     #trip-report-table thead tr.column-filters select.column-filter:hover,
@@ -797,10 +841,33 @@
             table.column(colIdx).search(this.value, false, false, false).draw();
         });
 
+        // duration steppers (Expected Stay / Overstay) -> D/H/DH token (see sqlCommands._build_duration_clause)
+        $('.duration-filter .dur-days, .duration-filter .dur-hours').on('input change', function () {
+            var wrap  = $(this).closest('.duration-filter');
+            var dv = wrap.find('.dur-days').val();
+            var hv = wrap.find('.dur-hours').val();
+            var days  = (dv === '') ? null : (parseInt(dv, 10) || 0);
+            var hours = (hv === '') ? null : (parseInt(hv, 10) || 0);
+            var token = '';
+            if (days === null && hours === null) {
+                token = '';
+            } else if (hours === null) {
+                token = 'D' + days;
+            } else if (days === null) {
+                token = 'H' + hours;
+            } else {
+                token = 'D' + days + 'H' + hours;
+            }
+            var hidden = wrap.find('.column-filter');
+            hidden.val(token);
+            table.column(hidden.data('col')).search(token).draw();
+        });
+
         // clear all filters
         $('#clear-filters-btn').on('click', function () {
             $('#search').val('');
             $('.column-filter').val('');
+            $('.dur-days, .dur-hours').val('');
             table.search('').columns().search('').draw();
         });
 

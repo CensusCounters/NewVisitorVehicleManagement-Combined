@@ -1,7 +1,7 @@
 import json
 from flask import render_template, redirect, url_for
 from datetime import datetime
-from finalfrsproject import sqlCommands, routeMethods
+from finalfrsproject import sqlCommands, routeMethods, app
 from flask_babel import _
 import time
 
@@ -61,7 +61,8 @@ def get_handler(jwt_details, redis_conn):
             end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             print(f"[{end_timestamp}] Completed get_unfinished_trips_helper_get | Execution time: {execution_time}ms", flush=True)
 
-            return render_template('unfinished_trips.html', details=send_to_html_json)
+            return render_template('unfinished_trips.html', details=send_to_html_json,
+                                    visitor_categories=app.config["VISITOR_CATEGORIES"])
 
     except Exception as e:
         print(f'Error in get_unfinished_trips: {str(e)} ')
@@ -144,7 +145,8 @@ def post_handler(jwt_details, redis_conn, request):
                 end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
                 print(f"[{end_timestamp}] Completed get_unfinished_trips_helper_post | Execution time: {execution_time}ms",
                     flush=True)
-                return render_template('unfinished_trips.html', details=send_to_html_json)
+                return render_template('unfinished_trips.html', details=send_to_html_json,
+                                        visitor_categories=app.config["VISITOR_CATEGORIES"])
 
     except Exception as e:
         print(f'Error in get_unfinished_trips_post: {str(e)} ')
