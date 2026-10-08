@@ -89,21 +89,53 @@ FACE_COLLECTION_NAME = 'default'
 FACE_COLLECTION_BLACKLIST = 'blacklist'
 FACE_INDEX_NAME = 'vector_index'
 
-def drop_collection(client, collection_name: str):
-    client.drop_collection(collection_name=collection_name)
+INDEX_BUILD_PARAMS = {
+    'FLAT': {},
+    'IVF_FLAT': {'nlist': 128},
+    'HNSW': {'M': 16, 'efConstruction': 200},
+}
+INDEX_SEARCH_PARAMS = {
+    'FLAT': {},
+    'IVF_FLAT': {'nprobe': 32},
+    'HNSW': {'ef': 64},
+}
+
+FACE_INDEX_TYPE = os.getenv('FACE_INDEX_TYPE', 'FLAT').upper()
+if FACE_INDEX_TYPE not in INDEX_BUILD_PARAMS:
+    raise ValueError(f"Unsupported FACE_INDEX_TYPE '{FACE_INDEX_TYPE}'. "
+                     f"Use one of: {', '.join(INDEX_BUILD_PARAMS)}")
 
 
-def create_collection(client, collection_name: str):
-    logger.info(f"Face collection {collection_name} wasn't found, creating it!")
-
+def build_index_params():
     index_params = MilvusClient.prepare_index_params()
     index_params.add_index(
         field_name="vector",
         metric_type="IP",
-        index_type="IVF_FLAT",
+        index_type=FACE_INDEX_TYPE,
         index_name=FACE_INDEX_NAME,
-        params={"nlist": 128}
+        params=INDEX_BUILD_PARAMS[FACE_INDEX_TYPE]
     )
+    return index_params
+
+
+def drop_collection(client, collection_name: str):
+    client.drop_collection(collection_name=collection_name)
+
+
+def ensure_index(client, collection_name: str):
+    current = client.describe_index(collection_name=collection_name, index_name=FACE_INDEX_NAME)
+    current_type = (current or {}).get('index_type')
+    if current_type == FACE_INDEX_TYPE:
+        return
+    logger.info(f'Rebuilding index of "{collection_name}": {current_type} -> {FACE_INDEX_TYPE}')
+    client.release_collection(collection_name=collection_name)
+    if current:
+        client.drop_index(collection_name=collection_name, index_name=FACE_INDEX_NAME)
+    client.create_index(collection_name=collection_name, index_params=build_index_params())
+
+
+def create_collection(client, collection_name: str):
+    logger.info(f"Face collection {collection_name} wasn't found, creating it!")
 
     primary_key = FieldSchema(
         name="id",
@@ -147,17 +179,17 @@ def create_collection(client, collection_name: str):
     )
     client.create_index(
         collection_name=collection_name,
-        index_params=index_params
+        index_params=build_index_params()
     )
     logger.info(f'Face collection {collection_name} created successfully')
 
 
 client = MilvusClient(uri=CLUSTER_ENDPOINT)
-if not client.has_collection(collection_name=FACE_COLLECTION_NAME):
-    create_collection(client, FACE_COLLECTION_NAME)
-
-if not client.has_collection(collection_name=FACE_COLLECTION_BLACKLIST):
-    create_collection(client, FACE_COLLECTION_BLACKLIST)
+for _collection_name in (FACE_COLLECTION_NAME, FACE_COLLECTION_BLACKLIST):
+    if client.has_collection(collection_name=_collection_name):
+        ensure_index(client, _collection_name)
+    else:
+        create_collection(client, _collection_name)
 
 collection_default = Collection(name=FACE_COLLECTION_NAME)
 collection_default.load()
@@ -413,7 +445,7 @@ async def search_in_collection(collection_name: str, vector: list):
         data=[vector],
         anns_field='vector',
         limit=5,
-        param={"metric_type": "IP"},
+        param={"metric_type": "IP", "params": INDEX_SEARCH_PARAMS[FACE_INDEX_TYPE]},
         output_fields=["guid", "name", "aadhaar"],
     )
     processed_matches = search_result_to_dict(matches)

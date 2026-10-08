@@ -20,7 +20,7 @@ RUN apt-get update &&\
 
 COPY requirements.txt .
 RUN $PIP_INSTALL -r requirements.txt
-RUN pip3 install pymilvus
+RUN pip3 install "pymilvus>=2.6,<2.7"
 
 WORKDIR /app
 COPY api_trt /app/api_trt

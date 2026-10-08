@@ -1,6 +1,0 @@
-INSERT INTO users (created_by, user_name, email, password, user_type)
-VALUES
-    ('Super Admin','Tushar Khichariya', 'tushar@censuscounters.com', crypt('password',gen_salt('bf')), 'Admin'),
-    ('Super Admin','Manish Mohanty', 'manish@censuscounters.com', crypt('password',gen_salt('bf')), 'Admin'),
-    ('Super Admin','Pavel Zolotykh', 'pavel@censuscounters.com', crypt('password',gen_salt('bf')), 'Admin'),
-    ('Super Admin','Support Guy', 'support@censuscounters.com', crypt('password',gen_salt('bf')), 'Reader');

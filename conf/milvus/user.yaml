@@ -1,0 +1,8 @@
+# Overrides for Milvus 2.6 standalone (single container, COMMON_STORAGETYPE=local).
+# Woodpecker defaults to MinIO storage, which this deployment doesn't run.
+mq:
+  type: woodpecker
+woodpecker:
+  storage:
+    type: local
+    rootPath: /var/lib/milvus/woodpecker

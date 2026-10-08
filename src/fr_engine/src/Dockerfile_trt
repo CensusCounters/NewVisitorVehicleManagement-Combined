@@ -1,4 +1,5 @@
-FROM nvcr.io/nvidia/tensorrt:25.03-py3
+# Multi-arch (amd64 + arm64/SBSA). CUDA 13.2 needs driver R595+ on x86 and JetPack 7.2+ on Jetson Orin.
+FROM nvcr.io/nvidia/tensorrt:26.05-py3
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
@@ -18,8 +19,8 @@ RUN apt-get update &&\
 COPY requirements.txt .
 RUN $PIP_INSTALL -r requirements.txt
 # GPU specific packages
-RUN $PIP_INSTALL cupy-cuda12x pynvjpeg
-RUN pip3 install pymilvus
+RUN $PIP_INSTALL cupy-cuda13x
+RUN pip3 install "pymilvus>=2.6,<2.7"
 
 WORKDIR /app
 COPY api_trt /app/api_trt

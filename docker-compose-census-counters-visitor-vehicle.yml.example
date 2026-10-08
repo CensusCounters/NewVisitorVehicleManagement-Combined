@@ -3,89 +3,43 @@ networks:
     external: true
 
 volumes:
-  census_counters_facedb:
-    driver: local
-  census_counters_etcd:
-    driver: local
-  census_counters_minio:
+  # Single-container Milvus data (embedded etcd + local storage). The legacy
+  # census_counters_facedb/etcd/minio volumes are no longer used; see README.
+  census_counters_milvus:
     driver: local
 
 services:
-  census_counters_etcd:
-    container_name: census_counters_etcd
-    image: quay.io/coreos/etcd:v3.5.18
-    restart: always
-    environment:
-      - ETCD_AUTO_COMPACTION_MODE=revision
-      - ETCD_AUTO_COMPACTION_RETENTION=1000
-      - ETCD_QUOTA_BACKEND_BYTES=4294967296
-      - ETCD_SNAPSHOT_COUNT=50000
-    networks:
-      - census_counters_network
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - census_counters_etcd:/etcd
-    command: etcd -advertise-client-urls=http://census_counters_etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
-    healthcheck:
-      test: [ "CMD", "etcdctl", "endpoint", "health" ]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-
-  #this name was bugged: underscore name wasn't worked with milvus...
-  censuscountersminio:
-    container_name: censuscountersminio
-    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
-    restart: always
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    ports:
-      - "9001:9001"
-      - "19000:9000"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - census_counters_minio:/minio_data
-    networks:
-      - census_counters_network
-    command: minio server /minio_data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:19000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-
   census_counters_facedb:
     container_name: census_counters_facedb
-    image: milvusdb/milvus:v2.5.13-gpu
+    image: milvusdb/milvus:v2.6.25
     command: ["milvus", "run", "standalone"]
     restart: always
     security_opt:
       - seccomp:unconfined
     environment:
-      ETCD_ENDPOINTS: census_counters_etcd:2379
-      MINIO_ADDRESS: censuscountersminio:19000
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['0']
-              capabilities: [gpu]
+      ETCD_USE_EMBED: 'true'
+      ETCD_DATA_DIR: /var/lib/milvus/etcd
+      ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
+      COMMON_STORAGETYPE: local
+      DEPLOY_MODE: STANDALONE
+    mem_limit: ${MEM_LIMIT_MILVUS:-2g}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - census_counters_facedb:/var/lib/milvus
+      - './conf/milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml:ro'
+      - './conf/milvus/user.yaml:/milvus/configs/user.yaml:ro'
+      - census_counters_milvus:/var/lib/milvus
     networks:
       - census_counters_network
     ports:
       - "19530:19530"
       - "9091:9091"
-    depends_on:
-      - "census_counters_etcd"
-      - "censuscountersminio"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
 
   census_counters_fr_engine:
     image: census_counters_fr_engine
@@ -98,18 +52,21 @@ services:
     tty: true #-t
     ports:
       - '18081:18080'
-#    depends_on:
-#      - census_counters_postgres_db
-#      - census_counters_redis
+    depends_on:
+      census_counters_facedb:
+        condition: service_healthy
     networks:
       - census_counters_network
-    shm_size: 16gb
+    runtime: nvidia
+    shm_size: ${FR_SHM_SIZE:-1gb}
+    # Caps host RAM only; on x86 GPU memory (VRAM) is not counted.
+    mem_limit: ${MEM_LIMIT_FR_ENGINE:-4g}
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              count: all
               capabilities: [gpu]
     volumes:
       - './src/fr_engine/models:/models'
@@ -138,6 +95,7 @@ services:
       DEF_RETURN_FACE_DATA: 'False'
       DEF_EXTRACT_EMBEDDING: 'True'
       DEF_EXTRACT_GA: 'False'
+      FACE_INDEX_TYPE: ${FACE_INDEX_TYPE:-FLAT}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:18080/info || exit 1"]
       interval: 1m
@@ -159,6 +117,8 @@ services:
     environment:
       SITE_PROFILE: kupwara
       SECRET_KEY: development-only-change-this-secret
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
+    mem_limit: ${MEM_LIMIT_WEBSERVICE:-2000m}
     ports:
       - 4001:4001
     depends_on:
@@ -187,6 +147,7 @@ services:
       CLEANUP_POLL_SECONDS: 600
       ANPR_RETENTION_SECONDS: 1296000
       UPLOAD_RETENTION_SECONDS: 86400
+    mem_limit: 256m
     entrypoint:
       - /bin/bash
       - -c
@@ -195,8 +156,7 @@ services:
         sleep 10
        ../run_cleanup.sh
 
-  # Ganganagar-only optional worker. Start with:
-  # docker compose --profile auto_close up -d census_counters_auto_close
+  # Ganganagar-only optional worker.
   census_counters_auto_close:
     image: census_counters_auto_close
     container_name: census_counters_auto_close
@@ -214,6 +174,7 @@ services:
       TRIP_CLOSURE_MODE: manual_and_anpr
       AUTO_CLOSE_POLL_SECONDS: 600
       AUTO_CLOSE_READING_WINDOW_SECONDS: 60
+    mem_limit: 256m
     networks:
       - census_counters_network
     command: ["python3", "auto_close.py"]
@@ -224,6 +185,7 @@ services:
     image: nginx:alpine
     container_name: census_counters_nginx
     restart: always
+    mem_limit: 128m
 #    ports:
 #      - "4443:4001"
     volumes:

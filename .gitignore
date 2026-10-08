@@ -58,3 +58,8 @@ build_all_containers.sh
 src/ANPR/anpr_webhook/images/
 
 *.yml
+.env
+src/fr_engine/models/milvus_export*.json
+src/fr_engine/models/onnx/
+src/fr_engine/models/trt-engines/
+src/frontend/finalfrsproject/translations/*/LC_MESSAGES/messages.mo

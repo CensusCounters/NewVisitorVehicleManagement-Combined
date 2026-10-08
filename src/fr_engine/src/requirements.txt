@@ -9,13 +9,11 @@ python-multipart
 ujson
 msgpack
 tqdm
-icc-rt
 numba
 opencv-python
 scikit-image
 onnx
 onnxruntime
-onnxsim
 git+https://github.com/lilohuang/PyTurboJPEG.git
 exifread
 tritonclient[http,grpc]

@@ -364,6 +364,7 @@
     "reshape": true,
     "allow_batching": false,
     "function": "scrfd_flat",
+    "link": "https://huggingface.co/fal/AuraFace-v1/resolve/af6d057c9b0ec4071d4c49c80e3539258798b609/scrfd_10g_bnkps.onnx",
     "md5": "4c10eef5c9e168357a16fdd580fa8371"
   },
   "auraface_glintr100": {
@@ -377,6 +378,7 @@
     "allow_batching": true,
     "reshape": false,
     "function": "auraface",
+    "link": "https://huggingface.co/fal/AuraFace-v1/resolve/af6d057c9b0ec4071d4c49c80e3539258798b609/glintr100.onnx",
     "md5": "6c9c0e9a8eff9edcc7c70a710c9272a4"
   },
   "custom_rec_model": {

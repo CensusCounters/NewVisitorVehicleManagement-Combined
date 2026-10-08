@@ -18,7 +18,7 @@ from api_trt.modules.utils.helpers import prepare_folders
 # Since TensorRT, TritonClient and PyCUDA are optional dependencies it might be not available
 try:
     from api_trt.modules.model_zoo.exec_backends import trt_backend
-    from api_trt.modules.converters.onnx_to_trt import convert_onnx, check_fp16
+    from api_trt.modules.converters.onnx_to_trt import convert_onnx, check_fp16, get_trt_version
 except Exception as e:
     print(e)
 
@@ -190,6 +190,8 @@ def prepare_backend(model_name, backend_name, im_size: List[int] = None,
             trt_path = trt_path.replace('.plan', f'_batch{max_batch_size}.plan')
         if force_fp16 or has_fp16:
             trt_path = trt_path.replace('.plan', '_fp16.plan')
+        # Serialized engines only load with the TensorRT version that built them
+        trt_path = trt_path.replace('.plan', f'_trt{get_trt_version()}.plan')
 
         prepare_folders([trt_dir])
 

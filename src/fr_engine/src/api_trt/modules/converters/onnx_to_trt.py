@@ -72,6 +72,10 @@ def _build_engine_onnx(input_onnx: Union[str, bytes], force_fp16: bool = False, 
             return builder.build_engine(network, config=config), trt10
 
 
+def get_trt_version():
+    return trt.__version__
+
+
 def check_fp16():
     """
     Check if the device supports FP16 precision.
