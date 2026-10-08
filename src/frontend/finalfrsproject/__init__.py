@@ -224,9 +224,7 @@ site_profile_name = os.environ.get("SITE_PROFILE", "kupwara").strip().lower()
 active_profile = get_active_profile(site_profile_name)
 app.config["SITE_PROFILE_CONFIG"] = active_profile
 
-if site_profile_name == "ncpass":
-    # NCPass is normally deployed behind the TLS reverse proxy.
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 app.config["SITE_PROFILE"] = site_profile_name
 # Bind-mounted frontend dev: reload HTML/CSS template edits without restarting Gunicorn.
