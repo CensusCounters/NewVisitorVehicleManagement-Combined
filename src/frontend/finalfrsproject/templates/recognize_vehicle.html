@@ -27,7 +27,7 @@
                         {% for vehicle in details.unregistered_vehicles %}
                         <tr class="recognize-vehicle-row" data-vehicle-id="{{ vehicle.id }}" data-plate-number="{{ vehicle.plate_number }}" data-image-url="{{ vehicle.image_url }}">
                             <td class="image-container inner-img">
-                                <img src="{{ vehicle.image_url }}" alt="Vehicle Image" class="img_main recognize-vehicle-thumb" title="{{ _('Click to expand') }}">
+                                <img src="{{ vehicle.image_url }}" alt="Vehicle Image" class="img_main recognize-vehicle-thumb" title="{{ _('Click to expand') }}" loading="lazy" decoding="async">
                             </td>
                             <td>{{ vehicle.plate_number }}</td>
                             <td>{{ vehicle.timestamp }}</td>

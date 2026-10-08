@@ -147,7 +147,7 @@
                     <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 40px;">
                         <div class="card-hover">
                             <div class="blacklisted-img-wrap">
-                                <img src="{{ person.image_url }}"
+                                <img src="{{ person.image_url }}" loading="lazy" decoding="async"
                                      class="clickable-image"
                                      onclick='openImageModal({{ person.image_url | tojson }}, {{ person.name | tojson }}, {{ person.id | tojson }})'
                                      alt="{{ person.name }}">

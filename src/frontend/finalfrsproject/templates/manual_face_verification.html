@@ -7,7 +7,7 @@
 			<div class="row" id="img-vg-content">
 				<div class="col-md-4"></div>
 				<div class="col-md-2" style="text-align: center;">
-					<img src="/static/images/question.png" name="question" id="question" style="width:50%;"></img>
+					<img src="{{ asset_url('images/question.png') }}" name="question" id="question" style="width:50%;"></img>
 				</div>
 				<div class="col-md-4"></div>
 			</div>
@@ -21,7 +21,7 @@
 						<img src={{ details.enrolled_image }} name="enrolled_image" id="enrolled_image" style="width:100%;"></img>
 					{% else %}
 						<h3 style="font: 20px; font-weight: bold; color:#000">{{ _('No Image Found') }}</h3>
-						<img src="/static/placeholder.png" name="enrolled_image" id="enrolled_image" style="width:100%;"></img>
+						<img src="{{ asset_url('images/placeholder.png') }}" name="enrolled_image" id="enrolled_image" style="width:100%;"></img>
 					{% endif %}
 					</div>
 				</div>
@@ -32,7 +32,7 @@
 						<img src={{ details.todays_image }} name="todays_image" id="todays_image" style="width:100%;"></img>
 					{% else %}
 						<h3 style="font: 20px; font-weight: bold; color:#000">{{ _('No Image Found. Captured Image will show here') }}</h3>
-						<img src="/static/placeholder.png" name="todays_image" id="todays_image" style="width:100%;"></img>
+						<img src="{{ asset_url('images/placeholder.png') }}" name="todays_image" id="todays_image" style="width:100%;"></img>
 					{% endif %}
 					</div>
 				</div>

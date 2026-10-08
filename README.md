@@ -156,6 +156,8 @@ cp .env.jetson.example .env   # Jetson Orin Nano
 
 `./stop_all_containers.sh` stops the stack.
 
+Website is available at https://<host>/censusvv/
+
 ----------------------------------------------------------
 
 ## 7. Upgrading an existing x86 install (CUDA 12, Milvus GPU + etcd + MinIO -> CUDA 13.2, single-container Milvus CPU)
@@ -186,25 +188,4 @@ docker exec census_counters_fr_engine python /app/milvus_migrate.py import /mode
 7. After verifying recognition of a known person, delete `src/fr_engine/models/milvus_export.json` (it contains
    names and Aadhaar numbers), the old `*.plan` files in `src/fr_engine/models/trt-engines/`, and the legacy
    volumes `*census_counters_facedb`, `*census_counters_etcd`, `*census_counters_minio` (`docker volume ls`).
-
-----------------------------------------------------------
-
-## 8. TODO section for further changes. No setup is required for it.
-
-### Cache busting
-
-Templates call:
-
-```jinja2
-{{ asset_url('css/style.css') }}
-```
-
-which renders like:
-
-```text
-/static/css/style.css?v=kupwara-1
-```
-
-The version defaults to `<SITE_PROFILE>-1`. When static files change, set a new value with the
-`ASSET_URL_VERSION` environment variable of `census_counters_webservice_fr` (for example `kupwara-2`).
 

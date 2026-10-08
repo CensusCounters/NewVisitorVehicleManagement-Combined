@@ -42,7 +42,7 @@
                             {% for match in details.matches %}
                             <tr onclick="sendPersonIDURL('{{ match.aadhaar }}')" style="cursor: pointer;">
                                 <td class="image-container inner-img">
-                                    <img src="{{ match.image_html_path }}" alt="Vehicle Image" class="img_main"></img>
+                                    <img src="{{ match.image_html_path }}" alt="Vehicle Image" class="img_main" loading="lazy" decoding="async">
                                 </td>
                                 <td>{{ match.name }}</td>
                                 <td>{{ "%.1f%%" | format(match.similarity * 100) }}</td>

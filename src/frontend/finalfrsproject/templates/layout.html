@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>{{ app_title }}</title>
+    <script>window.APP_ROOT = {{ request.script_root|tojson }};</script>
 
     <meta charset="UTF-8">
 		<meta name="description" content="Census smart counter">

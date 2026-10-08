@@ -60,7 +60,7 @@
     $('#language').change(function() {
         var selectedLanguage = $(this).val();
         $.ajax({
-            url: '/set_language/' + selectedLanguage,
+            url: "{{ url_for('set_language', language='__LANG__') }}".replace('__LANG__', selectedLanguage),
             type: 'GET',
             success: function(response) {
                 // Reload the page to reflect the language change

@@ -54,7 +54,7 @@
 			<div class="row" id="img-vg-content">
 				<div class="col-md-4"></div>
 				<div class="col-md-2" style="text-align: center;">
-					<img src="/static/images/question.png" name="question" id="question" style="width:50%;"></img>
+					<img src="{{ asset_url('images/question.png') }}" name="question" id="question" style="width:50%;"></img>
 				</div>
 				<div class="col-md-4"></div>
 			</div>
@@ -70,8 +70,8 @@
 					{% else %}
 						<h1 class="preview-panel-title">{{ _('No Image Found') }}</h1>
 						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
-							<img src="/static/placeholder.png" name="enrolled_image" id="enrolled_image" class="is-clickable"
-								onclick='javascript:showReregisterFaceImageModal({{ _("No Image Found")|tojson }}, "/static/placeholder.png")'>
+							<img src="{{ asset_url('images/placeholder.png') }}" name="enrolled_image" id="enrolled_image" class="is-clickable"
+								onclick='javascript:showReregisterFaceImageModal({{ _("No Image Found")|tojson }}, "{{ asset_url('images/placeholder.png') }}")'>
 						</div>
 					{% endif %}
 					</div>
@@ -87,8 +87,8 @@
 					{% else %}
 						<h1 class="preview-panel-title">{{ _('No Image Found. Captured Image will show here') }}</h1>
 						<div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame">
-							<img src="/static/placeholder.png" name="todays_image" id="todays_image" class="is-clickable"
-								onclick='javascript:showReregisterFaceImageModal({{ _("No Image Found. Captured Image will show here")|tojson }}, "/static/placeholder.png")'>
+							<img src="{{ asset_url('images/placeholder.png') }}" name="todays_image" id="todays_image" class="is-clickable"
+								onclick='javascript:showReregisterFaceImageModal({{ _("No Image Found. Captured Image will show here")|tojson }}, "{{ asset_url('images/placeholder.png') }}")'>
 						</div>
 					{% endif %}
 					</div>

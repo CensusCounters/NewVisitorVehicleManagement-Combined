@@ -64,8 +64,8 @@
             {% else %}
             <h1 class="preview-panel-title">{{ _('No Blacklist Image Found') }}</h1>
             <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame blacklist-preview-frame">
-              <img src="/static/placeholder.png" name="blacklist_image" id="blacklist_image" class="is-clickable"
-                   onclick="javascript:showBlacklistAlertImageModal('No Blacklist Image Found', '/static/placeholder.png')">
+              <img src="{{ asset_url('images/placeholder.png') }}" name="blacklist_image" id="blacklist_image" class="is-clickable"
+                   onclick="javascript:showBlacklistAlertImageModal('No Blacklist Image Found', '{{ asset_url('images/placeholder.png') }}')">
             </div>
             {% endif %}
           </div>
@@ -82,8 +82,8 @@
             {% else %}
             <h1 class="preview-panel-title">{{ _('No Captured Image Found') }}</h1>
             <div class="preview-image-frame preview-image-frame--clickable minimal-preview-frame blacklist-preview-frame">
-              <img src="/static/placeholder.png" name="todays_image" id="todays_image" class="is-clickable"
-                   onclick="javascript:showBlacklistAlertImageModal('No Captured Image Found', '/static/placeholder.png')">
+              <img src="{{ asset_url('images/placeholder.png') }}" name="todays_image" id="todays_image" class="is-clickable"
+                   onclick="javascript:showBlacklistAlertImageModal('No Captured Image Found', '{{ asset_url('images/placeholder.png') }}')">
             </div>
             {% endif %}
           </div>

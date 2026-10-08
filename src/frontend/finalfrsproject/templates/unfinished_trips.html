@@ -239,7 +239,7 @@
                     render: function (data, type, row) {
                         if (!data || data === "None") return "Not Available";
                         var thumb = (row.person_image_location && row.person_image_location !== "None")
-                            ? `<img class="report-link-thumb" src="${row.person_image_location}" alt="Person thumbnail">`
+                            ? `<img class="report-link-thumb" src="${row.person_image_location}" alt="Person thumbnail" loading="lazy" decoding="async">`
                             : "";
                         return `<a class="report-link-with-thumb" href="javascript:show_modal('${data}','${row.person_image_location || ''}')">${thumb}<span>${data}</span></a>`;
                     }
@@ -249,7 +249,7 @@
                     render: function (data, type, row) {
                         if (!data || data === "None") return "Not Available";
                         var thumb = (row.vehicle_image_location && row.vehicle_image_location !== "None")
-                            ? `<img class="report-link-thumb" src="${row.vehicle_image_location}" alt="Vehicle thumbnail">`
+                            ? `<img class="report-link-thumb" src="${row.vehicle_image_location}" alt="Vehicle thumbnail" loading="lazy" decoding="async">`
                             : "";
                         return `<a class="report-link-with-thumb" href="javascript:show_modal('${data}','${row.vehicle_image_location || ''}')">${thumb}<span>${data}</span></a>`;
                     }

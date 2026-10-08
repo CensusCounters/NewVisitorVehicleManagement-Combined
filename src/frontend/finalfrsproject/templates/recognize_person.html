@@ -204,7 +204,7 @@
     						data: "",
     						type: 'GET',
 					    	success: function (resp) {
-					        	window.location.href = "/aadhar_lookup"
+					        	window.location.href = "{{ url_for('aadhar_lookup') }}"
 					    	},
 					    	error: function(e) {
 					       		alert("{{ _('Error:') }}" + ' ' + e);

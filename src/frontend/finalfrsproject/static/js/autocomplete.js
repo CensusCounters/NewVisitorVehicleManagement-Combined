@@ -1,8 +1,9 @@
 $(function() {
+    var root = window.APP_ROOT || "";
     $("#searchInput").autocomplete({
         source: function(request, response) {
             $.ajax({
-                url: "/autocomplete",
+                url: root + "/autocomplete",
                 data: { term: request.term },
                 success: function(data) {
                     response(data.map(function(item) {
@@ -18,7 +19,7 @@ $(function() {
         minLength: 2,
         select: function(event, ui) {
             // Redirect to the vehicle_details route with the selected vehicle_id
-            window.location.href = "/vehicle/" + ui.item.id;
+            window.location.href = root + "/vehicle/" + ui.item.id;
         }
     });
 });

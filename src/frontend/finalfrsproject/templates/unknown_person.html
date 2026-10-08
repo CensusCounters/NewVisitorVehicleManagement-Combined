@@ -23,7 +23,7 @@
 						{% else %}
 						<h1 class="preview-panel-title">{{ _('No Image Found. Captured Image will show here') }}</h1>
 						<div class="preview-image-frame minimal-preview-frame">
-							<img src="/static/placeholder.png" name="capturedImage" id="capturedImage"
+							<img src="{{ asset_url('images/placeholder.png') }}" name="capturedImage" id="capturedImage"
 								alt="Captured image will show here">
 						</div>
 						{% endif %}

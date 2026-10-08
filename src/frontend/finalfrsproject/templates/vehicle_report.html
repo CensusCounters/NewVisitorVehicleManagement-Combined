@@ -188,7 +188,7 @@
                     render: function (data, type, row) {
                         if (!data || data === "None") return "Picture Not Available";
                         const plate = row.plate || "Not Available";
-                        return `<img src="${data}" alt="Vehicle Image" class="img_main report-image-thumb is-clickable"
+                        return `<img src="${data}" alt="Vehicle Image" class="img_main report-image-thumb is-clickable" loading="lazy" decoding="async"
                                  onerror="handleVehicleImageError(this)"
                                  onclick="show_modal('${escJs(plate)}','${escJs(data)}')">`;
                     }

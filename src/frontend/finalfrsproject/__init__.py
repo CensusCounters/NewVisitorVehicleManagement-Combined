@@ -254,9 +254,6 @@ app.config["TEMPLATE_PROFILES"] = active_profile.templates
 app.config["APP_TITLE"] = active_profile.app_title
 
 app.config["APP_LOGO_PATH"] = active_profile.logo_path
-app.config["ASSET_URL_VERSION"] = os.environ.get(
-    "ASSET_URL_VERSION", site_profile_name + "-1"
-)
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "development-only-change-this-secret"
 )
@@ -313,7 +310,15 @@ csrf.init_app(app)
 @app.context_processor
 def inject_asset_helpers():
     def asset_url(filename):
-        return url_for("static", filename=filename, v=app.config["ASSET_URL_VERSION"])
+        # The file's modification time is the cache key. immutable caching is safe
+        # because a changed file gets a different URL, and only that file changes.
+        try:
+            version = int(os.path.getmtime(os.path.join(app.static_folder, filename)))
+        except OSError:
+            version = None
+        if version is None:
+            return url_for("static", filename=filename)
+        return url_for("static", filename=filename, v=version)
 
     return {
         "asset_url": asset_url,

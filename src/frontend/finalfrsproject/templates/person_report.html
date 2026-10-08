@@ -79,7 +79,7 @@
                                 <td>
                                     <a class="report-link-with-thumb" href="javascript:show_modal('{{ trip.person_name }}','{{ trip.person_image_location }}')">
                                         {% if trip.person_image_location and trip.person_image_location != 'None' %}
-                                            <img class="report-link-thumb" src="{{ trip.person_image_location }}" alt="Person thumbnail">
+                                            <img class="report-link-thumb" src="{{ trip.person_image_location }}" alt="Person thumbnail" loading="lazy" decoding="async">
                                         {% endif %}
                                         <span>{{ trip.person_name }}</span>
                                     </a>
@@ -110,7 +110,7 @@
                                 <td>
                                     <a class="report-link-with-thumb" href="javascript:show_modal('{{ trip.vehicle_number_plate }}','{{ trip.vehicle_image_location }}')">
                                         {% if trip.vehicle_image_location and trip.vehicle_image_location != 'None' %}
-                                            <img class="report-link-thumb" src="{{ trip.vehicle_image_location }}" alt="Vehicle thumbnail">
+                                            <img class="report-link-thumb" src="{{ trip.vehicle_image_location }}" alt="Vehicle thumbnail" loading="lazy" decoding="async">
                                         {% endif %}
                                         <span>{{ trip.vehicle_number_plate }}</span>
                                     </a>

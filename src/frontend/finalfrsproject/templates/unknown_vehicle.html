@@ -218,7 +218,7 @@
     						data: "",
     						type: 'GET',
 					    	success: function (resp) {
-					        	window.location.href = "/recognize_vehicle"
+					        	window.location.href = "{{ url_for('recognize_vehicle') }}"
 					    	},
 					    	error: function(e) {
 {% if template_profiles.unknown_vehicle.extended_vehicle_details %}

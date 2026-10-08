@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request, Response, session, jsonify, make_response, abort
 from finalfrsproject import app, ALLOWED_PHOTO_EXTENSIONS, sqlCommands, jwt, routeMethods, errors, redisCommands
 #from customException import CustomException
-import os, shutil, sys 
+import os, shutil, sys, re 
 from datetime import datetime, time, timezone, timedelta
 from werkzeug.utils import secure_filename
 import json
@@ -79,27 +79,31 @@ def logout():
         #return auth_helper.logout_get(jwt_details)
 
 
-# Cache shipped frontend assets, but never cache dynamic pages or runtime-generated files.
-@app.after_request
-def after_request(response):
-    cacheable_asset_prefixes = (
-        "/static/css/",
-        "/static/js/",
-        "/static/fonts/",
-        "/static/models/",
-    )
-    cacheable_asset_files = (
-        "/static/favicon-32x32.png",
-        "/static/images/vajr-28-div-logo.jpeg",
-        "/static/images/7RR-Logo.jpeg",
-        "/static/images/amogh-ganganagar-logo.png",
-        "/static/images/shakti-vijay-logo.jpeg",
-        "/static/images/question.png",
-        "/static/placeholder.png",
-        "/static/images/census-logo.png",
+# Replaced in place, or removed by cleanup. Everything else under /static/ keeps its bytes.
+_NO_STORE_STATIC_PREFIXES = (
+    "/static/images/uploads/",
+    "/static/anpr_vehicles/",
+    "/static/reports/",
+)
+
+
+def _prefix_static_paths(body, prefix):
+    """Add the mount prefix to root-absolute /static/ URLs built outside url_for.
+
+    Paths that url_for already prefixed start with the prefix, so they are left alone.
+    """
+    return re.sub(
+        r"(?<!" + re.escape(prefix) + r")/static/",
+        prefix + "/static/",
+        body,
     )
 
-    if request.path.startswith(cacheable_asset_prefixes) or request.path in cacheable_asset_files:
+
+# Shipped files and captured images are cached. Pages, and files that get replaced, are not.
+@app.after_request
+def after_request(response):
+    path = request.path
+    if path.startswith("/static/") and not path.startswith(_NO_STORE_STATIC_PREFIXES):
         response.headers["Cache-Control"] = "public, max-age=2592000, immutable"
         response.headers.pop("Pragma", None)
         response.headers.pop("Expires", None)
@@ -108,6 +112,17 @@ def after_request(response):
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
 
+    prefix = (request.script_root or "").rstrip("/")
+    content_type = response.content_type or ""
+    if (
+        prefix
+        and not response.direct_passthrough
+        and (content_type.startswith("text/html") or content_type.startswith("application/json"))
+    ):
+        body = response.get_data(as_text=True)
+        rewritten = _prefix_static_paths(body, prefix)
+        if rewritten != body:
+            response.set_data(rewritten)
     return response
 
 
