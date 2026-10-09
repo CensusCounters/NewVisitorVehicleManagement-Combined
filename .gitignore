@@ -63,3 +63,6 @@ src/fr_engine/models/milvus_export*.json
 src/fr_engine/models/onnx/
 src/fr_engine/models/trt-engines/
 src/frontend/finalfrsproject/translations/*/LC_MESSAGES/messages.mo
+
+# Private GitHub deploy keys, if a copy is ever placed in the worktree.
+deploy-keys/

@@ -1,5 +1,31 @@
 # Visitor Vehicle Management
 
+## Admin: GitHub deploy keys
+
+An admin does this on a workstation that already has this repository and an admin `gh` login. Each machine gets one read-only deploy key named `census-vv-<clientname>` (for example `census-vv-kupwara`).
+
+Issue a key:
+
+```bash
+./scripts/issue_github_deploy_key.sh issue <clientname>
+```
+
+The private key is written to `~/.local/share/census-counters/deploy-keys/census-vv-<clientname>`. Give the user that file and `scripts/setup_git.sh`, then delete the workstation copy.
+
+List keys:
+
+```bash
+./scripts/issue_github_deploy_key.sh list
+```
+
+Revoke a key:
+
+```bash
+./scripts/issue_github_deploy_key.sh revoke <key-id>
+```
+
+After a revoke, delete `~/.ssh/census-vv-<clientname>` on that machine.
+
 ## 1. New x86 machine
 
 Follow these steps on a new machine with nothing but the OS installed.
@@ -65,11 +91,6 @@ sudo reboot
 
 ### Other tools
 
-```bash
-mkdir Projects && cd Projects
-```
-
-- git: install it (TODO: document the exact steps).
 - AnyDesk:
 ```bash
 sudo apt-get update
@@ -89,12 +110,27 @@ sudo apt install ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
 ```
 
+### Git
+
+The admin provides `setup_git.sh` and the private key `census-vv-<clientname>`. On this machine, copy them to these paths:
+
+- `setup_git.sh` to `~/Projects/setup_git.sh`
+- `census-vv-<clientname>` to `~/.ssh/census-vv-<clientname>`
+
+```bash
+mkdir -p "$HOME/Projects" "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+bash ~/Projects/setup_git.sh <clientname>
+```
+
+That installs Git, uses the key at `~/.ssh/census-vv-<clientname>`, and clones into `~/Projects/NewVisitorVehicleManagement-Combined`.
+
 ----------------------------------------------------------
 
 ## 2. Jetson Orin Nano (JetPack 7.2 or newer)
 
 The same repository and compose file run on Jetson. JetPack 7.2+ ships the NVIDIA driver, Docker and the
-NVIDIA Container Toolkit, so skip section 1.
+NVIDIA Container Toolkit, so skip those steps in section 1, and skip AnyDesk and Chrome. Do the Git steps.
 
 1. Flash JetPack 7.2.1 or later. 
 2. Check that Docker has the `nvidia` runtime:
@@ -103,7 +139,8 @@ docker info | grep -i runtimes
 # if nvidia is missing:
 sudo nvidia-ctk runtime configure --runtime=docker && sudo systemctl restart docker
 ```
-3. Continue with section 3. In section 5, use `.env.jetson.example`.
+3. Install Git and clone with `bash ~/Projects/setup_git.sh <clientname>` (section 1, Git).
+4. Continue with section 3. In section 5, use `.env.jetson.example`.
 
 
 ----------------------------------------------------------
