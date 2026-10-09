@@ -271,10 +271,46 @@ def insert_new_person_record(user_id, form):
             print("cursor closed in insert_new_person_record",flush=True)
         return_connection_to_pool(db_connection)
 
+        end_time = time.time()
+        execution_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
+        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        print(f"[{end_timestamp}] Completed insert_new_person_record | Execution time: {execution_time}ms", flush=True)
+        return result
+
+
+def delete_person_by_enrollment_id(enrollment_id):
+    """Delete a persons row by its enrollment_id.
+
+    Used to roll back a person record when the face could not be enrolled into
+    Milvus afterwards, so we never leave an orphan person (Postgres row with no
+    face embedding) that would later route recognition to unknown_person and
+    collide on re-enrollment.
+    """
+    start_time = time.time()
+    db_connection = None
+    cursor = None
+    result = None
+    try:
+        db_connection = g.connection_pool.getconn()
+        cursor = db_connection.cursor()
+        sql = "DELETE FROM persons WHERE enrollment_id = %s;"
+        cursor.execute(sql, (enrollment_id,))
+        db_connection.commit()
+        result = {"Status": "Success", "Deleted": cursor.rowcount}
+    except (Exception, psycopg2.Error) as error:
+        print("Error deleting person by enrollment_id", error)
+        if db_connection:
+            db_connection.rollback()
+        result = {"Status": "Fail", "Details": error}
+    finally:
+        if cursor:
+            cursor.close()
+        return_connection_to_pool(db_connection)
+
     end_time = time.time()
-    execution_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
-    end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    print(f"[{end_timestamp}] Completed insert_new_person_record | Execution time: {execution_time}ms", flush=True)
+    execution_time = round((end_time - start_time) * 1000, 2)
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]}] "
+          f"Completed delete_person_by_enrollment_id | Execution time: {execution_time}ms", flush=True)
     return result
 
 def get_pass_details_for_person(person_id):

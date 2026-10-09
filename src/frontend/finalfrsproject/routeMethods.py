@@ -467,6 +467,12 @@ def update_person_record(person_id, form):
 	return result
 
 
+def delete_person_by_enrollment_id(enrollment_id):
+	result = sqlCommands.delete_person_by_enrollment_id(enrollment_id)
+	print("result in delete_person_by_enrollment_id: ", result)
+	return result
+
+
 def insert_new_trip_record(user_id, session_values_json_redis):
 	
 	#result = sqlCommands.insert_new_trip_record(user_id,permit_img_file_path, form, person_id,vehicle_plate_number)

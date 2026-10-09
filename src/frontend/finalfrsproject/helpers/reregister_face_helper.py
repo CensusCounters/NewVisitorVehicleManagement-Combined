@@ -233,8 +233,8 @@ def post_handler(jwt_details, redis_conn, form):
         enrollment_id = uuid.uuid4()
         person_image_html_path = session_values_json_redis.get("todays_image_html_path")
         print('person_image_html_path: ', person_image_html_path, flush=True)
-        person_image_actual_path = '/project/finalfrsproject/'+ person_image_html_path
-        print('person_image_actual_path: ', person_image_html_path, flush=True)
+        person_image_actual_path = os.path.join(app.config["IMAGE_UPLOADS"], os.path.basename(person_image_html_path))
+        print('person_image_actual_path: ', person_image_actual_path, flush=True)
         session_values_json_redis.update({"person_image_html_path": person_image_html_path})
         session_values_json_redis.update({"person_image_actual_path": person_image_actual_path})
         #compreface.face_collection.add(image_path=person_image_actual_path, subject=str(enrollment_id))
