@@ -239,8 +239,24 @@ def post_handler(jwt_details, redis_conn, request):
     # Trust the server-side session path, not the client-submitted form field.
     # A stale/forged form value (e.g. a path left over from before the /censusvv
     # rework) previously caused FileNotFoundError -> HTTP 500 on submit.
-    person_image_actual_path = session_values_json_redis.get('person_image_actual_path') or form.get('person_image_actual_path')
+    person_image_actual_path = session_values_json_redis.get('person_image_actual_path')
     person_image_destination = os.path.sep.join([app.config["KNOWN_PERSONS"], str(form.get('enrollment_id')) + ".png"])
+
+    # Reject a missing or out-of-uploads photo before inserting a person row.
+    uploads_dir = os.path.abspath(app.config["IMAGE_UPLOADS"])
+    src_path = None
+    if person_image_actual_path:
+        candidate = os.path.abspath(person_image_actual_path)
+        if os.path.isfile(candidate) and os.path.commonpath([candidate, uploads_dir]) == uploads_dir:
+            src_path = candidate
+    if not src_path:
+        session_values_json_redis.update({
+            "message": _("Captured photo was not found. Please capture the photo again and resubmit."),
+            "ticket_status": "recognize_person",
+        })
+        redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values_json_redis))
+        return redirect(url_for('recognize_person'))
+
     form['person_image_destination'] = person_image_destination
     # result = routeMethods.insert_new_person_record(jwt_details.get("logged_in_user_id"), form, aadhar_image, drivers_license_image, person_image_destination)
     result = routeMethods.insert_new_person_record(jwt_details.get("logged_in_user_id"), form)
@@ -248,10 +264,10 @@ def post_handler(jwt_details, redis_conn, request):
 
     if not result or result.get('Status') == "Fail" or result.get("Insert_Count") == 0:
         detail_str = str(result.get('Details')) if result else ""
-        if result.get("Status") == "Fail" and ("duplicate key" in detail_str or "UniqueViolation" in detail_str):
+        if result and result.get("Status") == "Fail" and ("duplicate key" in detail_str or "UniqueViolation" in detail_str):
             # The ID is already enrolled. Don't show the raw DB error; guide the user.
             message = _("This ID is already enrolled in the system. Please use 'Re-register Face' or contact an administrator.")
-        elif result.get("Status") == "Fail":
+        elif result and result.get("Status") == "Fail":
             message = "Error - " + detail_str + " Please try again."
         else:
             message = "System was unable to insert a person record. Please try again."
@@ -281,36 +297,10 @@ def post_handler(jwt_details, redis_conn, request):
         else:
             person_dob = ''
 
-        # Validate the captured upload image exists and lives inside the uploads
-        # directory (path-traversal guard). A missing/stale path previously crashed
-        # with HTTP 500 on submit.
-        uploads_dir = os.path.abspath(app.config["IMAGE_UPLOADS"])
-        src_path = None
-        if person_image_actual_path:
-            candidate = os.path.abspath(person_image_actual_path)
-            if os.path.isfile(candidate) and os.path.commonpath([candidate, uploads_dir]) == uploads_dir:
-                src_path = candidate
-        if not src_path:
-            session_values_json_redis.update({
-                "message": _("Captured photo was not found. Please capture the photo again and resubmit."),
-                "ticket_status": "recognize_person",
-            })
-            redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values_json_redis))
-            return redirect(url_for('recognize_person'))
-
-        # Save the person image into known person folder.
-        shutil.move(src_path, person_image_destination)
-        person_image_actual_path = person_image_destination
-        person_image_html_path = os.path.sep.join(
-            [app.config["KNOWN_PERSON_PATH_FOR_HTML"], os.path.basename(person_image_actual_path)])
-
         url = app.config["FACE_RECOGNITION_SERVICE"] + "enroll"
         params = {
             # 'id': str(result[3])#enrollment_id
             'id': str(result.get('enrollment_id'))  # enrollment_id
-        }
-        files = {
-            'file': ('file', open(person_image_actual_path, 'rb'), 'image/jpeg')
         }
         data = {
             # 'name': result[4],
@@ -320,9 +310,22 @@ def post_handler(jwt_details, redis_conn, request):
             'collection_name': 'default'
         }
 
+        moved = False
         try:
-            response = requests.post(url, params=params, files=files, data=data, timeout=30)
-            response.raise_for_status()
+            # Save the person image into known person folder, then enroll.
+            # Both steps roll back together so a failure cannot leave a person
+            # row with no face embedding.
+            shutil.move(src_path, person_image_destination)
+            moved = True
+            person_image_actual_path = person_image_destination
+            person_image_html_path = os.path.sep.join(
+                [app.config["KNOWN_PERSON_PATH_FOR_HTML"], os.path.basename(person_image_actual_path)])
+            with open(person_image_actual_path, 'rb') as image_file:
+                files = {
+                    'file': ('file', image_file, 'image/jpeg')
+                }
+                response = requests.post(url, params=params, files=files, data=data, timeout=30)
+                response.raise_for_status()
             flush_response = requests.post(
                 app.config["FACE_RECOGNITION_SERVICE"] + "flush",
                 data={"collection_name": "default"},
@@ -330,17 +333,24 @@ def post_handler(jwt_details, redis_conn, request):
             )
             flush_response.raise_for_status()
         except Exception as face_error:
-            # Face enroll into Milvus failed (e.g. recognition service unavailable).
-            # Roll back the Postgres row we just inserted so we don't leave an orphan
-            # person with no face embedding (which would route recognition to
-            # unknown_person and collide on re-enrollment).
             print(f"Face enroll failed after person insert; rolling back person record: {face_error}", flush=True)
+            rollback = None
             try:
-                routeMethods.delete_person_by_enrollment_id(result.get('enrollment_id'))
+                rollback = routeMethods.delete_person_by_enrollment_id(result.get('enrollment_id'))
             except Exception as rb_error:
                 print(f"Rollback of person record failed: {rb_error}", flush=True)
+            deleted = bool(rollback and rollback.get("Status") == "Success")
+            if moved and os.path.isfile(person_image_destination):
+                try:
+                    os.remove(person_image_destination)
+                except OSError as rm_error:
+                    print(f"Rollback of person image failed: {rm_error}", flush=True)
+            if deleted:
+                message = _("Face enrollment service failed. The person was not saved. Please try again.")
+            else:
+                message = _("Face enrollment service failed. The person record may still be present. Contact an administrator before trying again.")
             session_values_json_redis.update({
-                "message": _("Face enrollment service failed. The person was not saved. Please try again."),
+                "message": message,
                 "ticket_status": "unknown_person",
             })
             redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values_json_redis))
