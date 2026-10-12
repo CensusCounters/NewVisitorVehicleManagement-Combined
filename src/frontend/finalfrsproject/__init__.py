@@ -130,7 +130,7 @@ app.config["UNKNOWN_VEHICLES"] = (
     app.config["PROJECT_BASE_PATH"] + "/static/unknown_vehicles"
 )
 
-app.config["SCREENSHOTS_FOLDER"] = "/static/anpr_vehicles"
+app.config["SCREENSHOTS_FOLDER"] = "/static/images/snapshots"
 app.config["VEHICLE_IMAGES"] = (
     app.config["PROJECT_BASE_PATH"] + app.config["SCREENSHOTS_FOLDER"]
 )
