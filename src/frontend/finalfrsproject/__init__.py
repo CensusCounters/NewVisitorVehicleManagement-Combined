@@ -250,6 +250,11 @@ app.config["FACE_RECOGNITION_SERVICE"] = os.environ.get(
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
+# Distinct from the stream-processing app, which also runs on localhost.
+# Browsers share cookies by host, not by port.
+app.config["JWT_ACCESS_COOKIE_NAME"] = "censusvv_access_token"
+app.config["JWT_REFRESH_COOKIE_NAME"] = "censusvv_refresh_token"
+app.config["SESSION_COOKIE_NAME"] = "censusvv_session"
 app.config["TEMPLATE_PROFILES"] = active_profile.templates
 app.config["APP_TITLE"] = active_profile.app_title
 
