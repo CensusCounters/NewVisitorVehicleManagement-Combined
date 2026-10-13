@@ -9,6 +9,7 @@ from collections import defaultdict
 import time
 import re
 from dateutil import parser
+from dateutil.parser import ParserError
 
 
 
@@ -1669,8 +1670,15 @@ def get_all_vehicles_from_anpr_by_date_paginated(
         vehicle_list = []
         for vehicle in rows:
             if vehicle.get("timestamp") is not None:
-                timestamp_obj = parser.parse(str(vehicle["timestamp"]))
-                vehicle["timestamp"] = timestamp_obj.strftime("%Y-%m-%d %H:%M:%S")
+                try:
+                    timestamp_obj = parser.parse(str(vehicle["timestamp"]))
+                    vehicle["timestamp"] = timestamp_obj.strftime("%Y-%m-%d %H:%M:%S")
+                except (ParserError, TypeError, ValueError):
+                    print(
+                        f"Skipping ANPR reading {vehicle.get('id')} with unparseable timestamp: {vehicle.get('timestamp')!r}",
+                        flush=True,
+                    )
+                    continue
 
             if vehicle.get("file"):
                 vehicle["file"] = os.path.sep.join([
@@ -1750,8 +1758,15 @@ def get_all_vehicles_from_anpr_by_date(start_date, end_date):
                     #formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
 
                     timestamp_str = vehicle.get('timestamp')
-                    timestamp_obj = parser.parse(timestamp_str)
-                    formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+                    try:
+                        timestamp_obj = parser.parse(timestamp_str)
+                        formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+                    except (ParserError, TypeError, ValueError):
+                        print(
+                            f"Skipping ANPR reading {vehicle.get('id')} with unparseable timestamp: {timestamp_str!r}",
+                            flush=True,
+                        )
+                        continue
 
                     vehicle.update({'timestamp': formatted_timestamp})
                 if vehicle.get('file'):

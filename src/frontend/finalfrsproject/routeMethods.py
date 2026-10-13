@@ -6,6 +6,7 @@ from datetime import datetime, timezone, timedelta
 import base64
 from flask_babel import _
 from dateutil import parser
+from dateutil.parser import ParserError
 
 def allowed_file(filename, allowed_extensions):
 	return '.' in filename and \
@@ -594,15 +595,18 @@ def get_all_vehicles_from_anpr(session_values_json_redis):
 		for vehicle in result:
 			#Assuming timestamp is different from the format '2022-12-08 02:49:36.137264+00:00'
 			timestamp_str = vehicle[3]
-			timestamp_obj = parser.parse(timestamp_str)
-			formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
-			#Assuming timestamp is a string in the format '2022-12-08 02:49:36.137264+00:00'
-			#timestamp_str = vehicle[3]
-			#timestamp_obj = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f%z')
-			#formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+			try:
+				timestamp_obj = parser.parse(timestamp_str)
+				formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+			except (ParserError, TypeError, ValueError):
+				print(
+					f"Skipping ANPR reading {vehicle[0]} with unparseable timestamp: {timestamp_str!r}",
+					flush=True,
+				)
+				continue
 			formatted_vehicles.append({
 				"id": vehicle[0],
-				'image_url': os.path.sep.join([app.config["SCREENSHOTS_FOLDER"],os.path.basename(vehicle[1])]),
+				'image_url': os.path.sep.join([app.config["SCREENSHOTS_FOLDER"],os.path.basename(vehicle[1] or '')]),
 				'plate_number': vehicle[2],
 				'timestamp': formatted_timestamp,
 				'camera_id' : vehicle[4]
@@ -625,7 +629,11 @@ def get_vehicle_details_from_anpr(vehicle_plate_number, session_values_json_redi
 		result = result.get('Details')
 		if len(result) > 0:
 			#print('rows returned: ', len(result))
-			vehicle_entry_time = result.get("timestamp").split()[0] + " : " + result.get("timestamp").split()[1].split('.')[0]
+			timestamp_str = result.get("timestamp")
+			try:
+				vehicle_entry_time = parser.parse(timestamp_str).strftime("%Y-%m-%d : %H:%M:%S")
+			except (ParserError, TypeError, ValueError, AttributeError):
+				vehicle_entry_time = timestamp_str or ""
 			session_values_json_redis.update({"vehicle_id": result.get("id")})
 			session_values_json_redis.update({'vehicle_make': result.get("make")})
 			session_values_json_redis.update({'vehicle_model': result.get("model")})
