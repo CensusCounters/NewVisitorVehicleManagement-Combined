@@ -29,6 +29,18 @@ regexp_digits = re.compile(r'.*\d{4}$')
 POSTGRESQL_URL = 'census_counters_postgres_db'
 # POSTGRESQL_URL = 'database-1.cyzmx3rjxh6p.ap-south-1.rds.amazonaws.com'
 postgres_conn = None
+
+
+def _resolve_reading_timestamp(timestamp_local):
+    """Store a real timestamp when the camera/feeder sends now() or an empty value."""
+    if timestamp_local is None:
+        return datetime.datetime.utcnow().isoformat()
+    normalized = str(timestamp_local).strip()
+    if not normalized or normalized.lower() in ('now', 'now()'):
+        return datetime.datetime.utcnow().isoformat()
+    return normalized
+
+
 def connect_to_db():
     global postgres_conn
     postgres_conn = psycopg2.connect(dbname='postgres_visitor_vehicle', user='postgres',
@@ -144,7 +156,7 @@ def process_request():
             Vehicle_Chargeable_Type="" #TODO
             Candidates=json_data["results"][0]["candidates"]
             Camera_ID = json_data["camera_id"]
-            Time_Local = json_data["timestamp_local"]
+            Time_Local = _resolve_reading_timestamp(json_data.get("timestamp_local"))
             # if Camera_ID in ['camera-1', 'camera-3']:
             #     direction='Entry'
             #     Entry_Camera_ID=json_data["camera_id"]
