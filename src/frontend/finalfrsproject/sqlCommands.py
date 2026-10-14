@@ -1642,7 +1642,7 @@ def get_all_vehicles_from_anpr_by_date_paginated(
         search_params = [like_term] * 4
 
     select_sql = """
-        SELECT a.id, a.file, a.plate, a.timestamp, a.camera_id
+        SELECT a.id, a.file, a.plate, a.timestamp, a.camera_id,  a.plate_image_link, a.vehicle_image_link
     """
 
     try:
@@ -1680,11 +1680,12 @@ def get_all_vehicles_from_anpr_by_date_paginated(
                     )
                     continue
 
-            if vehicle.get("file"):
-                vehicle["file"] = os.path.sep.join([
-                    app.config["SCREENSHOTS_FOLDER"],
-                    os.path.basename(vehicle["file"])
-                ])
+            raw_img = (vehicle.get("file")
+                                or vehicle.get("plate_image_link")
+                                or vehicle.get("vehicle_image_link") or "")
+            if raw_img:
+                base = app.config["SNAPSHOT_IMAGE_BASE_URL"].rstrip("/")
+                vehicle["file"] = base + "/" + os.path.basename(str(raw_img))
 
             vehicle_list.append(vehicle)
 
@@ -1727,7 +1728,7 @@ def get_all_vehicles_from_anpr_by_date(start_date, end_date):
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
 
-        sql = '''SELECT id, file, plate, timestamp, camera_id FROM anpr_vehicle_readings 
+        sql = '''SELECT id, file, plate, timestamp, plate_image_link, camera_id FROM anpr_vehicle_readings 
                 WHERE DATE(timestamp) BETWEEN %s AND %s ORDER BY timestamp desc;'''
         args = (start_date, end_date)
         cursor.execute(sql, args)
