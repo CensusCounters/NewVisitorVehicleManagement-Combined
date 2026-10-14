@@ -13,6 +13,17 @@ from dateutil.parser import ParserError
 
 
 
+def snapshot_browser_url(stored_path):
+    """Turn a stored snapshot path into the visitor site's static URL."""
+    if not stored_path:
+        return stored_path
+    filename = os.path.basename(str(stored_path).rstrip("/"))
+    if not filename:
+        return stored_path
+    from flask import url_for
+    return url_for("static", filename=f"images/snapshots/{filename}")
+
+
 def return_connection_to_pool(db_connection):
     """Helper method to safely return database connection to pool"""
     if db_connection:
@@ -1642,7 +1653,9 @@ def get_all_vehicles_from_anpr_by_date_paginated(
         search_params = [like_term] * 4
 
     select_sql = """
-        SELECT a.id, a.file, a.plate, a.timestamp, a.camera_id, a.vehicle_image_link
+        SELECT a.id,
+               COALESCE(NULLIF(TRIM(a.vehicle_image_link), ''), NULLIF(TRIM(a.plate_image_link), ''), NULLIF(TRIM(a.file), '')) AS file,
+               a.plate, a.timestamp, a.camera_id
     """
 
     try:
@@ -1674,20 +1687,13 @@ def get_all_vehicles_from_anpr_by_date_paginated(
                     timestamp_obj = parser.parse(str(vehicle["timestamp"]))
                     vehicle["timestamp"] = timestamp_obj.strftime("%Y-%m-%d %H:%M:%S")
                 except (ParserError, TypeError, ValueError):
-                    print(
-                        f"Skipping ANPR reading {vehicle.get('id')} with unparseable timestamp: {vehicle.get('timestamp')!r}",
-                        flush=True,
-                    )
-                    continue
+                    pass
 
-            if vehicle.get("vehicle_image_link"):
-                vehicle["vehicle_image_link"] = os.path.sep.join([
-                    app.config["SNAPSHOT_IMAGE_BASE_URL"],
-                    os.path.basename(vehicle["vehicle_image_link"])
-                ])
+            if vehicle.get("file"):
+                vehicle["file"] = snapshot_browser_url(vehicle["file"])
 
             vehicle_list.append(vehicle)
-            print(f'vehicle list ${vehicle_list}');
+
         result = {
             "Status": "Success",
             "recordsTotal": records_total,
@@ -1727,7 +1733,9 @@ def get_all_vehicles_from_anpr_by_date(start_date, end_date):
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
 
-        sql = '''SELECT id, file, plate, timestamp, plate_image_link, camera_id FROM anpr_vehicle_readings 
+        sql = '''SELECT id,
+                        COALESCE(NULLIF(TRIM(vehicle_image_link), ''), NULLIF(TRIM(plate_image_link), ''), NULLIF(TRIM(file), '')) AS file,
+                        plate, timestamp, camera_id FROM anpr_vehicle_readings 
                 WHERE DATE(timestamp) BETWEEN %s AND %s ORDER BY timestamp desc;'''
         args = (start_date, end_date)
         cursor.execute(sql, args)
@@ -1760,18 +1768,11 @@ def get_all_vehicles_from_anpr_by_date(start_date, end_date):
                     timestamp_str = vehicle.get('timestamp')
                     try:
                         timestamp_obj = parser.parse(timestamp_str)
-                        formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+                        vehicle.update({'timestamp': timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')})
                     except (ParserError, TypeError, ValueError):
-                        print(
-                            f"Skipping ANPR reading {vehicle.get('id')} with unparseable timestamp: {timestamp_str!r}",
-                            flush=True,
-                        )
-                        continue
-
-                    vehicle.update({'timestamp': formatted_timestamp})
+                        pass
                 if vehicle.get('file'):
-                    file = os.path.sep.join([app.config["SCREENSHOTS_FOLDER"], os.path.basename(vehicle.get('file'))])
-                    vehicle.update({'file': file})
+                    vehicle.update({'file': snapshot_browser_url(vehicle.get('file'))})
                 anpr_list.append(vehicle)
 
                 # Assuming timestamp is a string in the format '2022-12-08 02:49:36.137264+00:00'
@@ -1851,7 +1852,10 @@ def get_all_vehicles_from_anpr():
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
 
-        sql = '''SELECT id, vehicle_image_link, plate, timestamp, camera_id FROM anpr_vehicle_readings WHERE "timestamp"::timestamptz >= NOW() - INTERVAL '1 hour' ORDER BY "timestamp"::timestamptz desc;'''
+        sql = '''SELECT id, vehicle_image_link, plate, timestamp, camera_id FROM anpr_vehicle_readings
+                WHERE lower(trim(timestamp)) NOT IN ('now', 'now()')
+                  AND timestamp::timestamptz >= NOW() - INTERVAL '1 hour'
+                ORDER BY timestamp::timestamptz desc;'''
         arg = ()
         cursor.execute(sql,arg)
         result = cursor.fetchall()
