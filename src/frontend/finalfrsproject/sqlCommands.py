@@ -1642,7 +1642,7 @@ def get_all_vehicles_from_anpr_by_date_paginated(
         search_params = [like_term] * 4
 
     select_sql = """
-        SELECT a.id, a.file, a.plate, a.timestamp, a.camera_id,  a.plate_image_link, a.vehicle_image_link
+        SELECT a.id, a.file, a.plate, a.timestamp, a.camera_id, a.vehicle_image_link
     """
 
     try:
@@ -1680,15 +1680,14 @@ def get_all_vehicles_from_anpr_by_date_paginated(
                     )
                     continue
 
-            raw_img = (vehicle.get("file")
-                                or vehicle.get("plate_image_link")
-                                or vehicle.get("vehicle_image_link") or "")
-            if raw_img:
-                base = app.config["SNAPSHOT_IMAGE_BASE_URL"].rstrip("/")
-                vehicle["file"] = base + "/" + os.path.basename(str(raw_img))
+            if vehicle.get("vehicle_image_link"):
+                vehicle["vehicle_image_link"] = os.path.sep.join([
+                    app.config["SNAPSHOT_IMAGE_BASE_URL"],
+                    os.path.basename(vehicle["vehicle_image_link"])
+                ])
 
             vehicle_list.append(vehicle)
-
+            print(f'vehicle list ${vehicle_list}');
         result = {
             "Status": "Success",
             "recordsTotal": records_total,
@@ -1852,7 +1851,7 @@ def get_all_vehicles_from_anpr():
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
 
-        sql = '''SELECT id, plate_image_link, plate, timestamp, camera_id FROM anpr_vehicle_readings WHERE "timestamp"::timestamptz >= NOW() - INTERVAL '1 hour' ORDER BY "timestamp"::timestamptz desc;'''
+        sql = '''SELECT id, vehicle_image_link, plate, timestamp, camera_id FROM anpr_vehicle_readings WHERE "timestamp"::timestamptz >= NOW() - INTERVAL '1 hour' ORDER BY "timestamp"::timestamptz desc;'''
         arg = ()
         cursor.execute(sql,arg)
         result = cursor.fetchall()
