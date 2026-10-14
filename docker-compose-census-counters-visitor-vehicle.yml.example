@@ -114,6 +114,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - './src/frontend:/project'
       - './src/ANPR/anpr_webhook/images:/project/finalfrsproject/static/anpr_vehicles/'
+      - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/project/finalfrsproject/static/images/snapshots:ro'
     environment:
       SITE_PROFILE: kupwara
       SECRET_KEY: development-only-change-this-secret

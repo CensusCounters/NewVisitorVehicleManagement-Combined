@@ -1,6 +1,6 @@
 import os, shutil
 from finalfrsproject import app, sqlCommands, jwt
-from flask import request, render_template
+from flask import request, render_template, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime, timezone, timedelta
 import base64
@@ -604,9 +604,10 @@ def get_all_vehicles_from_anpr(session_values_json_redis):
 					flush=True,
 				)
 				continue
+			snapshot_name = os.path.basename(vehicle[1] or '')
 			formatted_vehicles.append({
 				"id": vehicle[0],
-				'image_url': os.path.sep.join([app.config["SCREENSHOTS_FOLDER"],os.path.basename(vehicle[1] or '')]),
+				'image_url': url_for('static', filename='images/snapshots/' + snapshot_name) if snapshot_name else '',
 				'plate_number': vehicle[2],
 				'timestamp': formatted_timestamp,
 				'camera_id' : vehicle[4]
