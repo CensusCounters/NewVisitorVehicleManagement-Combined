@@ -270,6 +270,12 @@ _GANGANAGAR_TEMPLATES = SiteTemplates(
 )
 
 
+class TripReportSummaryConfig(BaseModel):
+    title: str = "Summary by Destination"
+    column_label: str = "Destination"
+    empty_message: str = "No destination data for current filters."
+
+
 class SiteProfile(BaseModel):
     app_title: str
     logo_path: str
@@ -300,6 +306,7 @@ class SiteProfile(BaseModel):
     recognize_vehicle: RecognizeVehicleConfig = Field(default_factory=RecognizeVehicleConfig)
     report_home: ReportHomeConfig = Field(default_factory=ReportHomeConfig)
     vehicle_report: VehicleReportConfig = Field(default_factory=VehicleReportConfig)
+    trip_report_summary: TripReportSummaryConfig = Field(default_factory=TripReportSummaryConfig)
 
     @model_validator(mode="after")
     def _check_id_rules(self):
@@ -331,6 +338,11 @@ KUPWARA_PROFILE = SiteProfile(
         "OTHERS": ["AADHAR", "DRIVERS LICENSE"],
     },
     aadhaar_lookup=_KUPWARA_AADHAAR_LOOKUP,
+    trip_report_summary=TripReportSummaryConfig(
+        title="Summary by To Meet",
+        column_label="To Meet",
+        empty_message="No to meet data for current filters.",
+    ),
 )
 
 NCPASS_PROFILE = SiteProfile(

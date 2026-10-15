@@ -1852,7 +1852,8 @@ def get_all_vehicles_from_anpr():
         db_connection = g.connection_pool.getconn()
         cursor = db_connection.cursor()
 
-        sql = '''SELECT id, plate_image_link, plate, timestamp, camera_id FROM anpr_vehicle_readings
+        sql = '''SELECT id, vehicle_image_link, plate, timestamp, camera_id FROM anpr_vehicle_readings
+
                 WHERE lower(trim(timestamp)) NOT IN ('now', 'now()')
                   AND timestamp::timestamptz >= NOW() - INTERVAL '1 hour'
                 ORDER BY timestamp::timestamptz desc;'''

@@ -50,36 +50,34 @@ def _vehicle_image_html_path(actual_path):
 
 def _store_vehicle_image_in_session(session_values_json_redis, vehicle_image_url=None, fallback_actual_path=None):
 	"""Use known_vehicles file, restore from ANPR capture, or fall back to placeholder."""
-	actual_path = None
-	basename = None
-	if fallback_actual_path:
-		basename = os.path.basename(fallback_actual_path)
-	elif vehicle_image_url:
-		basename = os.path.basename(vehicle_image_url)
 
-	if basename:
-		known_path = os.path.sep.join([app.config["KNOWN_VEHICLES"], basename])
+	actual_path = None
+
+	# Try the newly selected snapshot first.
+	if vehicle_image_url:
+		basename = os.path.basename(vehicle_image_url)
+		capture_path = os.path.join(app.config["VEHICLE_IMAGES"], basename)
+		known_path = os.path.join(app.config["KNOWN_VEHICLES"], basename)
+
+		if os.path.isfile(capture_path):
+			shutil.copy(capture_path, known_path)
+			actual_path = known_path
+		elif os.path.isfile(known_path):
+			actual_path = known_path
+
+	# Fall back to the image stored in the database.
+	if actual_path is None and fallback_actual_path:
+		basename = os.path.basename(fallback_actual_path)
+		known_path = os.path.join(app.config["KNOWN_VEHICLES"], basename)
+		capture_path = os.path.join(app.config["VEHICLE_IMAGES"], basename)
+
 		if os.path.isfile(known_path):
 			actual_path = known_path
-		else:
-			capture_path = os.path.sep.join([app.config["VEHICLE_IMAGES"], basename])
-			if os.path.isfile(capture_path):
-				shutil.copy(capture_path, known_path)
-				actual_path = known_path
-				print(f"Restored known vehicle image from ANPR: {basename}", flush=True)
-
-	if actual_path is None and vehicle_image_url:
-		capture_path = os.path.sep.join([
-			app.config["VEHICLE_IMAGES"],
-			os.path.basename(vehicle_image_url),
-		])
-		if os.path.isfile(capture_path):
-			destination = os.path.sep.join([
-				app.config["KNOWN_VEHICLES"],
-				os.path.basename(capture_path),
-			])
-			shutil.copy(capture_path, destination)
-			actual_path = destination
+		elif os.path.isfile(capture_path):
+			shutil.copy(capture_path, known_path)
+			actual_path = known_path
+		elif os.path.isfile(fallback_actual_path):
+			actual_path = fallback_actual_path
 
 	if actual_path is None and fallback_actual_path and os.path.isfile(fallback_actual_path):
 		actual_path = fallback_actual_path
@@ -605,6 +603,8 @@ def get_all_vehicles_from_anpr(session_values_json_redis):
 				)
 				continue
 			snapshot_name = os.path.basename(vehicle[1] or '')
+
+
 			formatted_vehicles.append({
 				"id": vehicle[0],
 				'image_url': url_for('static', filename='images/snapshots/' + snapshot_name) if snapshot_name else '',
@@ -677,6 +677,7 @@ def check_if_vehicle_is_in_our_system(vehicle_plate_number, vehicle_image_url, v
 	owner_id = session_values_json_redis.get('person_id') if has_vehicle_association else None
 	result = sqlCommands.check_if_vehicle_is_in_our_system(vehicle_plate_number, owner_id)
 	print('result from check_if_vehicle_is_in_our_system: ', result, flush=True)
+	print(f'vehicle_image_url debuiging3 {vehicle_image_url}',flush=True)
 
 	if not result or result.get('Status') == "Fail":        
 		return result
@@ -701,6 +702,7 @@ def check_if_vehicle_is_in_our_system(vehicle_plate_number, vehicle_image_url, v
 			print('vehicle found in database', flush=True)
 			_store_vehicle_image_in_session(
 				session_values_json_redis,
+				vehicle_image_url=vehicle_image_url,
 				fallback_actual_path=result.get('vehicle_image_location'),
 			)
 			session_values_json_redis.update({"vehicle_plate_number": result.get("vehicle_number_plate")})
