@@ -603,7 +603,8 @@ def get_all_vehicles_from_anpr(session_values_json_redis):
 				)
 				continue
 			snapshot_name = os.path.basename(vehicle[1] or '')
-			print(f'vehicle print here {vehicle}')
+
+
 			formatted_vehicles.append({
 				"id": vehicle[0],
 				'image_url': url_for('static', filename='images/snapshots/' + snapshot_name) if snapshot_name else '',
