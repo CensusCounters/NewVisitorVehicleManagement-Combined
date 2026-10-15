@@ -677,7 +677,6 @@ def check_if_vehicle_is_in_our_system(vehicle_plate_number, vehicle_image_url, v
 	owner_id = session_values_json_redis.get('person_id') if has_vehicle_association else None
 	result = sqlCommands.check_if_vehicle_is_in_our_system(vehicle_plate_number, owner_id)
 	print('result from check_if_vehicle_is_in_our_system: ', result, flush=True)
-	print(f'vehicle_image_url debuiging3 {vehicle_image_url}',flush=True)
 
 	if not result or result.get('Status') == "Fail":        
 		return result

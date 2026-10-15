@@ -114,6 +114,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - './src/frontend:/project'
       - './src/ANPR/anpr_webhook/images:/project/finalfrsproject/static/anpr_vehicles/'
+      # Same host directory as nginx. Flask only reads captures here; containers do not share files.
       - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/project/finalfrsproject/static/images/snapshots:ro'
     environment:
       SITE_PROFILE: kupwara
@@ -191,6 +192,7 @@ services:
       - './nginx/ssl:/etc/nginx/ssl:ro'
       - './src/frontend/finalfrsproject/static:/var/www/static:ro'
       - './src/ANPR/anpr_webhook/images:/var/www/static/anpr_vehicles:ro'
+      # Same host directory as the web service. Nginx serves /censusvv/static/ from its own disk.
       - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/var/www/static/images/snapshots:ro'
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
