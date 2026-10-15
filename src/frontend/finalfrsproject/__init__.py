@@ -1,4 +1,5 @@
 from flask import Flask, session, g, url_for
+import copy
 import os, json
 from flask_jwt_extended import JWTManager
 from datetime import datetime, timedelta
@@ -284,17 +285,15 @@ app.config["ID_LOOKUP_CATEGORIES"] = active_profile.id_lookup_categories
 app.config["ALLOWED_ID_TYPES_BY_VISITOR"] = active_profile.allowed_id_types_by_visitor
 app.config["KNOWN_PERSON_SCHEMA"] = COMMON_KNOWN_PERSON_SCHEMA
 app.config["UNKNOWN_PERSON_PAGE_FIELDS"] = active_profile.unknown_person_page_fields.model_dump()
-app.config["TRIP_REPORT_SUMMARY_FIELDS"] = COMMON_TRIP_REPORT_SUMMARY["trip_report_summary_fields"]
-if site_profile_name == "kupwara":
-    import copy
-    _summary = copy.deepcopy(app.config["TRIP_REPORT_SUMMARY_FIELDS"])
-    _gt = _summary.get("grouped_table") or {}
-    _gt["title"] = "Summary by To Meet"
-    _gt["empty_message"] = "No to meet data for current filters."
-    for _col in _gt.get("columns", []):
-        if _col.get("key") == "going_to":
-            _col["label"] = "To Meet"
-    app.config["TRIP_REPORT_SUMMARY_FIELDS"] = _summary
+_summary = copy.deepcopy(COMMON_TRIP_REPORT_SUMMARY["trip_report_summary_fields"])
+_labels = active_profile.trip_report_summary
+_gt = _summary["grouped_table"]
+_gt["title"] = _labels.title
+_gt["empty_message"] = _labels.empty_message
+for _col in _gt["columns"]:
+    if _col["key"] == "going_to":
+        _col["label"] = _labels.column_label
+app.config["TRIP_REPORT_SUMMARY_FIELDS"] = _summary
 app.config["SUMMARY_TABLE_BY_VISITOR_TYPE"] = active_profile.summary_table_by_visitor_type
 app.config["SUMMARY_TABLE_BY_MEN_WOMEN"] = active_profile.summary_table_by_men_women
 app.config["TRIP_DURATION_DEFAULT_HOURS"] = active_profile.trip_duration_default_hours
