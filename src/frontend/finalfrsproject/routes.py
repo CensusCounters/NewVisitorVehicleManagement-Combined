@@ -82,7 +82,6 @@ def logout():
 # Replaced in place, or removed by cleanup. Everything else under /static/ keeps its bytes.
 _NO_STORE_STATIC_PREFIXES = (
     "/static/images/uploads/",
-    "/static/anpr_vehicles/",
     "/static/reports/",
 )
 

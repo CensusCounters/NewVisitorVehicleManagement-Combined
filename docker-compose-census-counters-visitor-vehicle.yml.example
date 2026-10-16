@@ -113,7 +113,6 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - './src/frontend:/project'
-      - './src/ANPR/anpr_webhook/images:/project/finalfrsproject/static/anpr_vehicles/'
       # Same host directory as nginx. Flask only reads captures here; containers do not share files.
       - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/project/finalfrsproject/static/images/snapshots:ro'
     environment:
@@ -138,15 +137,15 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - './src:/project'
-      - './src/ANPR/anpr_webhook/images:/anpr_images'
-      - './src/ANPR:/anpr'
       - './src/frontend/finalfrsproject/static/images/uploads:/uploads'
     networks:
       - census_counters_network
     environment:
       CLEANUP_POLL_SECONDS: 600
-      ANPR_RETENTION_SECONDS: 1296000
       UPLOAD_RETENTION_SECONDS: 86400
+      POSTGRESQL_URL: census_counters_postgres_db
+      SNAPSHOT_ORPHAN_SECONDS: ${SNAPSHOT_ORPHAN_SECONDS:-604800}
+      SNAPSHOT_REFERENCED_SECONDS: ${SNAPSHOT_REFERENCED_SECONDS:-7776000}
     mem_limit: 256m
     entrypoint:
       - /bin/bash
@@ -191,7 +190,6 @@ services:
       - './nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
       - './nginx/ssl:/etc/nginx/ssl:ro'
       - './src/frontend/finalfrsproject/static:/var/www/static:ro'
-      - './src/ANPR/anpr_webhook/images:/var/www/static/anpr_vehicles:ro'
       # Same host directory as the web service. Nginx serves /censusvv/static/ from its own disk.
       - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/var/www/static/images/snapshots:ro'
       - /etc/timezone:/etc/timezone:ro
