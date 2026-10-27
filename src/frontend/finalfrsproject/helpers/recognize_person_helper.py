@@ -326,74 +326,25 @@ def post_handler(jwt_details, redis_conn, files):
                                 match_status = False
 
                         elif result.get("Details") == "No match found":
-                            print("No matching person details found for this enrollment_id in the facial database")
-                            # do we have a picture in the local drive
-                            # if session_values_json_redis.get("person_details") == "Available":
-                            #      person_image_on_hard_drive_actual_path = os.path.sep.join([app.config["KNOWN_PERSONS"],str(session_values_json_redis.get('enrollment_id')) + ".png"])
-                            # else:
-
-                            person_image_on_hard_drive_actual_path = os.path.sep.join([app.config["KNOWN_PERSONS"], str(enrollment_id) + ".png"])
-
-                            # image_file_on_hard_drive_path = os.path.sep.join([app.config["KNOWN_PERSONS"], image_file_on_hard_drive])
-                            print("image_file_on_hard_drive_path: ", person_image_on_hard_drive_actual_path)
-                            if os.path.isfile(person_image_on_hard_drive_actual_path) is True:
-                                print("picture found for the enrollment id on the hard drive")
-                                person_image_on_hard_drive_html_path = os.path.sep.join([app.config["KNOWN_PERSON_PATH_FOR_HTML"], os.path.basename(person_image_on_hard_drive_actual_path)])
-                                person_image_html_path = os.path.sep.join([app.config["IMAGE_PATH_FOR_HTML"], os.path.basename(person_image_actual_path)])
-                                session_values_json_redis.update({"enrollment_id": str(enrollment_id)})
-                                session_values_json_redis.update({"todays_image_html_path": person_image_html_path})
-                                session_values_json_redis.update({"person_image_on_hard_drive_html_path": person_image_on_hard_drive_html_path})
-                                session_values_json_redis.update({"ticket_status": "reregister_face"})
-                                # List of keys to check
-                                keys_to_check = ["aadhar_number", "drivers_license", "pass_number", "other_id_number"]
-                                # Find the first valid key and its corresponding value
-                                id_number_in_database, id_type_in_database = None, None
-                                for key in keys_to_check:
-                                    value = session_values_json_redis.get(key)
-                                    print(f"Checking key: {key}, value: {value}")  # Your debug print
-                                    if value not in [None, "Not Available"]:
-                                        id_number_in_database = value
-                                        id_type_in_database = key
-                                        break
-                                print(
-                                    f'id_number_in_database: {id_number_in_database}, id_type_in_database: {id_type_in_database}')
-                                # Update the dictionary with both values
-                                session_values_json_redis.update({"id_number_in_database": id_number_in_database})
-                                if id_type_in_database == 'pass_number':
-                                    id_type_in_database = 'PASS'
-                                session_values_json_redis.update({"id_type_in_database": id_type_in_database})
-                                session_values_json_redis.update({"temp_aadhar_number": session_values_json_redis.get('aadhar_number')})
-                                session_values_json_redis.update({"message": "Picture found for this enrollment id. Please reregister this is the same person."})
-                                redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
-                                print('redis in recognize_person when a picture is found for the enrollment_id: ',
-                                      session_values_json_redis)
-                                '''
-                                print("No other person was found in the database matching this face", flush=True)
-                                print(
-                                    "Person face matched in the Facial database, but no entry in the database or the directory. "
-                                    "Need to delete face from facial database")
-        
-                                url = app.config["FACE_RECOGNITION_SERVICE"] + "delete"
-                                params = {'id': str(enrollment_id)}
-                                response = requests.post(url, params=params)
-                                person_image_on_hard_drive_actual_path = os.path.sep.join([app.config["KNOWN_PERSONS"], str(enrollment_id) + ".png"])
-                                print("image_file_on_hard_drive_path: ", person_image_on_hard_drive_actual_path)
-                                if os.path.isfile(person_image_on_hard_drive_actual_path) is True:
-                                    os.remove(person_image_on_hard_drive_actual_path)
-                                    print("File deleted successfully.")
-                                else:
-                                    print("File not found.")
-                                match_status = False
-                                '''
-
-                                end_time = time.time()
-                                execution_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
-                                end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-                                print(
-                                    f"[{end_timestamp}] Completed recognize_person_helper_post | Execution time: {execution_time}ms",
-                                    flush=True)
-
-                                return redirect_with_blacklist_intercept('reregister_face')
+                            print(
+                                "Face found in the face database, but corresponding "
+                                "person details were not found in the SQL database.",
+                                flush=True,
+                            )
+                            session_values_json_redis.update({
+                                "message": _(
+                                    "A matching face was found in the face database, "
+                                    "but the corresponding person details were not "
+                                    "found in the SQL database. Please contact "
+                                    "the administrator."
+                                ),
+                                "ticket_status": "recognize_person",
+                            })
+                            redis_conn.set(
+                                jwt_details.get('logged_in_user_id'),
+                                json.dumps(session_values_json_redis),
+                            )
+                            return redirect(url_for('recognize_person'))
 
                         elif result.get("Status") == "Fail":
                             print("Enrollment_ID Lookup failed due to a system issue. Please try again")
