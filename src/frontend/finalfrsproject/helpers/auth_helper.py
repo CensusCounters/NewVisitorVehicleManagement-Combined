@@ -8,7 +8,7 @@ from datetime import datetime
 import uuid
 
 ACTIVE_LOGIN_KEY_PREFIX = "active_login:username:"
-ACTIVE_LOGIN_TTL_SECONDS = 300
+ACTIVE_LOGIN_TTL_SECONDS = 30 * 60
 
 
 def _normalize_username(username):

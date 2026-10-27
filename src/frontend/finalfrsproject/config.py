@@ -143,6 +143,22 @@ _KUPWARA_AADHAAR_LOOKUP = AadhaarLookupConfig(
     show_id_number_only=["TEACHER"],
 )
 
+
+_TINSUKIA_AADHAAR_LOOKUP = AadhaarLookupConfig(
+    custom_dropdown=False,
+    support_male_passenger_skip=True,
+    default_message_key="id_type",
+    lookup_strategy="multi",
+    force_id_type=None,
+    require_input_validation=False,
+    pass_holder_teacher_uses_pass_image=False,
+    exception_template_post="500.html",
+    show_id_type_first=[
+        "Power House Staff", "Power House Quarter", "JCO Mess",
+        "OR Mess", "Supply Person", "Others",
+    ],
+)
+
 _NCPASS_AADHAAR_LOOKUP = AadhaarLookupConfig(
     custom_dropdown=True,
     support_male_passenger_skip=False,
@@ -324,6 +340,29 @@ class SiteProfile(BaseModel):
                 )
         return self
 
+TINSUKIA_PROFILE = SiteProfile(
+    app_title="7 FIELD REGIMENT (GAZALA)",
+    logo_path="images/Logo-7FD-Tinsukia.jpg",
+    visitor_categories=[
+        "Power House Staff", "Power House Quarter", "JCO Mess",
+        "OR Mess", "Supply Person", "Others",
+    ],
+    id_lookup_categories=["AADHAR", "DRIVERS LICENSE"],
+    allowed_id_types_by_visitor={
+        "Power House Staff": ["AADHAR", "DRIVERS LICENSE"],
+        "Power House Quarter": ["AADHAR", "DRIVERS LICENSE"],
+        "JCO Mess": ["AADHAR", "DRIVERS LICENSE"],
+        "OR Mess": ["AADHAR", "DRIVERS LICENSE"],
+        "Supply Person": ["AADHAR", "DRIVERS LICENSE"],
+        "Others": ["AADHAR", "DRIVERS LICENSE"],
+    },
+    aadhaar_lookup=_TINSUKIA_AADHAAR_LOOKUP,
+    trip_report_summary=TripReportSummaryConfig(
+        title="Summary by To Meet",
+        column_label="To Meet",
+        empty_message="No to meet data for current filters.",
+    ),
+)
 
 KUPWARA_PROFILE = SiteProfile(
     app_title="Vajr Entry Management System",
@@ -416,6 +455,7 @@ SITE_PROFILES = {
     "ncpass": NCPASS_PROFILE,
     "ganganagar": GANGANAGAR_PROFILE,
     "tangdhar": TANGDHAR_PROFILE,
+    "tinsukia": TINSUKIA_PROFILE,
 }
 
 

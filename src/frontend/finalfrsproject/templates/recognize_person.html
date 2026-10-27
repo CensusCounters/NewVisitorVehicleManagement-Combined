@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<section class="recognize_section" id="recognize_section">
+<section class="recognize_section" id="recognize_section" data-id-lookup-result="{{ 'found' if details.success_font == 'True' else 'not-found' }}">
 	<form id="form" action="{{ url_for('recognize_person') }}" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 			<div class="row" id="img-vg-content">

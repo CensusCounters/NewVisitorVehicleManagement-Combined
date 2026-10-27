@@ -219,8 +219,7 @@
         if (!$("#form").valid()) {
           return false;
         }
-        $("#spinner").css("display", "flex");
-        $("#form")[0].submit();
+        submitIdLookup();
       });
     });
   </script>
@@ -388,10 +387,88 @@
         if (!$("#form").valid()) {
           return false;
         }
-        $("#spinner").css("display", "flex");
-        $("#form")[0].submit();
+        submitIdLookup();
       });
     });
   </script>
 {% endif %}
+  <div id="idLookupConfirmationSummary" hidden>
+    <p class="trip-confirm-intro">{{ _('This ID number was not found in the database. Please check it against the ID document before continuing.') }}</p>
+    <div class="trip-confirm-summary">
+      <div class="trip-confirm-row">
+        <div class="trip-confirm-label">{{ _('ID Type') }}</div>
+        <div class="trip-confirm-value" data-lookup-id-type></div>
+      </div>
+      <div class="trip-confirm-row">
+        <div class="trip-confirm-label">{{ _('ID Number') }}</div>
+        <div class="trip-confirm-value" data-lookup-id-number></div>
+      </div>
+    </div>
+    <p class="trip-confirm-warning">{{ _('You will not be able to edit this ID number in the following steps. If it is incorrect, choose Edit and recheck, correct it, and search again.') }}</p>
+  </div>
+  <script>
+    var idLookupInProgress = false;
+
+    async function submitIdLookup() {
+      if (idLookupInProgress) {
+        return;
+      }
+      idLookupInProgress = true;
+      $('#login').prop('disabled', true);
+      $('#spinner').css('display', 'flex');
+
+      try {
+        var lookupForm = document.getElementById('form');
+        var formData = new FormData(lookupForm);
+        var response = await fetch(lookupForm.action, {
+          method: 'POST',
+          body: formData
+        });
+        if (!response.ok) {
+          throw new Error('ID lookup request failed');
+        }
+        var responsePage = new DOMParser().parseFromString(await response.text(), 'text/html');
+        var recognitionSection = responsePage.getElementById('recognize_section');
+        $('#spinner').hide();
+
+        if (recognitionSection && recognitionSection.dataset.idLookupResult === 'not-found') {
+          var summary = $('#idLookupConfirmationSummary');
+          var idType = formData.get('id_type') ||
+            (formData.get('traveler_type') === 'TEACHER' ? 'PASS' : 'AADHAR');
+          summary.find('[data-lookup-id-type]').text(idType);
+          summary.find('[data-lookup-id-number]').text(formData.get('id_number'));
+
+          var result = await Swal.fire({
+            title: {{ _('Confirm ID number') | tojson }},
+            html: summary.html(),
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: {{ _('Confirm and continue') | tojson }},
+            cancelButtonText: {{ _('Edit and recheck') | tojson }},
+            reverseButtons: true,
+            focusCancel: true,
+            allowOutsideClick: false,
+            width: 680,
+            customClass: { popup: 'trip-confirm-modal' }
+          });
+          if (!result.isConfirmed) {
+            $('#id_number').trigger('focus').select();
+            return;
+          }
+        }
+        window.location.href = response.url;
+      } catch (error) {
+        $('#spinner').hide();
+        await Swal.fire({
+          text: {{ _('The ID lookup failed. Please try again.') | tojson }},
+          icon: 'error',
+          confirmButtonText: {{ _('Try again') | tojson }},
+          customClass: { popup: 'trip-confirm-modal' }
+        });
+      } finally {
+        idLookupInProgress = false;
+        $('#login').prop('disabled', false);
+      }
+    }
+  </script>
 {% endblock content %}

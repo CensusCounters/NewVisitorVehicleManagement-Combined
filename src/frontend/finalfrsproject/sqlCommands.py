@@ -10,7 +10,7 @@ import time
 import re
 from dateutil import parser
 from dateutil.parser import ParserError
-
+from finalfrsproject.helpers import general
 
 
 def snapshot_browser_url(stored_path):
@@ -1685,7 +1685,7 @@ def get_all_vehicles_from_anpr_by_date_paginated(
             if vehicle.get("timestamp") is not None:
                 try:
                     timestamp_obj = parser.parse(str(vehicle["timestamp"]))
-                    vehicle["timestamp"] = timestamp_obj.strftime("%Y-%m-%d %H:%M:%S")
+                    vehicle["timestamp"] = general.utc_to_local(timestamp_obj).strftime("%Y-%m-%d %H:%M:%S")
                 except (ParserError, TypeError, ValueError):
                     pass
 

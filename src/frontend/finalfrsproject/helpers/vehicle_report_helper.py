@@ -82,6 +82,7 @@ def _render_report(jwt_details, redis_conn, form=None, *, submitted=False):
             'logged_in_user_type': user_type,
             'page_title': 'Vehicle Report',
         }
+        print(f'records from render report {records}')
         session_values.update({"ticket_status": "vehicle_report"})
         redis_conn.set(jwt_details.get('logged_in_user_id'), json.dumps(session_values))
         return render_template('vehicle_report.html', details=details)
