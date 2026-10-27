@@ -87,15 +87,15 @@ def _store_vehicle_image_in_session(session_values_json_redis, vehicle_image_url
 			app.config["PROJECT_BASE_PATH"],
 			"static",
 			"images",
-			"placeholder.png",
+			"No-Image-Available.jpg",
 		])
 		if os.path.isfile(placeholder):
 			actual_path = placeholder
 		else:
 			actual_path = app.config["VEHICLE_IMAGE_NOT_AVAILABLE_ACTUAL_PATH"]
 
-	if actual_path.endswith(os.path.sep.join(["static", "images", "placeholder.png"])):
-		html_path = "/static/images/placeholder.png"
+	if actual_path.endswith(os.path.sep.join(["static", "images", "No-Image-Available.jpg"])):
+		html_path = "/static/images/No-Image-Available.jpg"
 	else:
 		html_path = _vehicle_image_html_path(actual_path)
 	session_values_json_redis.update({
