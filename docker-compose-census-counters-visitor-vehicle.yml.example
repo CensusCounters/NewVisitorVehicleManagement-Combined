@@ -59,7 +59,8 @@ services:
       - census_counters_network
     runtime: nvidia
     shm_size: ${FR_SHM_SIZE:-1gb}
-    # Caps host RAM only; on x86 GPU memory (VRAM) is not counted.
+    # Host RAM cap. On x86 this does not include discrete GPU VRAM.
+    # On Jetson the GPU uses the same RAM, so this limit covers both.
     mem_limit: ${MEM_LIMIT_FR_ENGINE:-4g}
     deploy:
       resources:

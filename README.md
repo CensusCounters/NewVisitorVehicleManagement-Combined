@@ -130,17 +130,33 @@ That installs Git, uses the key at `~/.ssh/census-vv-<clientname>`, and clones i
 ## 2. Jetson Orin Nano (JetPack 7.2 or newer)
 
 The same repository and compose file run on Jetson. JetPack 7.2+ ships the NVIDIA driver, Docker and the
-NVIDIA Container Toolkit, so skip those steps in section 1, and skip AnyDesk and Chrome. Do the Git steps.
+NVIDIA Container Toolkit, so skip those install steps in section 1, and skip AnyDesk and Chrome.
 
-1. Flash JetPack 7.2.1 or later. 
+1. Flash JetPack 7.2.1 or later.
 2. Check that Docker has the `nvidia` runtime:
 ```bash
 docker info | grep -i runtimes
 # if nvidia is missing:
 sudo nvidia-ctk runtime configure --runtime=docker && sudo systemctl restart docker
 ```
-3. Install Git and clone with `bash ~/Projects/setup_git.sh <clientname>` (section 1, Git).
-4. Continue with section 3. In section 5, use `.env.jetson.example`.
+3. Add your user to the `docker` group, then log in again:
+```bash
+sudo usermod -aG docker $USER
+```
+4. Copy this repository from a workstation that already has it. This keeps `.git`, includes the ONNX models, and leaves TensorRT engines behind (they only load on the GPU that built them):
+```bash
+./scripts/sync_to_host.sh census@<jetson-host> ~/Projects/NewVisitorVehicleManagement-Combined
+```
+A GitHub deploy key (`bash ~/Projects/setup_git.sh <clientname>`, section 1) works instead of rsync.
+5. On the Jetson, continue with sections 3 and 4. In section 5, use `.env.jetson.example`. In the BaseContainers repository, copy `.env.jetson.example` to `.env` as well.
+6. First start, build the face database and the face engine before the rest of this stack. Engine compilation on Orin Nano takes about 10 to 20 minutes and is the step most likely to run out of memory:
+```bash
+docker compose -f docker-compose-census-counters-visitor-vehicle.yml up -d --build census_counters_facedb census_counters_fr_engine
+docker logs -f census_counters_fr_engine
+```
+Wait until `census_counters_fr_engine` is healthy, then `./run_all_containers.sh`.
+The first TensorRT build needs the face-engine memory cap in `.env` left at about 5 GB. A 2 GB cap makes the builder exit and the container restart.
+7. Watch memory with `tegrastats` or `jtop`, and with `docker stats`. Tighten the `MEM_LIMIT_*` values in `.env` if a container is close to its cap or the board starts swapping.
 
 
 ----------------------------------------------------------

@@ -47,6 +47,25 @@ func_map = {
 }
 
 
+def gpu_sm_tag():
+    """Return an sm tag such as sm87 from the GPU this process can see.
+
+    Engine files are not portable across compute capabilities. The tag is part
+    of the filename so a models directory copied between an x86 GPU and a
+    Jetson cannot load the wrong engine.
+    """
+    try:
+        import cupy as cp
+        capability = cp.cuda.Device().compute_capability
+    except Exception as exc:
+        logger.error(f"Cannot read GPU compute capability for the TensorRT engine name: {exc}")
+        exit(1)
+    if isinstance(capability, (tuple, list)):
+        major, minor = capability
+        return f"sm{major}{minor}"
+    return f"sm{capability}"
+
+
 def sniff_output_order(model_path, save_dir):
     """
     Sniffs the output order of a model.
@@ -190,8 +209,8 @@ def prepare_backend(model_name, backend_name, im_size: List[int] = None,
             trt_path = trt_path.replace('.plan', f'_batch{max_batch_size}.plan')
         if force_fp16 or has_fp16:
             trt_path = trt_path.replace('.plan', '_fp16.plan')
-        # Serialized engines only load with the TensorRT version that built them
-        trt_path = trt_path.replace('.plan', f'_trt{get_trt_version()}.plan')
+        # Serialized engines only load with the TensorRT version and GPU that built them.
+        trt_path = trt_path.replace('.plan', f'_trt{get_trt_version()}_{gpu_sm_tag()}.plan')
 
         prepare_folders([trt_dir])
 
