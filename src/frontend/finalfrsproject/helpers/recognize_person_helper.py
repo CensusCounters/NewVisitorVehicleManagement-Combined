@@ -19,13 +19,14 @@ def get_handler(jwt_details, redis_conn):
             message = 'Please check if the person is already in our system. Click on Take a Picture button and then Submit for Recognition.'
 
         session_values_json_redis.update({"ticket_status":"recognize_person"})
+        message_is_error = session_values_json_redis.pop("message_is_error", False)
         redis_conn.set(jwt_details.get('logged_in_user_id'),json.dumps(session_values_json_redis))
 
         send_to_html_json = {
             'logged_in_user':  jwt_details.get("logged_in_user_name"),
             'logged_in_user_type': jwt_details.get("logged_in_user_type"),
             'message': message,
-            'page_title': _("Recognize Person")
+            'page_title': _("Error") if message_is_error else _("Recognize Person")
         }
 
         if session_values_json_redis.get("person_details") == "Available":
@@ -338,13 +339,14 @@ def post_handler(jwt_details, redis_conn, files):
                                     "found in the SQL database. Please contact "
                                     "the administrator."
                                 ),
+                                "message_is_error": True,
                                 "ticket_status": "recognize_person",
                             })
                             redis_conn.set(
                                 jwt_details.get('logged_in_user_id'),
                                 json.dumps(session_values_json_redis),
                             )
-                            return redirect(url_for('recognize_person'))
+                            return redirect_with_blacklist_intercept('recognize_person')
 
                         elif result.get("Status") == "Fail":
                             print("Enrollment_ID Lookup failed due to a system issue. Please try again")

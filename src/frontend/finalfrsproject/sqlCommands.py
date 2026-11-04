@@ -4,13 +4,12 @@ import psycopg2.extras
 from psycopg2 import pool
 from finalfrsproject import app, g
 import os, shutil
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 import time
 import re
 from dateutil import parser
 from dateutil.parser import ParserError
-from finalfrsproject.helpers import general
 
 
 def snapshot_browser_url(stored_path):
@@ -1685,7 +1684,12 @@ def get_all_vehicles_from_anpr_by_date_paginated(
             if vehicle.get("timestamp") is not None:
                 try:
                     timestamp_obj = parser.parse(str(vehicle["timestamp"]))
-                    vehicle["timestamp"] = general.utc_to_local(timestamp_obj).strftime("%Y-%m-%d %H:%M:%S")
+                    if timestamp_obj.tzinfo is None:
+                        timestamp_obj = timestamp_obj.replace(tzinfo=timezone.utc)
+                    else:
+                        timestamp_obj = timestamp_obj.astimezone(timezone.utc)
+                    # The browser formats this ISO UTC value in its own timezone.
+                    vehicle["timestamp"] = timestamp_obj.strftime("%Y-%m-%dT%H:%M:%SZ")
                 except (ParserError, TypeError, ValueError):
                     pass
 

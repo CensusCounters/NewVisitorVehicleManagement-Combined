@@ -427,33 +427,40 @@
         if (!response.ok) {
           throw new Error('ID lookup request failed');
         }
-        var responsePage = new DOMParser().parseFromString(await response.text(), 'text/html');
-        var recognitionSection = responsePage.getElementById('recognize_section');
-        $('#spinner').hide();
-
-        if (recognitionSection && recognitionSection.dataset.idLookupResult === 'not-found') {
-          var summary = $('#idLookupConfirmationSummary');
-          var idType = formData.get('id_type') ||
-            (formData.get('traveler_type') === 'TEACHER' ? 'PASS' : 'AADHAR');
-          summary.find('[data-lookup-id-type]').text(idType);
-          summary.find('[data-lookup-id-number]').text(formData.get('id_number'));
-
-          var result = await Swal.fire({
-            title: {{ _('Confirm ID number') | tojson }},
-            html: summary.html(),
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: {{ _('Confirm and continue') | tojson }},
-            cancelButtonText: {{ _('Edit and recheck') | tojson }},
-            reverseButtons: true,
-            focusCancel: true,
-            allowOutsideClick: false,
-            width: 680,
-            customClass: { popup: 'trip-confirm-modal' }
-          });
-          if (!result.isConfirmed) {
-            $('#id_number').trigger('focus').select();
-            return;
+        var contentType = response.headers.get('content-type') || '';
+        if (contentType.indexOf('application/json') !== -1) {
+          var payload = await response.json();
+          $('#spinner').hide();
+          if (payload.id_lookup_result === 'not-found') {
+            var summary = $('#idLookupConfirmationSummary');
+            summary.find('[data-lookup-id-type]').text(payload.id_type || '');
+            summary.find('[data-lookup-id-number]').text(payload.id_number || '');
+            var result = await Swal.fire({
+              title: {{ _('Confirm ID number') | tojson }},
+              html: summary.html(),
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: {{ _('Confirm and continue') | tojson }},
+              cancelButtonText: {{ _('Edit and recheck') | tojson }},
+              reverseButtons: true,
+              focusCancel: true,
+              allowOutsideClick: false,
+              width: 680,
+              customClass: { popup: 'trip-confirm-modal' }
+            });
+            if (!result.isConfirmed) {
+              $('#id_number').trigger('focus').select();
+              return;
+            }
+            formData.set('confirm_unmatched', '1');
+            $('#spinner').css('display', 'flex');
+            response = await fetch(lookupForm.action, {
+              method: 'POST',
+              body: formData
+            });
+            if (!response.ok) {
+              throw new Error('ID lookup request failed');
+            }
           }
         }
         window.location.href = response.url;
