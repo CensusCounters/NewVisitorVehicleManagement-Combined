@@ -80,7 +80,7 @@
 						</div>
 						<div class="form-group col-xs-10">
 							<input id="entry_time" name="entry_time" type="datetime-local" class="form-control required"
-								   value="{{ details.entry_time }}" max="{{ now }}">
+								   value="{{ details.entry_time }}">
 						</div>
 						<div class="col-xs-2">
 							<label class="label">{% if template_profiles.add_trip.translate_labels %}{{ _('Name') }}{% else %}Name{% endif %}</label>
@@ -760,6 +760,13 @@
 
 {% endif %}
   $(document).ready(function(){
+	var entryTime = document.getElementById("entry_time");
+	if (entryTime) {
+		var localNow = new Date();
+		var pad = function(n) { return String(n).padStart(2, "0"); };
+		entryTime.max = localNow.getFullYear() + "-" + pad(localNow.getMonth() + 1) + "-" +
+			pad(localNow.getDate()) + "T" + pad(localNow.getHours()) + ":" + pad(localNow.getMinutes());
+	}
 	 var travelerTypeDropdown = document.getElementById("traveler_type");
 {% if template_profiles.add_trip.extended_vehicle_details %}
     // Ensure the function runs at page load using the current value of the dropdown

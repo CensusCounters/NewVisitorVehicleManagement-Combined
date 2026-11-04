@@ -12,6 +12,16 @@ from dateutil import parser
 from dateutil.parser import ParserError
 
 
+def anpr_timestamp_iso_utc(value):
+    """UTC instant for the browser to format in its own timezone."""
+    timestamp_obj = value if isinstance(value, datetime) else parser.parse(str(value))
+    if timestamp_obj.tzinfo is None:
+        timestamp_obj = timestamp_obj.replace(tzinfo=timezone.utc)
+    else:
+        timestamp_obj = timestamp_obj.astimezone(timezone.utc)
+    return timestamp_obj.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def snapshot_browser_url(stored_path):
     """Turn a stored snapshot path into the visitor site's static URL."""
     if not stored_path:
@@ -1683,13 +1693,7 @@ def get_all_vehicles_from_anpr_by_date_paginated(
         for vehicle in rows:
             if vehicle.get("timestamp") is not None:
                 try:
-                    timestamp_obj = parser.parse(str(vehicle["timestamp"]))
-                    if timestamp_obj.tzinfo is None:
-                        timestamp_obj = timestamp_obj.replace(tzinfo=timezone.utc)
-                    else:
-                        timestamp_obj = timestamp_obj.astimezone(timezone.utc)
-                    # The browser formats this ISO UTC value in its own timezone.
-                    vehicle["timestamp"] = timestamp_obj.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    vehicle["timestamp"] = anpr_timestamp_iso_utc(vehicle["timestamp"])
                 except (ParserError, TypeError, ValueError):
                     pass
 
@@ -1771,8 +1775,7 @@ def get_all_vehicles_from_anpr_by_date(start_date, end_date):
 
                     timestamp_str = vehicle.get('timestamp')
                     try:
-                        timestamp_obj = parser.parse(timestamp_str)
-                        vehicle.update({'timestamp': timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')})
+                        vehicle.update({'timestamp': anpr_timestamp_iso_utc(timestamp_str)})
                     except (ParserError, TypeError, ValueError):
                         pass
                 if vehicle.get('file'):

@@ -1,6 +1,5 @@
 import os
 from flask import render_template, redirect
-from datetime import datetime
 from finalfrsproject import sqlCommands, app
 from flask_babel import _
 
@@ -15,8 +14,7 @@ def get_handler(jwt_details, request, vehicle_id):
     #print(type(vehicle_details))
 
     timestamp_str = vehicle_details.get('timestamp')
-    timestamp_obj = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f%z')
-    formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+    formatted_timestamp = sqlCommands.anpr_timestamp_iso_utc(timestamp_str)
     print(os.path.basename(vehicle_details.get('file')))
     print(app.config["VEHICLE_IMAGES"])
     formatted_vehicles = []

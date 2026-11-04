@@ -594,8 +594,7 @@ def get_all_vehicles_from_anpr(session_values_json_redis):
 			#Assuming timestamp is different from the format '2022-12-08 02:49:36.137264+00:00'
 			timestamp_str = vehicle[3]
 			try:
-				timestamp_obj = parser.parse(timestamp_str)
-				formatted_timestamp = timestamp_obj.strftime('%Y-%m-%d %H:%M:%S')
+				formatted_timestamp = sqlCommands.anpr_timestamp_iso_utc(timestamp_str)
 			except (ParserError, TypeError, ValueError):
 				print(
 					f"Skipping ANPR reading {vehicle[0]} with unparseable timestamp: {timestamp_str!r}",

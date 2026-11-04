@@ -1,6 +1,6 @@
 import json, os
 from flask import render_template, redirect, url_for, current_app
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from finalfrsproject import routeMethods, app, redisCommands, sqlCommands
 from werkzeug.utils import secure_filename
 import base64
@@ -47,7 +47,6 @@ def get_handler(jwt_details, redis_conn):
         redis_conn.set(
             jwt_details.get("logged_in_user_id"), json.dumps(session_values_json_redis)
         )
-        IST = timezone(timedelta(hours=5, minutes=30))
         print(
             "*************redis in trip_registration get method: ",
             session_values_json_redis,
@@ -77,7 +76,6 @@ def get_handler(jwt_details, redis_conn):
         return render_template(
             "add_trip.html",
             details=send_to_html_json,
-            now=datetime.now(IST).isoformat()[:16],
         )
 
     except Exception as e:

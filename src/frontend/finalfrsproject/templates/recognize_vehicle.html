@@ -30,7 +30,7 @@
                                 <img src="{{ vehicle.image_url }}" alt="Vehicle Image" class="img_main recognize-vehicle-thumb" title="{{ _('Click to expand') }}" loading="lazy" decoding="async">
                             </td>
                             <td>{{ vehicle.plate_number }}</td>
-                            <td>{{ vehicle.timestamp }}</td>
+                            <td data-utc-timestamp="{{ vehicle.timestamp }}">{{ vehicle.timestamp }}</td>
                             <td>{{ vehicle.camera_id }}</td>
                         </tr>
                         {% endfor %}
@@ -52,6 +52,14 @@
 
 <script>
     $(document).ready(function(){
+        $('#vehicle-table tbody td[data-utc-timestamp]').each(function() {
+            var raw = $(this).attr('data-utc-timestamp');
+            var parsed = new Date(raw);
+            if (raw && !Number.isNaN(parsed.getTime())) {
+                $(this).text(parsed.toLocaleString());
+            }
+        });
+
         $("#cancelbtn").click(function(event){
             event.preventDefault();
             window.location.href = "{{ url_for('trip_registration') }}";
