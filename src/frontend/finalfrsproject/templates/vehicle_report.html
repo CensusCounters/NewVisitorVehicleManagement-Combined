@@ -199,7 +199,14 @@
                 },
                 {
                     data: "timestamp",
-                    defaultContent: "Not Available"
+                    defaultContent: "Not Available",
+                    render: function (data, type) {
+                        if (data == null || data === "") return "Not Available";
+                        if (type !== "display" && type !== "filter") return data;
+                        var parsed = new Date(data);
+                        if (Number.isNaN(parsed.getTime())) return data;
+                        return parsed.toLocaleString();
+                    }
                 },
                 {
                     data: "camera_id",

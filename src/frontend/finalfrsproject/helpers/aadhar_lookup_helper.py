@@ -13,7 +13,7 @@ import json
 import time
 from datetime import datetime
 
-from flask import current_app, render_template, redirect, url_for
+from flask import current_app, jsonify, render_template, redirect, url_for
 from flask_babel import _
 
 from finalfrsproject import routeMethods, redisCommands, app
@@ -205,6 +205,14 @@ def post_handler(jwt_details, redis_conn, form):
 
         if result.get("Details") == "No match found":
             print("ID look up did not match any records")
+            # The operator must confirm an unknown ID before the session moves on.
+            # Cancelling the dialog leaves the lookup page and the stored session unchanged.
+            if form.get("confirm_unmatched") != "1":
+                return jsonify({
+                    "id_lookup_result": "not-found",
+                    "id_type": id_type or "",
+                    "id_number": id_number or "",
+                })
             _write_session(
                 session_values_json_redis, ids, id_type, id_number, traveler_type,
                 _("The ID Number entered - %(id_number)s - was not found in the system. Please register this person.") % {"id_number": id_number},
