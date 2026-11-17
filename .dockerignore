@@ -1,0 +1,29 @@
+# Keep development metadata, private configuration and runtime datasets out of
+# the root Docker build context. Runtime bind mounts are managed by Compose.
+.git
+.agents
+.aws
+.codex
+.env
+.venv
+.pytest_cache
+**/__pycache__
+**/*.pyc
+tests
+enrollment-data
+deploy-keys
+nginx/ssl
+src/frontend/key-new.pem
+src/frontend/finalfrsproject/static/reports/*.csv
+src/frontend/finalfrsproject/static/reports/*.pdf
+src/frontend/finalfrsproject/static/known_persons
+src/frontend/finalfrsproject/static/known_vehicles
+src/frontend/finalfrsproject/static/blacklisted_persons
+src/frontend/finalfrsproject/static/aadhars
+src/frontend/finalfrsproject/static/drivers_licenses
+src/frontend/finalfrsproject/static/other_ids
+src/frontend/finalfrsproject/static/passes
+src/frontend/finalfrsproject/static/permit_images
+src/frontend/finalfrsproject/static/anpr_vehicles
+src/frontend/finalfrsproject/static/images/uploads
+src/frontend/finalfrsproject/static/images/snapshots

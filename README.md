@@ -226,3 +226,10 @@ docker exec census_counters_fr_engine python /app/milvus_migrate.py import /mode
    names and Aadhaar numbers), the old `*.plan` files in `src/fr_engine/models/trt-engines/`, and the legacy
    volumes `*census_counters_facedb`, `*census_counters_etcd`, `*census_counters_minio` (`docker volume ls`).
 
+
+## Enrollment dataset export, reset and import
+
+See [ENROLLMENT_DATA.md](ENROLLMENT_DATA.md) for the admin UI, required database
+migration, dedicated RQ worker deployment, additive import with duplicate/conflict reporting and failure recovery.
+Only enrolled persons/vehicles, their images/documents and default face vectors
+are included; reset is blocked by dependent trips or passes.

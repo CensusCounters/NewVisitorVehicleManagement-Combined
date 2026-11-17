@@ -17,3 +17,7 @@ wheel
 gunicorn
 psycopg2
 pydantic>=2.5
+
+# Enrollment dataset maintenance worker
+rq==2.12.0
+pymilvus==2.6.18

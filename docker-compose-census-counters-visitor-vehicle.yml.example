@@ -1,14 +1,41 @@
 networks:
+  enrollment_maintenance:
+    internal: true
   census_counters_network:
     external: true
 
 volumes:
-  # Single-container Milvus data (embedded etcd + local storage). The legacy
+  # Shared Milvus data (separate etcd + local storage). The legacy
   # census_counters_facedb/etcd/minio volumes are no longer used; see README.
   census_counters_milvus:
     driver: local
+  census_counters_enrollment_queue:
+    driver: local
 
 services:
+  census_counters_fr_etcd:
+    image: quay.io/coreos/etcd:v3.5.25
+    restart: always
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: '1000'
+      ETCD_QUOTA_BACKEND_BYTES: '4294967296'
+    command:
+      - etcd
+      - --name=default
+      - --data-dir=/var/lib/milvus/etcd
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://0.0.0.0:2379
+    volumes:
+      - census_counters_milvus:/var/lib/milvus
+    networks:
+      - census_counters_network
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
   census_counters_facedb:
     container_name: census_counters_facedb
     image: milvusdb/milvus:v2.6.25
@@ -17,11 +44,13 @@ services:
     security_opt:
       - seccomp:unconfined
     environment:
-      ETCD_USE_EMBED: 'true'
-      ETCD_DATA_DIR: /var/lib/milvus/etcd
-      ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
+      ETCD_USE_EMBED: 'false'
+      ETCD_ENDPOINTS: census_counters_fr_etcd:2379
       COMMON_STORAGETYPE: local
       DEPLOY_MODE: STANDALONE
+    depends_on:
+      census_counters_fr_etcd:
+        condition: service_healthy
     mem_limit: ${MEM_LIMIT_MILVUS:-2g}
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -69,6 +98,8 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
+      - './enrollment-data:/maintenance'
+      - './src/frontend/enrollment_data/guard.py:/app/maintenance_guard.py:ro'
       - './src/fr_engine/models:/models'
       - './src/fr_engine/src:/app'
       - /etc/timezone:/etc/timezone:ro
@@ -110,12 +141,21 @@ services:
       dockerfile: ./Dockerfile_webservice
     restart: always
     volumes:
+      - './enrollment-data:/maintenance'
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - './src/frontend:/project'
       - './src/ANPR/anpr_webhook/images:/project/finalfrsproject/static/anpr_vehicles/'
       - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/project/finalfrsproject/static/images/snapshots:ro'
     environment:
+      POSTGRESQL_URL: ${POSTGRESQL_URL:-census_counters_postgres_db}
+      DB_NAME: ${DB_NAME:-postgres_visitor_vehicle}
+      DB_USER_NAME: ${DB_USER_NAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      REDIS_URL: ${REDIS_URL:-redis://census_counters_redis:6379/0}
+      ENROLLMENT_MAX_BYTES: ${ENROLLMENT_MAX_BYTES:-536870912}
+      ENROLLMENT_EMBEDDING_MODEL: ${ENROLLMENT_EMBEDDING_MODEL:-auraface_glintr100}
       SITE_PROFILE: kupwara
       SECRET_KEY: development-only-change-this-secret
       GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
@@ -134,6 +174,8 @@ services:
       dockerfile: ./Dockerfile_cleanup
     restart: always
     volumes:
+      - './enrollment-data:/maintenance'
+      - './src/frontend/enrollment_data/guard.py:/project/cleanup/maintenance_guard.py:ro'
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - './src:/project'
@@ -198,3 +240,72 @@ services:
       - census_counters_network
     depends_on:
       - census_counters_webservice_fr
+
+  census_counters_enrollment_redis:
+    image: redis:7.4-alpine
+    restart: always
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - census_counters_enrollment_queue:/data
+    networks:
+      - enrollment_maintenance
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  census_counters_enrollment_worker: &enrollment-worker
+    image: census_counters_webservice_fr
+    build:
+      context: .
+      dockerfile: ./Dockerfile_webservice
+    restart: always
+    working_dir: /project
+    command: ["python3", "-m", "enrollment_data.worker"]
+    stop_grace_period: 90s
+    healthcheck:
+      test: ["CMD", "python3", "-m", "enrollment_data.health", "worker"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    environment:
+      POSTGRESQL_URL: ${POSTGRESQL_URL:-census_counters_postgres_db}
+      DB_NAME: ${DB_NAME:-postgres_visitor_vehicle}
+      DB_USER_NAME: ${DB_USER_NAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      REDIS_URL: ${REDIS_URL:-redis://census_counters_redis:6379/0}
+      ENROLLMENT_MAX_BYTES: ${ENROLLMENT_MAX_BYTES:-536870912}
+      ENROLLMENT_EMBEDDING_MODEL: ${ENROLLMENT_EMBEDDING_MODEL:-auraface_glintr100}
+      ENROLLMENT_REDIS_URL: redis://census_counters_enrollment_redis:6379/0
+      ENROLLMENT_JOB_TIMEOUT: ${ENROLLMENT_JOB_TIMEOUT:-7200}
+    volumes:
+      - './enrollment-data:/maintenance'
+      - '/etc/timezone:/etc/timezone:ro'
+      - '/etc/localtime:/etc/localtime:ro'
+      - './src/frontend:/project'
+      - './src/ANPR/anpr_webhook/images:/project/finalfrsproject/static/anpr_vehicles/'
+      - '/var/opt/censuscounters/src/frontend/finalfrsproject/static/images/snapshots:/project/finalfrsproject/static/images/snapshots:ro'
+    networks:
+      - census_counters_network
+      - enrollment_maintenance
+    mem_limit: 1g
+    depends_on:
+      census_counters_enrollment_redis:
+        condition: service_healthy
+      census_counters_facedb:
+        condition: service_healthy
+
+  census_counters_enrollment_dispatcher:
+    <<: *enrollment-worker
+    command: ["python3", "-m", "enrollment_data.dispatcher"]
+    healthcheck:
+      test: ["CMD", "python3", "-m", "enrollment_data.health", "dispatcher"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    mem_limit: 256m

@@ -88,9 +88,14 @@
 		}
 	</style>
 
+    {% block page_styles %}{% endblock %}
   </head>
 
-  <body class="skin-blue sidebar-mini ">
+  <body class="skin-blue sidebar-mini {% block page_body_class %}{% endblock %}">
+    {% set header_user = details.logged_in_user|default('') %}
+    {% if not header_user and user is defined and user is mapping %}
+      {% set header_user = user.get('logged_in_user_name', '') %}
+    {% endif %}
   	<div class="row show-mood">
       <div class="col-md-12" id="img-vg-content">
 		  <div class="col-md-3" style="text-align: center; padding-top: 20px;">
@@ -98,13 +103,13 @@
 		  </div>
 		  <div class="col-md-3">
 	        <div class="display-date" style="margin-top:30px; text-align: center;">
-	            {% if details.logged_in_user %}
-	              <span id="details_entered_by">Logged In User: {{ details.logged_in_user }}</span>
+	            {% if header_user %}
+	              <span id="details_entered_by">Logged In User: {{ header_user }}</span>
 	            {% endif %}
 	        </div>
 	      </div>
 	      <div class="col-md-3">
-            {% if details.logged_in_user %}
+            {% if header_user %}
 	      	<div id="display-date" class="display-date" style="margin-top:30px;">
 	     		<span id="display-time" class="display-time"></span>,
   				<span id="day">day</span>,
@@ -118,7 +123,7 @@
 		  <div class="col-md-1">
 			{% if request.endpoint != 'home' %}
 	        <div style="margin-top:30px;text-align:center;font-size:2rem;font-weight: 200;">
-	          {% if details.logged_in_user %}
+	          {% if header_user %}
 	            <a href="{{ url_for('home') }}" style="text-decoration: underline;">Home</a>
 	          {% endif %}
 	        </div>
@@ -126,7 +131,7 @@
 	      </div>
 		  <div class="col-md-1">
 	        <div style="margin-top:30px;text-align:center;font-size:2rem;font-weight: 200;">
-	          {% if details.logged_in_user %}
+	          {% if header_user %}
 	            <a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a>
 	          {% endif %}
 	        </div>
@@ -169,7 +174,7 @@
     </div>
     {% endif %}
 
-		{% block content %}
+        {% block content %}
 
 
 		{% endblock %}

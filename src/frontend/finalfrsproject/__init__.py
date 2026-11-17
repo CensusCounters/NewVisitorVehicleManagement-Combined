@@ -380,3 +380,7 @@ babel = Babel(app, locale_selector=get_locale)
 
 
 from finalfrsproject import routes, errors
+
+# Enrollment dataset management uses its own durable background worker.
+from finalfrsproject.enrollment_data_routes import install as install_enrollment_data
+install_enrollment_data(app)

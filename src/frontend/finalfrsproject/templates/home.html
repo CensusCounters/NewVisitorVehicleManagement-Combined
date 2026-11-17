@@ -1,4 +1,8 @@
 {% extends "layout.html" %}
+{% block page_body_class %}enrollment-layout{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{{ asset_url('css/enrollment_data.css') }}">
+{% endblock %}
 {% block content %}
 <section class="user add-end-button-section">
   <div class="container-fluid" style="width:90%;">
@@ -24,4 +28,15 @@
     </form>
   </div>
 </section>
+{% if details.logged_in_user_type|default('')|lower == 'admin' %}
+<details class="home-admin-tools">
+  <summary><i class="fa fa-lock" aria-hidden="true"></i> Administration <span class="home-admin-label">Admin only</span> <i class="fa fa-angle-down" aria-hidden="true"></i></summary>
+  <div class="home-admin-content">
+    <p>Enrollment data maintenance is separate from daily visitor operations. Use it only for planned exports, imports or resets.</p>
+    <a class="home-maintenance-link" id="enrollment-maintenance-entry" href="{{ url_for('enrollment_data.page') }}"><i class="fa fa-database" aria-hidden="true"></i> Enrollment data maintenance</a>
+    <p class="home-maintenance-error" id="enrollment-entry-error" role="status" hidden></p>
+  </div>
+</details>
+<script src="{{ asset_url('js/enrollment_entry.js') }}"></script>
+{% endif %}
 {% endblock content %}

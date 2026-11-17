@@ -185,11 +185,13 @@ def create_collection(client, collection_name: str):
 
 
 client = MilvusClient(uri=CLUSTER_ENDPOINT)
-for _collection_name in (FACE_COLLECTION_NAME, FACE_COLLECTION_BLACKLIST):
-    if client.has_collection(collection_name=_collection_name):
-        ensure_index(client, _collection_name)
-    else:
-        create_collection(client, _collection_name)
+from maintenance_guard import guard as startup_enrollment_guard
+with startup_enrollment_guard(allow_queued=True):
+    for _collection_name in (FACE_COLLECTION_NAME, FACE_COLLECTION_BLACKLIST):
+        if client.has_collection(collection_name=_collection_name):
+            ensure_index(client, _collection_name)
+        else:
+            create_collection(client, _collection_name)
 
 collection_default = Collection(name=FACE_COLLECTION_NAME)
 collection_default.load()
@@ -215,6 +217,20 @@ app = FastAPIOffline(
     description="FastAPI wrapper for CensusCounters Face API.",
     version=__version__,
 )
+
+
+# Mounted from the enrollment maintenance package by the main Compose file.
+from maintenance_guard import guard as enrollment_guard, MaintenanceBusy
+
+@app.middleware('http')
+async def enrollment_maintenance_guard(request, call_next):
+    if request.url.path in ('/info', '/healthz'):
+        return await call_next(request)
+    try:
+        with enrollment_guard(allow_queued=True):
+            return await call_next(request)
+    except MaintenanceBusy as error:
+        return PlainTextResponse(str(error), status_code=503)
 
 
 @app.on_event('startup')

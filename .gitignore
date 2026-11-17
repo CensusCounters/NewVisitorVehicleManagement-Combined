@@ -66,3 +66,17 @@ src/frontend/finalfrsproject/translations/*/LC_MESSAGES/messages.mo
 
 # Private GitHub deploy keys, if a copy is ever placed in the worktree.
 deploy-keys/
+# Private enrollment datasets and worker runtime state
+enrollment-data/
+__pycache__/
+.pytest_cache/
+
+# Development-only suite is archived outside the client repository.
+/tests/
+.agents/
+.aws/
+.codex/
+# Generated reports and private enrollment documents.
+src/frontend/finalfrsproject/static/reports/*.csv
+src/frontend/finalfrsproject/static/reports/*.pdf
+src/frontend/finalfrsproject/static/other_ids/

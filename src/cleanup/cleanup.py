@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from pathlib import Path
+from maintenance_guard import guard, MaintenanceBusy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,14 +31,19 @@ if __name__ == '__main__':
     logger.info(f"Cleanup service script")
 
     while True:
-        cleanup_folder('/anpr_images', ANPR_RETENTION_SECONDS)
-        logger.info('ANPR Images clean up done. ')
+        try:
+            with guard():
+                cleanup_folder('/anpr_images', ANPR_RETENTION_SECONDS)
+                logger.info('ANPR Images clean up done. ')
 
-        cleanup_folder('/uploads', UPLOAD_RETENTION_SECONDS)
-        logger.info('Upload Images clean up done.')
+                cleanup_folder('/uploads', UPLOAD_RETENTION_SECONDS)
+                logger.info('Upload Images clean up done.')
 
-        cleanup_folder('/anpr', UPLOAD_RETENTION_SECONDS, extensions=['.jpeg', '.jpg', '.png'])
-        logger.info('ANPR Images clean up done. Sleeping again for a while.')
+                cleanup_folder('/anpr', UPLOAD_RETENTION_SECONDS, extensions=['.jpeg', '.jpg', '.png'])
+                logger.info('ANPR Images clean up done. Sleeping again for a while.')
+
+        except MaintenanceBusy:
+            logger.info('Skipping image cleanup while enrollment maintenance is active')
 
         time.sleep(SLEEP_TIME)
         logger.info(f"Back from sleep after {SLEEP_TIME//60} mins")

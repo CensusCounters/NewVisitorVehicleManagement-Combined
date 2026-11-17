@@ -1,0 +1,120 @@
+/* Scoped maintenance UI: match the existing dark, teal and amber theme. */
+@font-face { font-family: "EnrollmentIcons"; src: url("../images/fontawesome-webfont.woff2") format("woff2"); font-weight: normal; font-style: normal; font-display: swap; }
+.enrollment-page .fa, .home-admin-tools .fa { font-family: "EnrollmentIcons"; }
+.enrollment-layout > .row { margin-left: 0; margin-right: 0; }
+.enrollment-page { width: 90%; max-width: none; margin: 24px auto 64px; padding: 0; color: var(--main-font-color, #ddd); font-family: "open-sans", sans-serif; font-size: 20px; line-height: 1.65; }
+.enrollment-page h2, .enrollment-page h3, .enrollment-page p { margin: 0; }
+.enrollment-page h2 { color: #fff; font-size: 36px; font-weight: 700; line-height: 1.25; margin: 6px 0 12px; }
+.enrollment-page h3 { color: #f3f3f3; font-size: 28px; font-weight: 700; line-height: 1.35; }
+.ed-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
+.ed-header > div { flex: 1; min-width: 0; }
+.enrollment-page .ed-back { display: inline-block; color: #b9c2c0; font-size: 20px; margin-bottom: 22px; }
+.enrollment-page .ed-eyebrow { color: #ffd868; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
+.ed-intro { color: #bfc4c3; }
+.ed-admin-badge { white-space: nowrap; border: 1px solid #4a4940; background: #25231b; border-radius: 24px; padding: 6px 13px; color: #ffd868; font-size: 16px; margin-top: 44px; }
+.ed-admin-badge i { margin-right: 6px; }
+.ed-notice { display: flex; align-items: flex-start; gap: 13px; background: #242119; border: 1px solid #66562d; border-radius: 10px; padding: 16px 20px; margin-bottom: 26px; color: #d9d2bf; font-size: 20px; }
+.ed-notice > i { color: #ffd868; font-size: 19px; margin-top: 3px; }
+.ed-notice strong { color: #ffe19a; }
+.ed-workflow { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 22px; align-items: start; }
+.ed-card { min-width: 0; background: #111514; border: 1px solid #35413d; border-radius: 12px; padding: 28px; }
+.ed-card-heading { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; }
+.ed-icon { flex-shrink: 0; display: grid; place-items: center; width: 45px; height: 45px; border-radius: 10px; background: #16312c; border: 1px solid #286052; color: #00d6ba; font-size: 20px; }
+.ed-card > p { margin-bottom: 18px; font-size: 20px; }
+.enrollment-page .ed-muted { color: #aeb8b4; font-size: 18px; }
+.ed-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+.enrollment-page .ed-button, .home-admin-tools .home-maintenance-link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 11px 21px; min-height: 46px; border-radius: 25px; border: 1px solid transparent; font: 700 14px/1.4 "open-sans", sans-serif; text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s; }
+.enrollment-page .ed-button { font-size: 20px; min-height: 56px; padding: 13px 26px; }
+.enrollment-page .ed-button-primary { background: var(--button-color, #00b3a1); border-color: var(--button-color, #00b3a1); color: #031e19; }
+.enrollment-page .ed-button-primary:hover:not(:disabled) { background: transparent; color: #e1fff8; }
+.enrollment-page .ed-button-secondary { background: transparent; border-color: #6d7d75; color: #e1e9e5; }
+.enrollment-page .ed-button-secondary:hover:not(:disabled) { background: #23322c; border-color: #acbdb4; }
+.enrollment-page .ed-button-danger { background: transparent; border-color: #bd5963; color: #ffb6be; }
+.enrollment-page .ed-button-danger:hover:not(:disabled) { background: #722b38; color: #fff; }
+.enrollment-page .ed-button:disabled { opacity: .4; cursor: not-allowed; }
+.enrollment-page button:focus-visible, .enrollment-page a:focus-visible, .enrollment-page summary:focus-visible, .home-admin-tools a:focus-visible, .home-admin-tools summary:focus-visible { outline: 2px solid #ffd868 !important; outline-offset: 4px; }
+.ed-file-label { display: block; font-size: 20px; margin: 22px 0 8px; color: #eee; }
+.ed-file { display: block; max-width: 100%; width: 100%; padding: 8px; border: 1px dashed #5e7469; border-radius: 8px; background: #1a221e; color: #ddd; font-size: 18px; }
+.ed-file::file-selector-button { padding: 7px 11px; border: 1px solid #647c70; background: #263b31; color: #e7f2eb; border-radius: 5px; margin-right: 12px; cursor: pointer; }
+.ed-file:focus-visible { outline: 2px solid #ffd868; outline-offset: 3px; }
+.ed-preview { margin-top: 18px; padding: 14px; background: #1a201c; border: 1px solid #3c4b40; border-radius: 8px; font-size: 18px; color: #c4cdc6; }
+.ed-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+.ed-metric { min-width: 0; }
+.ed-metric strong { display: block; color: #e3f6ed; font-size: 22px; font-weight: 700; }
+.ed-metric span { color: #adbab2; font-size: 18px; }
+.ed-status { margin: 22px 0; padding: 13px 17px; border: 1px solid #3c5147; background: #17241e; border-radius: 8px; font-size: 20px; overflow-wrap: anywhere; }
+.ed-status[data-tone="error"] { background: #301c22; border-color: #87505d; color: #ffc5cf; }
+.ed-section-heading { display: flex; justify-content: space-between; gap: 15px; align-items: baseline; margin: 30px 0 15px; }
+.ed-job { border: 1px solid #36413b; background: #121714; padding: 20px; border-radius: 10px; margin-bottom: 12px; font-size: 20px; }
+.ed-job-header { display: flex; gap: 14px; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.ed-job h4 { font-size: 24px; font-weight: 700; color: #eef3ef; margin: 0; }
+.ed-job p { overflow-wrap: anywhere; }
+.ed-job .ed-actions { margin-top: 14px; }
+.ed-badge { font-size: 16px; font-weight: 700; border: 1px solid #506257; color: #d2dfd6; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+.ed-badge[data-status="queued"], .ed-badge[data-status="recovery_required"] { color: #ffd868; border-color: #7e6730; }
+.ed-badge[data-status="running"], .ed-badge[data-status="completed"] { color: #67e2ba; border-color: #316f58; }
+.ed-badge[data-status="failed"] { color: #ffafb9; border-color: #87444f; }
+.enrollment-page .ed-error { color: #ffb8c1; margin-top: 8px; }
+.enrollment-page .ed-empty { padding: 24px; border: 1px dashed #46554b; border-radius: 10px; color: #a8b7ac; text-align: center; }
+.ed-conflicts, .ed-job-id { margin-top: 12px; color: #c0cdc4; }
+.ed-conflicts summary, .ed-job-id summary { cursor: pointer; font-size: 18px; color: #e7ce83; }
+.ed-conflicts p { border-left: 2px solid #88703a; margin-top: 10px; padding: 6px 12px; }
+.ed-job-id code { display: block; overflow-wrap: anywhere; color: #bdcbc1; background: transparent; padding: 8px 0 0; }
+.ed-danger-zone { margin-top: 38px; border: 1px solid #70454e; border-radius: 10px; background: #20171b; }
+.ed-danger-zone > summary { cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 19px 22px; color: #efc0c6; list-style: none; font-size: 22px; font-weight: 700; }
+.ed-danger-zone > summary::-webkit-details-marker { display: none; }
+.ed-danger-zone summary i { margin-right: 8px; }
+.ed-restricted { display: inline-block; margin-left: 10px; font-size: 16px; color: #c596a0; font-weight: 400; }
+.ed-expand { font-size: 18px; color: #c0a6ad; white-space: nowrap; font-weight: 400; }
+.ed-danger-zone[open] .ed-expand i { transform: rotate(180deg); }
+.ed-danger-body { border-top: 1px solid #56353f; padding: 24px; }
+.ed-danger-body h3 { font-size: 26px; margin-bottom: 12px; }
+.ed-danger-body p { font-size: 20px; margin-bottom: 12px; }
+.ed-danger-body .ed-preview { margin-bottom: 18px; }
+/* Maintenance stays below, and visually separate from, daily visitor actions. */
+.home-admin-tools { width: 90%; margin: 24px auto 30px; border-top: 1px solid #414541; padding-top: 15px; text-align: right; }
+.home-admin-tools > summary { display: inline-flex; align-items: center; gap: 8px; color: #a5b0a7; font: 600 13px "open-sans", sans-serif; cursor: pointer; list-style: none; padding: 8px 0 8px 15px; }
+.home-admin-tools > summary::-webkit-details-marker { display: none; }
+.home-admin-tools .home-admin-label { color: #d8c383; border: 1px solid #574d31; border-radius: 12px; padding: 3px 8px; font-size: 10px; }
+.home-admin-tools .home-admin-content { max-width: 420px; margin: 10px 0 0 auto; border: 1px solid #404c43; border-radius: 10px; padding: 20px; text-align: left; background: #141b16; }
+.home-admin-tools .home-admin-content p { margin: 0 0 15px; color: #b8c4bb; font-size: 13px; line-height: 1.6; }
+.home-admin-tools .home-maintenance-link { background: transparent; border-color: #677a6b; color: #cfe0d3; font-size: 13px; }
+.home-admin-tools .home-maintenance-link:hover { background: #22352a; }
+.home-admin-tools .home-maintenance-error { color: #ffb6be; margin-top: 12px; }
+/* Reuse SweetAlert, isolated from the application's image-modal rules. */
+.enrollment-confirm.swal2-popup { background: #101713 !important; border: 1px solid #8e793e !important; border-radius: 14px !important; padding: 28px !important; color: #d9e4dc !important; }
+.enrollment-confirm .swal2-title { font-size: 28px !important; color: #ffe19a !important; line-height: 1.35; }
+.enrollment-confirm .swal2-html-container { color: #d3dfd6 !important; font-size: 18px !important; line-height: 1.7; text-align: left; margin: 18px 0 0 !important; }
+.enrollment-confirm .swal2-actions { gap: 12px; flex-wrap: wrap; margin-top: 24px !important; }
+.enrollment-confirm .swal2-styled.swal2-confirm, .enrollment-confirm .swal2-styled.swal2-cancel { width: auto !important; min-width: 160px; height: auto !important; min-height: 46px; margin: 0 !important; padding: 11px 20px !important; font-size: 18px !important; border-radius: 25px !important; }
+.enrollment-confirm .swal2-styled.swal2-cancel { color: #e1e9e3 !important; background: transparent !important; border-color: #809285 !important; }
+.enrollment-confirm .swal2-styled.swal2-confirm { color: #052219 !important; background: #00b3a1 !important; border-color: #00b3a1 !important; }
+.enrollment-confirm .swal2-styled.swal2-confirm:disabled { opacity: .35; cursor: not-allowed; }
+.enrollment-confirm .swal2-styled:focus-visible { outline: 2px solid #ffd868 !important; outline-offset: 3px; }
+.enrollment-confirm--danger.swal2-popup { border-color: #ad6572 !important; }
+.enrollment-confirm--danger .swal2-title { color: #ffc5ce !important; }
+.enrollment-confirm--danger .swal2-styled.swal2-confirm { background: #a33047 !important; border-color: #c66176 !important; color: #fff !important; }
+.enrollment-confirm .swal2-input { background: #19221c; border: 1px solid #7f9586; color: #fff; font-size: 20px; width: calc(100% - 12px); margin: 12px 6px 0; box-shadow: none; }
+.enrollment-confirm .swal2-input-label { color: #efccd2; font-size: 18px; margin-top: 18px; }
+.enrollment-confirm .swal2-validation-message { background: #3a1d27; color: #ffd6de; }
+@media (max-width: 1100px) {
+  .ed-workflow { grid-template-columns: 1fr; }
+  .ed-metrics { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .enrollment-page { width: calc(100% - 32px); padding: 0; margin-top: 20px; }
+  .ed-header { gap: 12px; flex-direction: column; }
+  .ed-header h2 { font-size: 32px; }
+  .ed-admin-badge { margin-top: 0; font-size: 16px; padding: 5px 10px; }
+  .ed-workflow { grid-template-columns: 1fr; }
+  .ed-card { padding: 22px; }
+  .ed-section-heading { flex-direction: column; gap: 4px; }
+  .ed-danger-zone > summary { align-items: flex-start; padding: 16px; flex-wrap: wrap; }
+  .ed-restricted { display: block; margin-left: 23px; margin-top: 4px; }
+  .ed-metrics { grid-template-columns: 1fr; gap: 7px; }
+  .ed-metric strong { display: inline; margin-right: 8px; }
+  .ed-actions .ed-button { flex: 1; }
+  .ed-job-header { align-items: flex-start; flex-wrap: wrap; }
+  .enrollment-confirm .swal2-styled.swal2-confirm, .enrollment-confirm .swal2-styled.swal2-cancel { min-width: 130px; }
+}
+@media (prefers-reduced-motion: reduce) { .enrollment-page *, .enrollment-confirm * { transition: none !important; animation: none !important; } }

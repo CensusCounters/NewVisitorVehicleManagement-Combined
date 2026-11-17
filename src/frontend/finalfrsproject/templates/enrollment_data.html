@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+{% block page_body_class %}enrollment-layout{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{{ asset_url('css/enrollment_data.css') }}">
+{% endblock %}
+{% block content %}
+<main class="enrollment-page" id="enrollment-data" data-base="{{ url_for('enrollment_data.page') }}">
+  <header class="ed-header">
+    <div>
+      <a class="ed-back" href="{{ url_for('home') }}"><i class="fa fa-angle-left" aria-hidden="true"></i> Back to home</a>
+      <p class="ed-eyebrow">Administration</p>
+      <h2>Enrollment data</h2>
+      <p class="ed-intro">Export saved enrollments or import a checked dataset. Existing records are preserved when imports contain conflicts.</p>
+    </div>
+    <span class="ed-admin-badge"><i class="fa fa-lock" aria-hidden="true"></i> Admin only</span>
+  </header>
+  <div class="ed-notice" role="note">
+    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    <p><strong>Use during planned maintenance.</strong> Registration pauses while an operation runs. Exported files contain personal information and must be stored securely.</p>
+  </div>
+  <input type="hidden" id="enrollment-csrf" value="{{ csrf_token() }}">
+  <div class="ed-workflow">
+    <section class="ed-card" aria-labelledby="export-heading">
+      <div class="ed-card-heading"><span class="ed-icon"><i class="fa fa-download" aria-hidden="true"></i></span><div><p class="ed-eyebrow">Save a dataset</p><h3 id="export-heading">Export enrollments</h3></div></div>
+      <p>Save enrolled persons, vehicles, their images and face data together in a downloadable package.</p>
+      <p class="ed-muted">Your current enrollments stay in place.</p>
+      <button type="button" class="ed-button ed-button-primary" id="export-data" disabled>Review export <i class="fa fa-angle-right" aria-hidden="true"></i></button>
+    </section>
+    <section class="ed-card" aria-labelledby="import-heading">
+      <div class="ed-card-heading"><span class="ed-icon"><i class="fa fa-upload" aria-hidden="true"></i></span><div><p class="ed-eyebrow">Add a saved dataset</p><h3 id="import-heading">Import enrollments</h3></div></div>
+      <p>Check a package first. New records are added, missing images and face data are repaired, and identical records are skipped. Different existing content is preserved and reported as a conflict.</p>
+      <label class="ed-file-label" for="dataset-file">Enrollment package <span class="ed-muted">(.zip)</span></label>
+      <input class="ed-file" type="file" id="dataset-file" accept=".zip,application/zip" aria-describedby="package-summary">
+      <div class="ed-actions">
+        <button type="button" class="ed-button ed-button-secondary" id="validate-data" disabled>1. Review package</button>
+        <button type="button" class="ed-button ed-button-primary" id="import-data" disabled>2. Review import</button>
+      </div>
+      <div class="ed-preview" id="package-summary" aria-live="polite">Choose a package to see additions, duplicates and conflicts before importing.</div>
+    </section>
+  </div>
+  <div class="ed-status" id="maintenance-message" role="status" aria-live="polite">Connecting to maintenance status…</div>
+  <button type="button" class="ed-button ed-button-secondary" id="maintenance-retry">Check again</button>
+  <section class="ed-activity" aria-labelledby="activity-heading">
+    <div class="ed-section-heading"><h3 id="activity-heading">Recent operations</h3><span class="ed-muted">Progress, downloads and recovery</span></div>
+    <div id="maintenance-jobs"><p class="ed-empty">Loading operations…</p></div>
+  </section>
+  <details class="ed-danger-zone" id="reset-section">
+    <summary><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Reset enrolled data <span class="ed-restricted">Destructive action</span></span><span class="ed-expand">Review options <i class="fa fa-angle-down" aria-hidden="true"></i></span></summary>
+    <div class="ed-danger-body">
+      <h3>Reset is separate from import</h3>
+      <p>You do not need to reset before importing. Reset removes enrolled persons, vehicles, their face vectors and private images.</p>
+      <p>A recovery export is created first. User accounts and blacklist entries stay in place. Reset is blocked when trips or passes exist.</p>
+      <button type="button" class="ed-button ed-button-secondary" id="preview-reset" disabled>Preview affected records</button>
+      <div class="ed-preview" id="reset-summary" aria-live="polite">Review the affected records before continuing.</div>
+      <button type="button" class="ed-button ed-button-danger" id="reset-data" disabled>Review reset…</button>
+    </div>
+  </details>
+</main>
+<script src="{{ asset_url('js/enrollment_data.js') }}"></script>
+{% endblock %}
