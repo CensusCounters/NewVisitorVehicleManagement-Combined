@@ -31,7 +31,7 @@ Ensure `ENROLLMENT_EMBEDDING_MODEL` (default `auraface_glintr100`) matches `REC_
 
 ## 2. Maintenance Window (Stop Writers, Keep DBs Running)
 
-Run `save`, `reset`, and `restore` while all application writers are stopped, leaving `census_counters_postgres_db`, `census_counters_redis`, and `census_counters_facedb` running:
+Run `save`, `reset`, and `restore` while all application writers are stopped, leaving `census_counters_postgres_db`, `census_counters_redis`, `census_counters_fr_etcd`, and `census_counters_facedb` running:
 
 ```bash
 docker compose -f docker-compose-census-counters-visitor-vehicle.yml stop \
