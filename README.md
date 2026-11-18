@@ -242,3 +242,10 @@ docker exec census_counters_fr_engine python /app/milvus_migrate.py import /mode
    names and Aadhaar numbers), the old `*.plan` files in `src/fr_engine/models/trt-engines/`, and the legacy
    volumes `*census_counters_facedb`, `*census_counters_etcd`, `*census_counters_minio` (`docker volume ls`).
 
+----------------------------------------------------------
+
+## 8. Offline Enrollment & Blacklist Backup, Reset, and Restore
+
+To export enrolled `persons`, `vehicles`, images, and Milvus `default` + `blacklist` vectors to a checksummed `.zip` archive, reset the database/Milvus/runtime files to a fresh state, or restore archives one by one with collision reporting, see [`ENROLLMENT_TOOL.md`](ENROLLMENT_TOOL.md) and [`scripts/enrollment_tool.py`](scripts/enrollment_tool.py).
+
+

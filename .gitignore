@@ -66,3 +66,4 @@ src/frontend/finalfrsproject/translations/*/LC_MESSAGES/messages.mo
 
 # Private GitHub deploy keys, if a copy is ever placed in the worktree.
 deploy-keys/
+skills/

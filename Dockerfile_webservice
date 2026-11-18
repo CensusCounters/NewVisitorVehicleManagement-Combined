@@ -8,5 +8,6 @@ RUN python3 -m pip install --upgrade pip
 WORKDIR /build
 COPY src/frontend/requirements.txt .
 RUN pip3 install -r requirements.txt
+RUN pip3 install "pymilvus>=2.6,<2.7"
 
 WORKDIR /project
